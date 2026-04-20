@@ -1,10 +1,10 @@
 :root {
-  --bg: #050505;
-  --surface: #101010;
-  --text: #f5f5f5;
-  --muted: #a8b0b0;
-  --accent: #00b7b7;
-  --line: #1f1f1f;
+  --bg: #ffffff;
+  --surface: #f5ffff;
+  --text: #000000;
+  --muted: #355c5c;
+  --accent: #00a9b8;
+  --line: #9edee3;
 }
 
 * {
@@ -19,15 +19,15 @@ body {
 }
 
 body {
-  background: var(--bg);
+  background: linear-gradient(180deg, #ffffff 0%, #efffff 100%);
   color: var(--text);
-  font-family: "Brush Script MT", "Segoe Script", "Lucida Handwriting", cursive;
+  font-family: "Times New Roman", Times, serif;
   line-height: 1.6;
-  letter-spacing: 0.4px;
+  letter-spacing: 0;
 }
 
 a {
-  color: var(--accent);
+  color: #007d88;
   text-decoration: none;
 }
 
@@ -44,6 +44,7 @@ header {
   border-bottom: 1px solid var(--line);
   padding: 1.2rem 0;
   margin-bottom: 2rem;
+  background: #ffffff;
 }
 
 .nav {
@@ -65,7 +66,7 @@ header {
 }
 
 .hero {
-  background: linear-gradient(140deg, #090909 20%, #001f1f 100%);
+  background: linear-gradient(145deg, #ffffff 15%, #dcfaff 100%);
   border: 1px solid var(--line);
   padding: 2rem;
   margin-bottom: 1.5rem;
@@ -97,7 +98,7 @@ header {
 .card h2,
 .card h3 {
   margin-bottom: 0.5rem;
-  color: var(--accent);
+  color: #006d78;
 }
 
 .section {
@@ -108,7 +109,7 @@ header {
 }
 
 .section h2 {
-  color: var(--accent);
+  color: #006d78;
   margin-bottom: 0.6rem;
 }
 
@@ -130,11 +131,31 @@ header {
   color: var(--muted);
 }
 
+.blog-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.blog-list li {
+  margin: 0.8rem 0;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.blog-date {
+  display: block;
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-bottom: 0.25rem;
+}
+
 footer {
   border-top: 1px solid var(--line);
   margin-top: 2rem;
   padding: 1rem 0 2rem;
   color: var(--muted);
+  background: #ffffff;
 }
 
 @media (max-width: 640px) {
