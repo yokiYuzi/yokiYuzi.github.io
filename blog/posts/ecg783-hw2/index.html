@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 783 HW2 | Chang Wang</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.38rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* figure */
+    .post-figure {
+      margin: 1.6rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      width: 100%;
+      max-width: 820px;
+      height: auto;
+      border: 1px solid var(--line);
+      box-shadow: 0 3px 16px var(--glow);
+      transition: box-shadow 0.25s;
+    }
+    .post-figure img:hover { box-shadow: 0 5px 24px var(--glow-strong); }
+    .post-figure figcaption {
+      margin-top: 0.45rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* fig placeholder kept for pages without images */
+    .fig-placeholder {
+      margin: 1.6rem 0;
+      border: 1px dashed var(--line);
+      background: var(--surface-alt);
+      padding: 1rem 1.2rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .fig-placeholder strong { color: var(--accent); display: block; margin-bottom: 0.3rem; }
+
+    /* result / comparison tables */
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.75rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+
+    /* impulse-response insight table */
+    .ir-table {
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 1rem 0;
+    }
+    .ir-table th, .ir-table td {
+      border: 1px solid var(--line);
+      padding: 0.3rem 0.7rem;
+      text-align: right;
+    }
+    .ir-table th { background: var(--surface-alt); color: var(--accent); text-align: center; }
+    .ir-table td:first-child { text-align: center; }
+
+    .case-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      padding: 0.15rem 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.4rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 783 HW2 — FIR Identification of an IIR System via Wiener Solution</h1>
+        <span class="meta">
+          Course: ECG 783 &nbsp;·&nbsp;
+          Student: Chang Wang (2002721058) &nbsp;·&nbsp;
+          Instructor: Peter Stubberud &nbsp;·&nbsp;
+          02-22-2026
+        </span>
+      </div>
+
+      <!-- ── 1. Objective ── -->
+      <h2>1. Objective</h2>
+      <p>
+        Identify an unknown discrete-time IIR system using an Adaptive Linear Combiner (ALC)
+        with $L+1$ adjustable FIR weights. The unknown system is:
+      </p>
+      $$d(k) = 0.5\,d(k-1) + 32\,x(k) + 32\,x(k-1),$$
+      <p>
+        where $x(k)$ is the input and $d(k)$ is the desired output.
+        Two filter lengths are studied: $L+1=2$ and $L+1=10$.
+        For each case, $R$, $P$, and the Wiener solution $W=R\backslash P$ are computed;
+        time-domain signals and frequency responses are compared.
+      </p>
+
+      <!-- ── 2. System Description ── -->
+      <h2>2. System and Model Description</h2>
+
+      <h3>2.1 Unknown IIR system</h3>
+      <p>In $z^{-1}$ notation the transfer function is:</p>
+      $$H(z) = \frac{D(z)}{X(z)} = \frac{32 + 32z^{-1}}{1 - 0.5z^{-1}}.$$
+      <p>
+        This is an IIR system due to the feedback pole at $z=0.5$.
+        Its impulse response decays exponentially:
+        $h[n] = 32\cdot(0.5)^n\cdot u[n] + 32\cdot(0.5)^{n-1}\cdot u[n-1]$,
+        i.e., $h[0]=32,\ h[1]=48,\ h[2]=24,\ h[3]=12,\ldots$
+      </p>
+
+      <h3>2.2 ALC (FIR) identification model</h3>
+      <p>The FIR ALC with $L+1$ coefficients:</p>
+      $$y(k) = w^T u(k), \quad
+        u(k) = [x(k),\,x(k-1),\,\ldots,\,x(k-L)]^T, \quad
+        w = [w_0,\,w_1,\,\ldots,\,w_L]^T.$$
+      $$e(k) = d(k) - y(k), \quad e^2(k) = (d(k)-y(k))^2.$$
+
+      <!-- ── 3. Wiener Solution ── -->
+      <h2>3. Wiener Solution (Correlation Method)</h2>
+      <p>Minimising $J(w)=\mathbb{E}[e^2(k)]$ gives the Wiener–Hopf system:</p>
+      $$R\,w_\text{opt} = P, \quad w_\text{opt} = R^{-1}P,$$
+      $$R = \mathbb{E}[u(k)u^T(k)], \quad P = \mathbb{E}[d(k)\,u(k)].$$
+      <p>Sample estimates over $M$ valid samples:</p>
+      $$\hat{R} = \frac{1}{M}U^TU, \qquad \hat{P} = \frac{1}{M}U^T\mathbf{d}.$$
+
+      <h3>Experiment settings</h3>
+      <ul>
+        <li>Samples: $N=8000$, seed: <code>rng(1)</code></li>
+        <li>Input: $x(k)\sim\mathcal{N}(0,1)$ (i.i.d. Gaussian white noise)</li>
+        <li>Initial conditions: $d(-1)=0$, $x(-1)=0$</li>
+        <li>Valid indices: $L=1\Rightarrow k=2,\ldots,8000\ (M=7999)$; $L=9\Rightarrow k=10,\ldots,8000\ (M=7991)$</li>
+        <li>$\operatorname{MSE}=\frac{1}{M}\sum_k e^2(k)$</li>
+      </ul>
+
+      <hr class="divider">
+
+      <!-- ── Case i ── -->
+      <div class="case-badge">CASE i — L+1 = 2</div>
+      <h2>4. Results: $L+1=2$ (Two-tap FIR)</h2>
+
+      <h3>4.1 Estimated $R$, $P$, and Wiener weights $W$</h3>
+      $$R_{(L+1=2)} = \begin{bmatrix}
+        1.01112902 & 0.01004599 \\
+        0.01004599 & 1.01115053
+      \end{bmatrix}, \qquad
+      P_{(L+1=2)} = \begin{bmatrix} 33.05383777 \\ 49.20388509 \end{bmatrix}.$$
+      $$W_{(L+1=2)} = \begin{bmatrix} 32.20973921 \\ 48.34127552 \end{bmatrix}.$$
+
+      <p>
+        The $R$ matrix is nearly diagonal (off-diagonal $\approx0.01$), reflecting
+        the near-white-noise character of the i.i.d. Gaussian input.
+        The two Wiener weights are close to $h[0]=32$ and $h[1]=48$,
+        the first two samples of the true impulse response — but all higher-order
+        contributions are lost.
+      </p>
+
+      $$\operatorname{MSE}_{(L+1=2)} = 787.3910068 \approx 7.87\times10^2.$$
+
+      <h3>4.2 Time-domain performance</h3>
+      <p>
+        $y(k)$ does not track $d(k)$ closely; $e^2(k)$ remains large throughout —
+        consistent with the high MSE. The two-tap FIR cannot capture the exponential
+        IIR tail, leaving a substantial modelling error at every sample.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/hw2/time_domain_l2.png"
+             alt="L+1=2 time-domain: d(k), y(k), e(k), e²(k)"
+             onerror="this.parentElement.innerHTML='<div class=\'fig-placeholder\'><strong>Fig. 1 — Time-domain, L+1=2</strong>Top: d(k) vs y(k). Middle: e(k). Bottom: e²(k) with 200-sample moving average. MSE ≈ 787.4.</div>'">
+        <figcaption>Fig. 1 — Time-domain signals, $L+1=2$.
+          $y(k)$ fails to track $d(k)$; large persistent $e^2(k)$.</figcaption>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ── Case ii ── -->
+      <div class="case-badge">CASE ii — L+1 = 10</div>
+      <h2>5. Results: $L+1=10$ (Ten-tap FIR)</h2>
+
+      <h3>5.1 Estimated $R$, $P$, and Wiener weights $W$</h3>
+      <p>
+        $R_{(L+1=10)}$ is a $10\times10$ nearly-identity matrix
+        (diagonal entries $\approx1.011$, off-diagonals $<0.013$),
+        again reflecting the near-white input.
+      </p>
+
+      $$P_{(L+1=10)} = \begin{bmatrix}
+        33.0595 \\ 49.2157 \\ 25.3103 \\ 12.6767 \\ 6.2426 \\
+        3.4847  \\ 1.7872  \\ 0.6296  \\ 0.5228  \\ 0.5672
+      \end{bmatrix}, \qquad
+      W_{(L+1=10)} = \begin{bmatrix}
+        32.0006 \\ 48.0000 \\ 24.0012 \\ 12.0001 \\ 5.9997 \\
+        3.0002  \\ 1.5008  \\ 0.7494  \\ 0.3758  \\ 0.1889
+      \end{bmatrix}.$$
+
+      $$\operatorname{MSE}_{(L+1=10)} = 0.01201656946 \approx 1.20\times10^{-2}.$$
+
+      <h3>5.2 Impulse-response interpretation of $W$</h3>
+      <p>
+        For $H(z)=(32+32z^{-1})/(1-0.5z^{-1})$, the true impulse response is
+        $h[n]=32\cdot0.5^{n-1}(1+0.5^{n>0})\cdot u[n]$.
+        The exact first-10 values and the identified weights match to within numerical noise:
+      </p>
+
+      <table class="ir-table">
+        <thead>
+          <tr><th>$n$</th><th>True $h[n]$</th><th>$w_n$ (identified)</th><th>Error</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>32.000</td><td>32.0006</td><td>+0.0006</td></tr>
+          <tr><td>1</td><td>48.000</td><td>48.0000</td><td>+0.0000</td></tr>
+          <tr><td>2</td><td>24.000</td><td>24.0012</td><td>+0.0012</td></tr>
+          <tr><td>3</td><td>12.000</td><td>12.0001</td><td>+0.0001</td></tr>
+          <tr><td>4</td><td>6.000</td><td>5.9997</td><td>−0.0003</td></tr>
+          <tr><td>5</td><td>3.000</td><td>3.0002</td><td>+0.0002</td></tr>
+          <tr><td>6</td><td>1.500</td><td>1.5008</td><td>+0.0008</td></tr>
+          <tr><td>7</td><td>0.750</td><td>0.7494</td><td>−0.0006</td></tr>
+          <tr><td>8</td><td>0.375</td><td>0.3758</td><td>+0.0008</td></tr>
+          <tr><td>9</td><td>0.1875</td><td>0.1889</td><td>+0.0014</td></tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Key insight:</strong> The identified FIR weights $W$ are a
+        near-perfect truncation of the IIR impulse response $h[n]$.
+        For an FIR model $\hat{H}(z)=\sum_{n=0}^{L}w_n z^{-n}$, the impulse response
+        simply equals the coefficient vector: $\hat{h}[n]=w_n$.
+        With $L+1=10$ taps the tail energy beyond $n=9$ is small
+        ($h[10]=0.5^{10}\cdot48\approx0.047$), giving MSE $\approx0.012$.
+      </div>
+
+      <h3>5.3 Time-domain performance</h3>
+      <p>
+        $y(k)$ nearly overlaps $d(k)$; $e^2(k)$ stays close to zero with a
+        200-sample moving average at $\approx0.012$ — consistent with the very low MSE.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/hw2/time_domain_l10.png"
+             alt="L+1=10 time-domain: d(k), y(k), e(k), e²(k)"
+             onerror="this.parentElement.innerHTML='<div class=\'fig-placeholder\'><strong>Fig. 2 — Time-domain, L+1=10</strong>Top: d(k) vs y(k) (near overlap). Middle: e(k) ≈ 0. Bottom: e²(k) ≈ 0. MSE ≈ 0.012.</div>'">
+        <figcaption>Fig. 2 — Time-domain signals, $L+1=10$.
+          $y(k)$ nearly overlaps $d(k)$; $e^2(k)\approx0$.</figcaption>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ── 6. Frequency Response ── -->
+      <h2>6. Frequency Response Comparison</h2>
+      <p>Unknown IIR system on the unit circle:</p>
+      $$H(e^{j\omega}) = \frac{32 + 32e^{-j\omega}}{1 - 0.5e^{-j\omega}}.$$
+      <p>FIR model frequency response:</p>
+      $$\hat{H}(e^{j\omega}) = \sum_{n=0}^{L} w_n\, e^{-j\omega n}.$$
+
+      <ul>
+        <li>
+          <strong>$L+1=10$</strong>: closely matches $H(e^{j\omega})$ across almost
+          the entire band — 10 coefficients capture a long portion of the exponentially
+          decaying impulse response.
+        </li>
+        <li>
+          <strong>$L+1=2$</strong>: shows noticeable deviation, especially where
+          the IIR "tail" contributes significantly (mid-to-high frequencies).
+        </li>
+      </ul>
+
+      <div class="post-figure">
+        <img src="/blog/images/hw2/freq_response.png"
+             alt="Frequency response comparison: IIR system vs L+1=2 and L+1=10 FIR"
+             onerror="this.parentElement.innerHTML='<div class=\'fig-placeholder\'><strong>Fig. 3 — Frequency Response Comparison</strong>Magnitude (dB) vs ω/π. Three curves: unknown IIR, ALC FIR L+1=2, ALC FIR L+1=10. The 10-tap model tracks the IIR closely; the 2-tap model deviates.</div>'">
+        <figcaption>Fig. 3 — Frequency response comparison.
+          Blue: unknown IIR; orange: $L+1=2$; yellow: $L+1=10$.</figcaption>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ── 7. Discussion ── -->
+      <h2>7. Discussion — Impulse Response Truncation</h2>
+      <p>
+        The unknown system $H(z)=(32+32z^{-1})/(1-0.5z^{-1})$ has an
+        <em>infinite-length</em> impulse response that decays geometrically at rate $0.5$.
+        For an FIR model $\hat{H}(z)=\sum_{n=0}^{L}w_n z^{-n}$,
+        the impulse response <em>equals</em> its weight vector:
+      </p>
+      $$\hat{h}[n] = w_n, \quad n = 0,1,\ldots,L.$$
+      <p>
+        The Wiener solution therefore returns the optimal <em>truncated</em>
+        approximation of $h[n]$. The truncation error energy is:
+      </p>
+      $$\varepsilon_\text{trunc}^2 = \sum_{n=L+1}^{\infty} h^2[n]
+        = \sum_{n=L+1}^{\infty} \bigl(48\cdot 0.5^n\bigr)^2
+        = \frac{(48\cdot 0.5^{L+1})^2}{1-0.25}.$$
+      <p>
+        For $L+1=2$: $\varepsilon^2\approx 48^2\cdot0.25/0.75\approx768$, consistent with MSE$\approx787$.
+        For $L+1=10$: $\varepsilon^2\approx48^2\cdot0.5^{20}/0.75\approx0.0044$, consistent with MSE$\approx0.012$.
+      </p>
+
+      <div class="post-figure">
+        <img src="/blog/images/hw2/impulse_l2.png"
+             alt="Impulse response vs FIR weights, L+1=2"
+             onerror="this.parentElement.innerHTML='<div class=\'fig-placeholder\'><strong>Fig. 4 — Impulse Response vs FIR Weights, L+1=2</strong>Blue dots: true h[n]. Orange stems: FIR weights w[n]. Only first 2 taps captured; large tail missed.</div>'">
+        <figcaption>Fig. 4 — Impulse response vs FIR weights, $L+1=2$.
+          Only $h[0]$ and $h[1]$ are captured; the exponential tail is lost.</figcaption>
+      </div>
+
+      <div class="post-figure">
+        <img src="/blog/images/hw2/impulse_l10.png"
+             alt="Impulse response vs FIR weights, L+1=10"
+             onerror="this.parentElement.innerHTML='<div class=\'fig-placeholder\'><strong>Fig. 5 — Impulse Response vs FIR Weights, L+1=10</strong>Blue dots: true h[n]. Orange stems: FIR weights w[n]. First 10 taps match the IIR response almost exactly.</div>'">
+        <figcaption>Fig. 5 — Impulse response vs FIR weights, $L+1=10$.
+          FIR weights closely track $h[n]$ for $n=0,\ldots,9$.</figcaption>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ── 8. Summary ── -->
+      <h2>8. Summary</h2>
+
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>$L+1$</th>
+            <th>$W$ (key values)</th>
+            <th>MSE</th>
+            <th>Freq. match</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2</td>
+            <td>$[32.21,\ 48.34]^T$</td>
+            <td>$787.4 \approx 7.87\times10^2$</td>
+            <td>Poor — tail energy missed</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>$[32.00,\ 48.00,\ 24.00,\ 12.00,\ \ldots,\ 0.19]^T$</td>
+            <td>$0.0120 \approx 1.20\times10^{-2}$</td>
+            <td>Excellent across full band</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Conclusion:</strong>
+        For a white-noise input driving an IIR system, the Wiener FIR weights
+        converge to a truncation of the true impulse response.
+        Increasing $L+1$ from 2 to 10 reduces the MSE by a factor of
+        $787.4/0.012 \approx 65{,}000\times$ ($\approx48\,\text{dB}$),
+        because each additional tap captures one more sample of the decaying
+        geometric tail $h[n]=48\cdot0.5^n$.
+      </div>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+</body>
+</html>

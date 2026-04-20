@@ -1,5 +1,11 @@
 [
   {
+    "title": "ECG 783 HW2 — FIR Identification of an IIR System via Wiener Solution",
+    "date": "2026-02-22",
+    "summary": "FIR modelling of the IIR system d(k)=0.5d(k-1)+32x(k)+32x(k-1) using the Wiener–Hopf solution. Compares L+1=2 (MSE≈787) and L+1=10 (MSE≈0.012), with impulse-response truncation analysis and frequency-response comparison.",
+    "path": "/blog/posts/ecg783-hw2/"
+  },
+  {
     "title": "ECG 783 HW1 — Wiener Solution for the Adaptive Linear Combiner",
     "date": "2026-02-22",
     "summary": "Wiener–Hopf solution for a 2-tap and 10-tap FIR ALC on two signal pairs: sinusoidal input (Case 1) and square-wave input (Case 2). Includes correlation estimation, MSE analysis, and frequency-response interpretation.",
