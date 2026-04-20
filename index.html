@@ -8,6 +8,13 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+
+  <!-- Möbius loading overlay -->
+  <div id="loading-overlay" aria-hidden="true">
+    <canvas id="mobius-canvas"></canvas>
+    <span class="loading-label">initializing</span>
+  </div>
+
   <header>
     <div class="container nav">
       <a class="brand" href="/">Chang Wang</a>
@@ -48,5 +55,6 @@
   <footer>
     <div class="container">© 2026 Chang Wang</div>
   </footer>
+  <script src="/js/mobius.js"></script>
 </body>
 </html>
