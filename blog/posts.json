@@ -1,8 +1,8 @@
 [
   {
-    "title": "自适应线性组合器：LMS、SER 与 RLS 算法分析",
+    "title": "ECG 783 Adaptive Signal Processing with Neural Network EXAM",
     "date": "2026-04-20",
-    "summary": "以 10 权重自适应线性组合器为例，对比分析 LMS、SER 与 RLS 三种算法的权重收敛、学习曲线时间常数及频率响应特性。",
+    "summary": "Four-problem exam covering 10-weight adaptive combiner (LMS/SER/RLS), IIR LMS inverse system, neural network character recognition (E/C/U/S), and FFNN two-input system modeling.",
     "path": "/blog/posts/adaptive-filtering/"
   },
   {

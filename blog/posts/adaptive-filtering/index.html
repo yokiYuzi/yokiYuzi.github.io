@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>自适应线性组合器：LMS、SER 与 RLS | Chang Wang</title>
+  <title>ECG 783 Adaptive Signal Processing with Neural Network EXAM | Chang Wang</title>
   <link rel="stylesheet" href="/css/style.css">
 
   <!-- KaTeX -->
@@ -12,79 +12,117 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body, {
       delimiters: [
-        {left: '$$', right: '$$', display: true},
-        {left: '$',  right: '$',  display: false}
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
       ]
     });"></script>
 
   <style>
-    .post-header { margin-bottom: 2rem; }
+    .post-header { margin-bottom: 2.2rem; }
     .post-header h1 {
-      font-size: clamp(1.1rem, 2.5vw, 1.7rem);
+      font-size: clamp(1.05rem, 2.4vw, 1.6rem);
       color: var(--accent);
       letter-spacing: 0.03em;
-      margin-bottom: 0.4rem;
+      line-height: 1.4;
+      margin-bottom: 0.45rem;
     }
-    .post-header .meta { font-size: 0.78rem; }
+    .post-header .meta { font-size: 0.76rem; }
 
-    .post-body { line-height: 1.85; }
+    .post-body { line-height: 1.88; }
+
     .post-body h2 {
       color: var(--accent);
-      font-size: 0.88rem;
-      letter-spacing: 0.14em;
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      margin: 1.8rem 0 0.7rem;
-      padding-bottom: 0.3rem;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
       border-bottom: 1px solid var(--line);
     }
     .post-body h3 {
       color: var(--text);
       font-size: 0.9rem;
-      margin: 1.2rem 0 0.4rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
     }
-    .post-body p { margin-bottom: 0.9rem; }
-    .post-body ul, .post-body ol {
-      padding-left: 1.4rem;
-      margin-bottom: 0.9rem;
-    }
-    .post-body li { margin: 0.35rem 0; }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul,
+    .post-body ol { padding-left: 1.5rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.4rem 0; }
 
-    /* KaTeX display math */
+    /* KaTeX display blocks */
     .katex-display {
       overflow-x: auto;
       margin: 1.4rem 0;
-      padding: 1rem 1.2rem;
+      padding: 1rem 1.3rem;
       background: var(--surface-alt);
       border-left: 3px solid var(--accent);
     }
 
-    /* Image */
+    /* Figures */
     .post-figure {
       margin: 1.8rem 0;
       text-align: center;
     }
     .post-figure img {
       max-width: 100%;
+      height: auto;
       border: 1px solid var(--line);
       box-shadow: 0 4px 20px var(--glow);
       transition: box-shadow 0.25s;
     }
     .post-figure img:hover { box-shadow: 0 6px 28px var(--glow-strong); }
     .post-figure figcaption {
-      margin-top: 0.6rem;
-      font-size: 0.78rem;
+      margin-top: 0.55rem;
+      font-size: 0.76rem;
       color: var(--muted);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
+    }
+
+    /* Problem label badge */
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      padding: 0.15rem 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+
+    /* Code / monospace hints */
+    .post-body code {
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      padding: 0.1rem 0.4rem;
+      font-size: 0.88em;
+      color: var(--accent);
+    }
+    .post-body pre {
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent2);
+      padding: 0.9rem 1.1rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
     }
 
     .back-link {
       display: inline-block;
       margin-bottom: 1.4rem;
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
     .back-link::before { content: "← "; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 2.4rem 0;
+    }
   </style>
 </head>
 <body>
@@ -105,85 +143,187 @@
 
     <article class="section post-body">
       <div class="post-header">
-        <h1>自适应线性组合器：LMS、SER 与 RLS 算法分析</h1>
-        <span class="meta">2026-04-20 &nbsp;·&nbsp; Adaptive Signal Processing</span>
+        <h1>ECG 783 Adaptive Signal Processing with Neural Network EXAM</h1>
+        <span class="meta">2026-04-20 &nbsp;·&nbsp; UNLV ECE &nbsp;·&nbsp; Adaptive Filtering · Neural Networks</span>
       </div>
 
-      <h2>问题背景</h2>
-      <p>
-        自适应滤波是信号处理领域的核心课题之一。本文以一个经典的 10 权重自适应线性组合器（Adaptive Linear Combiner）为例，
-        分别分析 LMS（最小均方）、SER 和 RLS（递归最小二乘）三种算法的性能，
-        包括权重收敛、学习曲线时间常数 $T_{MSE}$ 及频率响应。
-      </p>
+      <!-- ───────────── PROBLEM 1 ───────────── -->
+      <div class="problem-badge">PROBLEM 1</div>
+      <h2>Adaptive Linear Combiner — LMS, SER &amp; RLS</h2>
 
       <figure class="post-figure">
         <img src="/blog/images/adaptive-filter-hw.png"
-             alt="Adaptive linear combiner problem statement">
-        <figcaption>图 1 &nbsp;|&nbsp; 自适应线性组合器作业题目（含差分方程与三算法要求）</figcaption>
+             alt="Problem 1: 10-weight adaptive linear combiner">
+        <figcaption>Page 2 of 6 &nbsp;|&nbsp; Problem 1 — 10-weight adaptive linear combiner with LMS, SER, and RLS</figcaption>
       </figure>
 
-      <h2>未知系统</h2>
-      <p>待建模的未知单输入单输出系统由如下差分方程描述：</p>
+      <p>
+        Consider modeling an unknown single-input single-output system using a
+        <strong>10-weight adaptive linear combiner</strong>. The "unknown" system is described by the
+        following second-order difference equation:
+      </p>
 
       $$y(n) = \frac{1}{2}y(n-1) - \frac{1}{4}y(n-2) + \frac{1}{8}y(n-3)
                + x(n) + \frac{3}{2}x(n-1) + \frac{1}{4}x(n-2)$$
 
+      <h3>a) LMS Algorithm</h3>
       <p>
-        其中 $y(n)$ 为系统输出，$x(n)$ 为系统输入。该系统为三阶递归结构，
-        包含三个反馈极点和两个前馈零点，目标是用 10 权重线性组合器对其进行逼近。
+        The LMS weight update rule minimizes the mean square error iteratively:
       </p>
-
-      <h2>算法 a）LMS 算法</h2>
-      <p>
-        LMS（Least Mean Squares）是最经典的自适应算法，权重更新规则为：
-      </p>
-
       $$\mathbf{w}(n+1) = \mathbf{w}(n) + 2\mu\, e(n)\, \mathbf{x}(n)$$
-
       <p>
-        其中 $e(n) = d(n) - \mathbf{w}^T(n)\mathbf{x}(n)$ 为误差信号，$\mu$ 为步长参数。
-        学习曲线的理论时间常数与最大特征值 $\lambda_{\max}$ 相关：
+        Target misadjustment $M \leq 1\%$. The theoretical time constant of the learning curve satisfies:
       </p>
-
       $$T_{MSE} \approx \frac{1}{4\mu\,\lambda_{\max}}$$
-
       <p>
-        实验要求失调量 $M \leq 1\%$，即：
+        Tasks: plot weight vector vs. iteration (2 subplots: weights 1–5 and 6–10);
+        average $\geq 50$ learning curves and estimate $T_{MSE}$; plot frequency response
+        magnitude and phase vs. optimal Wiener solution.
       </p>
 
-      $$M = \frac{\mu \cdot \text{tr}[\mathbf{R}]}{1 - \mu \cdot \text{tr}[\mathbf{R}]} \leq 0.01$$
-
-      <h2>算法 b）SER 算法</h2>
+      <h3>b) SER Algorithm</h3>
       <p>
-        SER（Sign-Error Algorithm）是 LMS 的符号变体，仅使用误差信号的符号，
-        降低计算复杂度：
+        The Sign-Error (SER) algorithm replaces $e(n)$ with its sign to reduce multiply operations:
+      </p>
+      $$\mathbf{w}(n+1) = \mathbf{w}(n) + 2\mu\,\operatorname{sgn}[e(n)]\,\mathbf{x}(n)$$
+      <p>
+        Same tasks as (a): determine 10 weights with $M \leq 1\%$, plot weight vector,
+        average learning curves to estimate $T_{MSE}$, and compare frequency responses.
       </p>
 
-      $$\mathbf{w}(n+1) = \mathbf{w}(n) + 2\mu\, \text{sgn}[e(n)]\, \mathbf{x}(n)$$
-
+      <h3>c) RLS Algorithm</h3>
       <p>
-        相比 LMS，SER 的收敛速度略慢，但在硬件实现中更为高效。
-        同样需要验证 $M \leq 1\%$ 的失调约束，并绘制至少 50 条学习曲线的均值以估计 $T_{MSE}$。
+        The Recursive Least Squares algorithm minimizes the exponentially weighted cost function.
+        With forgetting factor $\lambda$, the weight update avoids explicit matrix inversion
+        via the matrix inversion lemma. RLS converges significantly faster than LMS/SER
+        at the cost of $O(M^2)$ complexity per iteration. Tasks: determine 10 weights,
+        plot weight vector evolution, average learning curves, and compare frequency responses.
       </p>
 
-      <h2>算法 c）RLS 算法</h2>
+      <hr class="divider">
+
+      <!-- ───────────── PROBLEM 2 ───────────── -->
+      <div class="problem-badge">PROBLEM 2</div>
+      <h2>Adaptive Inverse System — IIR LMS</h2>
+
+      <figure class="post-figure">
+        <img src="/blog/images/exam-p3.png"
+             alt="Problem 2: Adaptive inverse system block diagram">
+        <figcaption>Page 3 of 6 &nbsp;|&nbsp; Problem 2 — Adaptive inverse system with IIR LMS</figcaption>
+      </figure>
+
       <p>
-        RLS（Recursive Least Squares）利用全部历史数据最小化加权误差平方和，
-        遗忘因子 $\lambda \in (0,1]$ 控制历史数据的衰减：
+        Consider the adaptive inverse system shown above. The unknown plant transfer function is:
+      </p>
+      $$H_p(z) = \frac{1 + 1.3z^{-1} + 0.8z^{-2}}{1 - 1.2z^{-1} + 0.6z^{-2}}$$
+      <p>and the recursive adaptive filter takes the form:</p>
+      $$H(z) = \frac{a_0 + a_1 z^{-1} + a_2 z^{-2}}{1 - b_1 z^{-1} - b_2 z^{-2}}$$
+      <p>
+        Using the <strong>IIR LMS algorithm</strong>, determine the weight set
+        $\{a_0, a_1, a_2, b_1, b_2\}$ that minimizes $E[\varepsilon^2(k)]$.
+      </p>
+      <p>
+        Hint: initialize all weights to zero, set $\Delta = 0$,
+        $\mathbf{M} = 0.001\,\mathbf{I}$, and run <strong>80,000 iterations</strong>.
+      </p>
+      <p>
+        Tasks:
+        (a) plot weight vector vs. iteration number;
+        (b) average $\geq 50$ learning curves and estimate $T_{MSE}$;
+        (c) plot frequency response (magnitude &amp; phase) of $H(z)$, $H_p(z)$,
+        and the combined $H(z)H_p(z)$ on 2 subplots per page.
       </p>
 
-      $$\mathbf{w}(n) = \mathbf{P}(n)\sum_{i=1}^{n}\lambda^{n-i}\, d(i)\, \mathbf{x}(i)$$
+      <hr class="divider">
+
+      <!-- ───────────── PROBLEM 3 ───────────── -->
+      <div class="problem-badge">PROBLEM 3</div>
+      <h2>Neural Network Character Recognition — E, C, U, S</h2>
+
+      <figure class="post-figure">
+        <img src="/blog/images/exam-p4.png"
+             alt="Problem 3 page 1: character pixel grids for E, C, U, S">
+        <figcaption>Page 4 of 6 &nbsp;|&nbsp; Problem 3 — 5×4 binary character representations</figcaption>
+      </figure>
+
+      <figure class="post-figure">
+        <img src="/blog/images/exam-p5.png"
+             alt="Problem 3 page 2: neural network training details and letter decoding">
+        <figcaption>Page 5 of 6 &nbsp;|&nbsp; Problem 3 — Training specification and noisy letter decoding</figcaption>
+      </figure>
 
       <p>
-        其递推形式避免了矩阵求逆，时间复杂度为 $O(M^2)$（$M$ 为滤波器阶数）。
-        RLS 通常比 LMS/SER 收敛更快，但对数值精度要求更高。
+        Each character (E, C, U, S) is encoded as a $5 \times 4$ matrix, mapping black pixels
+        to $-1$ and white pixels to $+1$. For example:
+      </p>
+      $$\mathbf{E} = \begin{bmatrix}
+        -1 & -1 & -1 & 1 \\
+        -1 &  1 &  1 & 1 \\
+        -1 & -1 &  1 & 1 \\
+        -1 &  1 &  1 & 1 \\
+        -1 & -1 & -1 & 1
+      \end{bmatrix}$$
+      <p>
+        The matrix is vectorized column-by-column into a 20-dimensional input vector.
+        A two-layer neural network with activation $f(\cdot) = \tanh(\cdot)$ is trained to
+        map each character to a pair of binary outputs $(y_0, y_1)$:
+      </p>
+      <ul>
+        <li>$\text{E} \to (y_0, y_1) = (-1,\,-1)$</li>
+        <li>$\text{C} \to (y_0, y_1) = (-1,\,+1)$</li>
+        <li>$\text{U} \to (y_0, y_1) = (+1,\,-1)$</li>
+        <li>$\text{S} \to (y_0, y_1) = (+1,\,+1)$</li>
+      </ul>
+      <p>
+        Training continues until the total error
+        $E_t = \sum_{m=0}^{K} \varepsilon_m^2(n)$
+        falls below tolerance. Weights $\mathbf{W}$ (hidden layer) and $\mathbf{V}$
+        (output layer) are initialized with small random numbers.
+        After training, apply $\operatorname{sgn}(\cdot)$ to the output layer to obtain
+        binary classifications. Then decode the 7 given noisy letter vectors.
       </p>
 
-      <h2>总结</h2>
+      <hr class="divider">
+
+      <!-- ───────────── PROBLEM 4 ───────────── -->
+      <div class="problem-badge">PROBLEM 4</div>
+      <h2>Feedforward Neural Network — Two-Input System Modeling</h2>
+
+      <figure class="post-figure">
+        <img src="/blog/images/exam-p6.png"
+             alt="Problem 4: FFNN for two-input single-output system">
+        <figcaption>Page 6 of 6 &nbsp;|&nbsp; Problem 4 — FFNN modeling of a nonlinear two-input system</figcaption>
+      </figure>
+
       <p>
-        三种算法各有权衡：LMS 简单稳健、SER 计算高效、RLS 收敛最快但复杂度最高。
-        在 10 权重场景下，通过比较频率响应与最优 Wiener 解，
-        可以定量评估各算法对未知系统的逼近质量。
+        The unknown two-input single-output system is defined by:
+      </p>
+      $$y(k) = \cos\!\bigl[\pi x_1(k)\bigr]\cos\!\bigl[\pi x_2(k)\bigr]
+               + \left[\frac{1}{2}x_2(k)\right]^{\!2}$$
+      <p>
+        with $-1 \leq x_1(k) < 1$ and $-1 \leq x_2(k) < 1$.
+      </p>
+
+      <h3>a) Plot the target surface</h3>
+      <p>
+        Use <code>meshc</code> / <code>meshgrid</code> with step size 0.1 to plot $y(k)$
+        as a function of $x_1(k)$ and $x_2(k)$.
+      </p>
+      <pre>step = 0.1;
+x1 = -1:step:1;
+x2 = -1:step:1;
+[X1, X2] = meshgrid(x1, x2);
+y = cos(pi*X1).*cos(pi*X2) + 0.25*X1.^2;</pre>
+
+      <h3>b) Train a FFNN with ≥ 6 inputs and ≥ 50 hidden neurons</h3>
+      <p>
+        Construct a 6-element input vector using delayed samples:
+      </p>
+      <pre>X = [x1(k-1); x1(k); x1(k+1); x2(k-1); x2(k); x2(k+1)]</pre>
+      <p>
+        Train the two-layer FFNN until the maximum absolute approximation error is
+        $\leq 0.15$. Plot the FFNN approximation surface and the approximation error
+        surface on 2 separate pages.
       </p>
     </article>
   </main>
