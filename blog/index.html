@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog | Chang Wang</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section">
+      <h2>My Blog</h2>
+      <p class="meta">你可以直接编辑仓库文件 <code>blog/posts.json</code> 来新增、修改或删除博客条目。</p>
+      <ul id="blog-list" class="blog-list"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+
+  <script>
+    async function loadBlogPosts() {
+      const list = document.getElementById('blog-list');
+      try {
+        const response = await fetch('/blog/posts.json', { cache: 'no-store' });
+        const posts = await response.json();
+
+        if (!Array.isArray(posts) || posts.length === 0) {
+          list.innerHTML = '<li>暂无博客内容，请在 blog/posts.json 中添加文章。</li>';
+          return;
+        }
+
+        list.innerHTML = posts.map(post => {
+          const title = post.title || 'Untitled';
+          const date = post.date || 'No date';
+          const summary = post.summary || '';
+          const path = post.path || '#';
+          return `\n            <li>\n              <span class="blog-date">${date}</span>\n              <a href="${path}">${title}</a>\n              <p>${summary}</p>\n            </li>\n          `;
+        }).join('');
+      } catch (error) {
+        list.innerHTML = '<li>博客列表读取失败，请确认 blog/posts.json 文件格式为有效 JSON。</li>';
+      }
+    }
+
+    loadBlogPosts();
+  </script>
+</body>
+</html>
