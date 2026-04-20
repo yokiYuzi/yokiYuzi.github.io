@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自适应线性组合器：LMS、SER 与 RLS | Chang Wang</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$',  right: '$',  display: false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.1rem, 2.5vw, 1.7rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      margin-bottom: 0.4rem;
+    }
+    .post-header .meta { font-size: 0.78rem; }
+
+    .post-body { line-height: 1.85; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.88rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin: 1.8rem 0 0.7rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.9rem;
+      margin: 1.2rem 0 0.4rem;
+    }
+    .post-body p { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol {
+      padding-left: 1.4rem;
+      margin-bottom: 0.9rem;
+    }
+    .post-body li { margin: 0.35rem 0; }
+
+    /* KaTeX display math */
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.4rem 0;
+      padding: 1rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* Image */
+    .post-figure {
+      margin: 1.8rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      max-width: 100%;
+      border: 1px solid var(--line);
+      box-shadow: 0 4px 20px var(--glow);
+      transition: box-shadow 0.25s;
+    }
+    .post-figure img:hover { box-shadow: 0 6px 28px var(--glow-strong); }
+    .post-figure figcaption {
+      margin-top: 0.6rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+      <div class="post-header">
+        <h1>自适应线性组合器：LMS、SER 与 RLS 算法分析</h1>
+        <span class="meta">2026-04-20 &nbsp;·&nbsp; Adaptive Signal Processing</span>
+      </div>
+
+      <h2>问题背景</h2>
+      <p>
+        自适应滤波是信号处理领域的核心课题之一。本文以一个经典的 10 权重自适应线性组合器（Adaptive Linear Combiner）为例，
+        分别分析 LMS（最小均方）、SER 和 RLS（递归最小二乘）三种算法的性能，
+        包括权重收敛、学习曲线时间常数 $T_{MSE}$ 及频率响应。
+      </p>
+
+      <figure class="post-figure">
+        <img src="/blog/images/adaptive-filter-hw.png"
+             alt="Adaptive linear combiner problem statement">
+        <figcaption>图 1 &nbsp;|&nbsp; 自适应线性组合器作业题目（含差分方程与三算法要求）</figcaption>
+      </figure>
+
+      <h2>未知系统</h2>
+      <p>待建模的未知单输入单输出系统由如下差分方程描述：</p>
+
+      $$y(n) = \frac{1}{2}y(n-1) - \frac{1}{4}y(n-2) + \frac{1}{8}y(n-3)
+               + x(n) + \frac{3}{2}x(n-1) + \frac{1}{4}x(n-2)$$
+
+      <p>
+        其中 $y(n)$ 为系统输出，$x(n)$ 为系统输入。该系统为三阶递归结构，
+        包含三个反馈极点和两个前馈零点，目标是用 10 权重线性组合器对其进行逼近。
+      </p>
+
+      <h2>算法 a）LMS 算法</h2>
+      <p>
+        LMS（Least Mean Squares）是最经典的自适应算法，权重更新规则为：
+      </p>
+
+      $$\mathbf{w}(n+1) = \mathbf{w}(n) + 2\mu\, e(n)\, \mathbf{x}(n)$$
+
+      <p>
+        其中 $e(n) = d(n) - \mathbf{w}^T(n)\mathbf{x}(n)$ 为误差信号，$\mu$ 为步长参数。
+        学习曲线的理论时间常数与最大特征值 $\lambda_{\max}$ 相关：
+      </p>
+
+      $$T_{MSE} \approx \frac{1}{4\mu\,\lambda_{\max}}$$
+
+      <p>
+        实验要求失调量 $M \leq 1\%$，即：
+      </p>
+
+      $$M = \frac{\mu \cdot \text{tr}[\mathbf{R}]}{1 - \mu \cdot \text{tr}[\mathbf{R}]} \leq 0.01$$
+
+      <h2>算法 b）SER 算法</h2>
+      <p>
+        SER（Sign-Error Algorithm）是 LMS 的符号变体，仅使用误差信号的符号，
+        降低计算复杂度：
+      </p>
+
+      $$\mathbf{w}(n+1) = \mathbf{w}(n) + 2\mu\, \text{sgn}[e(n)]\, \mathbf{x}(n)$$
+
+      <p>
+        相比 LMS，SER 的收敛速度略慢，但在硬件实现中更为高效。
+        同样需要验证 $M \leq 1\%$ 的失调约束，并绘制至少 50 条学习曲线的均值以估计 $T_{MSE}$。
+      </p>
+
+      <h2>算法 c）RLS 算法</h2>
+      <p>
+        RLS（Recursive Least Squares）利用全部历史数据最小化加权误差平方和，
+        遗忘因子 $\lambda \in (0,1]$ 控制历史数据的衰减：
+      </p>
+
+      $$\mathbf{w}(n) = \mathbf{P}(n)\sum_{i=1}^{n}\lambda^{n-i}\, d(i)\, \mathbf{x}(i)$$
+
+      <p>
+        其递推形式避免了矩阵求逆，时间复杂度为 $O(M^2)$（$M$ 为滤波器阶数）。
+        RLS 通常比 LMS/SER 收敛更快，但对数值精度要求更高。
+      </p>
+
+      <h2>总结</h2>
+      <p>
+        三种算法各有权衡：LMS 简单稳健、SER 计算高效、RLS 收敛最快但复杂度最高。
+        在 10 权重场景下，通过比较频率响应与最优 Wiener 解，
+        可以定量评估各算法对未知系统的逼近质量。
+      </p>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+</body>
+</html>

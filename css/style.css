@@ -319,6 +319,12 @@ footer {
   animation: pageFade 0.55s ease both;
 }
 
+/* ── Blog post images ── */
+.post-figure img {
+  max-width: 100%;
+  height: auto;
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .hero, .section, .card { padding: 1rem; }

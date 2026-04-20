@@ -1,14 +1,20 @@
 [
   {
-    "title": "Welcome to My Blog",
+    "title": "自适应线性组合器：LMS、SER 与 RLS 算法分析",
     "date": "2026-04-20",
-    "summary": "This is my first blog entry managed directly from repository files.",
-    "path": "/2025/01/13/hello-world/"
+    "summary": "以 10 权重自适应线性组合器为例，对比分析 LMS、SER 与 RLS 三种算法的权重收敛、学习曲线时间常数及频率响应特性。",
+    "path": "/blog/posts/adaptive-filtering/"
   },
   {
     "title": "数字生命的基石",
     "date": "2026-04-20",
     "summary": "EEG 作为人类意图与状态接口，世界模型作为预测、规划与安全层，构建数字生命的基石模型。",
     "path": "#"
+  },
+  {
+    "title": "Welcome to My Blog",
+    "date": "2026-04-20",
+    "summary": "This is my first blog entry managed directly from repository files.",
+    "path": "/2025/01/13/hello-world/"
   }
 ]
