@@ -1,10 +1,14 @@
 :root {
-  --bg: #ffffff;
-  --surface: #f5ffff;
-  --text: #000000;
-  --muted: #355c5c;
-  --accent: #00a9b8;
-  --line: #9edee3;
+  --bg: #07090f;
+  --surface: #0d1117;
+  --surface-alt: #111820;
+  --text: #c8e6ff;
+  --muted: #4a8a9a;
+  --accent: #00e5ff;
+  --accent-dim: rgba(0, 229, 255, 0.18);
+  --line: #1a3a4a;
+  --glow-sm: 0 0 8px rgba(0, 229, 255, 0.3);
+  --glow-md: 0 0 20px rgba(0, 229, 255, 0.25);
 }
 
 * {
@@ -19,20 +23,22 @@ body {
 }
 
 body {
-  background: linear-gradient(180deg, #ffffff 0%, #efffff 100%);
+  background: var(--bg);
   color: var(--text);
-  font-family: "Times New Roman", Times, serif;
-  line-height: 1.6;
-  letter-spacing: 0;
+  font-family: "Courier New", Courier, monospace;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
 }
 
 a {
-  color: #007d88;
+  color: var(--accent);
   text-decoration: none;
+  transition: opacity 0.2s, text-shadow 0.2s;
 }
 
 a:hover {
-  opacity: 0.82;
+  opacity: 0.85;
+  text-shadow: var(--glow-sm);
 }
 
 .container {
@@ -40,11 +46,13 @@ a:hover {
   margin: 0 auto;
 }
 
+/* ── Header ── */
 header {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--accent);
+  box-shadow: 0 1px 24px rgba(0, 229, 255, 0.15);
   padding: 1.2rem 0;
   margin-bottom: 2rem;
-  background: #ffffff;
+  background: var(--bg);
 }
 
 .nav {
@@ -55,33 +63,71 @@ header {
 }
 
 .brand {
-  font-size: 1.6rem;
-  color: var(--text);
+  font-size: 1.5rem;
+  color: var(--accent);
+  text-shadow: var(--glow-sm);
+  letter-spacing: 0.08em;
 }
 
 .nav-links {
   display: flex;
-  gap: 1rem;
+  gap: 1.4rem;
   flex-wrap: wrap;
 }
 
+.nav-links a {
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--accent);
+  text-shadow: var(--glow-sm);
+  opacity: 1;
+}
+
+/* ── Hero ── */
 .hero {
-  background: linear-gradient(145deg, #ffffff 15%, #dcfaff 100%);
-  border: 1px solid var(--line);
-  padding: 2rem;
+  position: relative;
+  background:
+    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+    var(--surface);
+  background-size: 44px 44px;
+  border: 1px solid var(--accent);
+  box-shadow: var(--glow-md), inset 0 0 40px rgba(0, 229, 255, 0.04);
+  padding: 2.4rem 2rem;
   margin-bottom: 1.5rem;
 }
 
+.hero::before {
+  content: "// SYS.INIT";
+  position: absolute;
+  top: 0.6rem;
+  right: 1rem;
+  font-size: 0.7rem;
+  color: var(--accent);
+  opacity: 0.4;
+  letter-spacing: 0.15em;
+}
+
 .hero h1 {
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  color: var(--accent);
+  text-shadow: 0 0 24px rgba(0, 229, 255, 0.5);
   margin-bottom: 0.8rem;
+  letter-spacing: 0.04em;
 }
 
 .hero p {
   color: var(--muted);
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
+/* ── Grid & Cards ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -92,31 +138,50 @@ header {
 .card {
   background: var(--surface);
   border: 1px solid var(--line);
-  padding: 1rem;
+  padding: 1.2rem;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--glow-sm);
 }
 
 .card h2,
 .card h3 {
   margin-bottom: 0.5rem;
-  color: #006d78;
+  color: var(--accent);
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
+/* ── Section (resume / blog) ── */
 .section {
   margin-bottom: 1.4rem;
   background: var(--surface);
   border: 1px solid var(--line);
-  padding: 1.2rem;
+  padding: 1.4rem;
+  transition: border-color 0.25s;
+}
+
+.section:hover {
+  border-color: var(--accent);
 }
 
 .section h2 {
-  color: #006d78;
+  color: var(--accent);
   margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .section h3 {
   margin-top: 1rem;
   margin-bottom: 0.3rem;
   color: var(--text);
+  font-size: 0.9rem;
 }
 
 .section ul {
@@ -125,12 +190,15 @@ header {
 
 .section li {
   margin: 0.35rem 0;
+  color: var(--text);
 }
 
 .meta {
   color: var(--muted);
+  font-size: 0.9rem;
 }
 
+/* ── Blog list ── */
 .blog-list {
   list-style: none;
   padding-left: 0;
@@ -138,34 +206,56 @@ header {
 
 .blog-list li {
   margin: 0.8rem 0;
-  padding: 0.8rem;
+  padding: 0.9rem 1rem;
   border: 1px solid var(--line);
-  background: #ffffff;
+  background: var(--surface-alt);
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.blog-list li:hover {
+  border-color: var(--accent);
+  box-shadow: var(--glow-sm);
 }
 
 .blog-date {
   display: block;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   margin-bottom: 0.25rem;
+  letter-spacing: 0.08em;
 }
 
+.blog-list a {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+}
+
+.blog-list p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+/* ── Footer ── */
 footer {
   border-top: 1px solid var(--line);
   margin-top: 2rem;
   padding: 1rem 0 2rem;
   color: var(--muted);
-  background: #ffffff;
+  background: var(--bg);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
 }
 
+/* ── Responsive ── */
 @media (max-width: 640px) {
   .hero,
   .section,
   .card {
-    padding: 0.9rem;
+    padding: 1rem;
   }
 
   .brand {
-    font-size: 1.35rem;
+    font-size: 1.2rem;
   }
 }
