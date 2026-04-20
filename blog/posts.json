@@ -1,5 +1,11 @@
 [
   {
+    "title": "ECG 783 HW1 — Wiener Solution for the Adaptive Linear Combiner",
+    "date": "2026-02-22",
+    "summary": "Wiener–Hopf solution for a 2-tap and 10-tap FIR ALC on two signal pairs: sinusoidal input (Case 1) and square-wave input (Case 2). Includes correlation estimation, MSE analysis, and frequency-response interpretation.",
+    "path": "/blog/posts/ecg783-hw1/"
+  },
+  {
     "title": "ECG 783 Adaptive Signal Processing with Neural Network EXAM",
     "date": "2026-04-20",
     "summary": "Four-problem exam covering 10-weight adaptive combiner (LMS/SER/RLS), IIR LMS inverse system, neural network character recognition (E/C/U/S), and FFNN two-input system modeling.",
