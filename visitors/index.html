@@ -29,47 +29,89 @@
       flex-direction: column;
       align-items: center;
       background: var(--surface);
-      border: 1px solid var(--accent);
-      box-shadow: 0 0 16px var(--glow);
-      padding: 0.5rem 1.4rem;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 20px var(--glow);
+      padding: 0.6rem 1.6rem;
     }
     .total-badge .num {
-      font-size: 2rem;
+      font-size: 2.2rem;
       color: var(--accent);
       letter-spacing: 0.08em;
       line-height: 1.1;
     }
     .total-badge .lbl {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       color: var(--muted);
-      letter-spacing: 0.25em;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
     }
 
     /* ── Setup notice ── */
     #setup-notice {
-      background: var(--surface-alt);
-      border: 1px dashed var(--accent);
-      padding: 1rem 1.2rem;
-      margin-bottom: 1.2rem;
-      font-size: 0.82rem;
-      line-height: 1.7;
+      background: var(--surface);
+      border: 1px solid var(--accent2);
+      border-left: 4px solid var(--accent);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.4rem;
+      font-size: 0.8rem;
+      line-height: 1.85;
       display: none;
     }
-    #setup-notice strong { color: var(--accent); }
+    #setup-notice .notice-title {
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #setup-notice .notice-title::before {
+      content: '⚙';
+      font-size: 1rem;
+    }
+    #setup-notice a { color: var(--accent2); }
     #setup-notice code {
-      background: var(--surface);
+      background: var(--surface-alt);
       border: 1px solid var(--line);
-      padding: 0.1em 0.4em;
-      color: var(--accent2);
-      font-size: 0.9em;
+      padding: 0.15em 0.5em;
+      color: var(--accent);
+      font-size: 0.88em;
+    }
+    .setup-steps {
+      list-style: none;
+      padding: 0;
+      margin: 0.6rem 0 0;
+      counter-reset: step-counter;
+    }
+    .setup-steps li {
+      counter-increment: step-counter;
+      padding: 0.22rem 0 0.22rem 2rem;
+      position: relative;
+      color: var(--text);
+    }
+    .setup-steps li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0.22rem;
+      width: 1.3rem;
+      height: 1.3rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
     }
 
     /* ── Map ── */
     .map-wrap {
       background: var(--surface);
       border: 1px solid var(--line);
-      box-shadow: 0 0 24px var(--glow);
+      box-shadow: 0 0 28px var(--glow);
       margin-bottom: 1.2rem;
       overflow: hidden;
       position: relative;
@@ -80,7 +122,7 @@
       position: absolute;
       bottom: 0.7rem;
       left: 1rem;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: var(--muted);
       letter-spacing: 0.1em;
     }
@@ -88,8 +130,8 @@
       position: absolute;
       top: 0.7rem;
       right: 1rem;
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
       color: var(--accent);
     }
 
@@ -108,8 +150,9 @@
     .legend-circle {
       border-radius: 50%;
       border: 1.5px solid rgba(0,87,231,0.5);
-      background: rgba(0,87,231,0.25);
+      background: rgba(0,87,231,0.22);
       display: inline-block;
+      flex-shrink: 0;
     }
 
     /* ── Stats grid ── */
@@ -124,17 +167,17 @@
     .stat-card {
       background: var(--surface);
       border: 1px solid var(--line);
-      padding: 1rem 1.2rem;
-      transition: border-color 0.25s;
+      padding: 1.1rem 1.3rem;
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
-    .stat-card:hover { border-color: var(--accent); }
+    .stat-card:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--glow); }
     .stat-card h3 {
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 0.8rem;
-      padding-bottom: 0.4rem;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.45rem;
       border-bottom: 1px solid var(--line);
     }
 
@@ -142,32 +185,60 @@
     .country-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0.3rem 0;
+      padding: 0.32rem 0;
       border-bottom: 1px solid var(--surface-alt);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
+      gap: 0.5rem;
     }
     .country-item:last-child { border-bottom: none; }
-    .country-name { color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
-    .country-flag { font-size: 1rem; }
+    .country-rank {
+      font-size: 0.65rem;
+      color: var(--muted);
+      min-width: 1.2rem;
+      text-align: right;
+    }
+    .country-flag-img {
+      width: 20px;
+      height: 14px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+    .country-flag-fallback {
+      font-size: 0.62rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      padding: 0 3px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      min-width: 20px;
+      text-align: center;
+      display: inline-block;
+    }
+    .country-name { color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .country-bar-wrap {
+      width: 38%;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
+    }
+    .country-bar-track {
       flex: 1;
-      margin: 0 0.8rem;
+      height: 3px;
+      background: var(--surface-alt);
+      border-radius: 2px;
+      overflow: hidden;
     }
     .country-bar {
-      height: 4px;
+      height: 100%;
       background: linear-gradient(90deg, var(--accent), var(--accent2));
       border-radius: 2px;
-      min-width: 4px;
-      transition: width 0.6s ease;
+      transition: width 0.7s ease;
     }
     .country-count {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--accent);
-      min-width: 2rem;
+      min-width: 1.8rem;
       text-align: right;
     }
 
@@ -175,8 +246,8 @@
     .recent-item {
       display: flex;
       align-items: flex-start;
-      gap: 0.6rem;
-      padding: 0.4rem 0;
+      gap: 0.7rem;
+      padding: 0.45rem 0;
       border-bottom: 1px solid var(--surface-alt);
       font-size: 0.8rem;
     }
@@ -184,48 +255,62 @@
     .recent-dot {
       width: 7px; height: 7px;
       border-radius: 50%;
-      background: var(--accent);
-      margin-top: 0.35rem;
+      background: var(--accent2);
+      margin-top: 0.38rem;
       flex-shrink: 0;
     }
-    .recent-dot.fresh { background: #00c853; box-shadow: 0 0 6px #00c853; }
+    .recent-dot.fresh { background: #00c853; box-shadow: 0 0 7px #00c853; }
     .recent-info { flex: 1; }
-    .recent-loc { color: var(--text); }
-    .recent-time { color: var(--muted); font-size: 0.72rem; }
+    .recent-loc { color: var(--text); display: flex; align-items: center; gap: 0.4rem; }
+    .recent-time { color: var(--muted); font-size: 0.7rem; margin-top: 0.1rem; }
 
     /* Tooltip */
     #map-tooltip {
       position: fixed;
       background: var(--surface);
       border: 1px solid var(--accent);
-      box-shadow: 0 4px 16px var(--glow);
-      padding: 0.5rem 0.8rem;
+      box-shadow: 0 6px 22px var(--glow);
+      padding: 0.55rem 0.9rem;
       font-size: 0.78rem;
       pointer-events: none;
       display: none;
       z-index: 999;
       letter-spacing: 0.04em;
     }
-    #map-tooltip .tip-city { color: var(--text); font-size: 0.84rem; }
-    #map-tooltip .tip-count { color: var(--accent); }
+    #map-tooltip .tip-city { color: var(--text); font-size: 0.84rem; display: flex; align-items: center; gap: 0.4rem; }
+    #map-tooltip .tip-count { color: var(--accent); margin-top: 0.25rem; }
+    #map-tooltip .tip-fresh { display: inline-block; background: #00c853; color: #fff; font-size: 0.6rem; padding: 0.05em 0.4em; margin-left: 0.4rem; letter-spacing: 0.1em; }
 
     /* Pulse animation */
     @keyframes pulse-ring {
-      0%   { transform: scale(1);   opacity: 0.8; }
-      100% { transform: scale(2.5); opacity: 0; }
+      0%   { transform: scale(1);   opacity: 0.9; }
+      100% { transform: scale(2.8); opacity: 0; }
     }
-    .pulse { animation: pulse-ring 2s ease-out infinite; }
+    .pulse { animation: pulse-ring 2.2s ease-out infinite; }
 
-    /* Loading spinner */
+    /* Loading */
     .loading-text {
       text-align: center;
       padding: 3rem;
       color: var(--muted);
-      font-size: 0.8rem;
-      letter-spacing: 0.2em;
+      font-size: 0.78rem;
+      letter-spacing: 0.24em;
       animation: blink 1.3s ease-in-out infinite;
     }
     @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+
+    /* Demo badge */
+    .demo-badge {
+      position: absolute;
+      top: 0.7rem;
+      left: 1rem;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      padding: 0.15rem 0.5rem;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
@@ -253,15 +338,20 @@
       </div>
     </div>
 
-    <!-- Setup notice (shown when FB_URL not configured) -->
+    <!-- Setup notice -->
     <div id="setup-notice">
-      <strong>⚙ Firebase Setup Required</strong><br>
-      To enable real visitor tracking, open <code>visitors/index.html</code>,
-      find the <code>FB_URL</code> constant near the top of the &lt;script&gt; block,
-      and replace it with your Firebase Realtime Database URL.<br><br>
-      Steps: <strong>console.firebase.google.com</strong> → New project → Build → Realtime Database
-      → Create database (test mode) → copy the URL (looks like
-      <code>https://your-project-default-rtdb.firebaseio.com</code>).
+      <div class="notice-title">Firebase Setup Required — Demo Mode Active</div>
+      <p style="margin:0 0 0.5rem;color:var(--muted)">
+        The map below shows <strong style="color:var(--text)">sample data</strong>.
+        To record real visitors, connect a free Firebase database:
+      </p>
+      <ol class="setup-steps">
+        <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> and sign in with your Google account.</li>
+        <li>Click <strong>Add project</strong> → enter any project name → Continue → Create project.</li>
+        <li>In the left sidebar: <strong>Build → Realtime Database → Create database → Start in test mode → Enable</strong>.</li>
+        <li>Copy the database URL shown at the top — it looks like <code>https://your-project-default-rtdb.firebaseio.com</code></li>
+        <li>Open <code>visitors/index.html</code>, find <code>const FB_URL = 'YOUR_FIREBASE_URL'</code> near line 310, and paste your URL.</li>
+      </ol>
     </div>
 
     <!-- World Map -->
@@ -270,6 +360,7 @@
       <svg id="world-map"></svg>
       <span class="map-status">Natural Earth · ipapi.co · Firebase</span>
       <span id="record-status"></span>
+      <span id="demo-badge" class="demo-badge" style="display:none">DEMO DATA</span>
       <div class="map-legend">
         <span class="legend-circle" style="width:8px;height:8px;"></span><span>1</span>
         <span class="legend-circle" style="width:14px;height:14px;"></span><span>10</span>
@@ -282,11 +373,11 @@
     <div class="stats-grid">
       <div class="stat-card">
         <h3>Top Countries</h3>
-        <div id="country-list"><span style="color:var(--muted);font-size:.8rem">Loading…</span></div>
+        <div id="country-list"><span style="color:var(--muted);font-size:.8rem;letter-spacing:.1em">LOADING…</span></div>
       </div>
       <div class="stat-card">
         <h3>Recent Visitors</h3>
-        <div id="recent-list"><span style="color:var(--muted);font-size:.8rem">Loading…</span></div>
+        <div id="recent-list"><span style="color:var(--muted);font-size:.8rem;letter-spacing:.1em">LOADING…</span></div>
       </div>
     </div>
 
@@ -302,24 +393,30 @@
   </footer>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   CONFIGURATION — replace FB_URL with your Firebase Realtime
-   Database URL, e.g.:
-   https://my-project-default-rtdb.firebaseio.com
-   ═══════════════════════════════════════════════════════════════ */
-const FB_URL = 'YOUR_FIREBASE_URL';   // ← paste here
+/* ═══════════════════════════════════════════════════════════
+   CONFIGURATION — replace with your Firebase Realtime DB URL
+   e.g.: https://my-project-default-rtdb.firebaseio.com
+   ═══════════════════════════════════════════════════════════ */
+const FB_URL = 'https://private-cv-web-default-rtdb.firebaseio.com';   // ← paste here (no trailing slash)
 
-/* ── helpers ── */
-function flagEmoji(cc) {
+/* ── Flag image helper (works on all platforms) ── */
+function flagImg(cc) {
+  if (!cc || cc.length !== 2) return '<span class="country-flag-fallback">🌐</span>';
+  const code = cc.toLowerCase();
+  return `<img class="country-flag-img"
+    src="https://flagcdn.com/20x15/${code}.png"
+    onerror="this.outerHTML='<span class=\\'country-flag-fallback\\'>${cc}</span>'"
+    alt="${cc}">`;
+}
+
+function flagImgInline(cc) {
   if (!cc || cc.length !== 2) return '🌐';
-  return String.fromCodePoint(
-    ...cc.toUpperCase().split('').map(c => 0x1F1E0 + c.charCodeAt(0) - 65)
-  );
+  return cc.toLowerCase();  /* used for tooltip where we embed an img element */
 }
 
 function timeAgo(ms) {
   const s = Math.floor((Date.now() - ms) / 1000);
-  if (s < 60)  return s + 's ago';
+  if (s < 60)   return s + 's ago';
   if (s < 3600) return Math.floor(s/60) + 'm ago';
   if (s < 86400) return Math.floor(s/3600) + 'h ago';
   return Math.floor(s/86400) + 'd ago';
@@ -340,15 +437,13 @@ async function fbGet(path) {
 }
 async function fbPut(path, data) {
   await fetch(FB_URL + path + '.json', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'PUT', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
 }
 async function fbPost(path, data) {
   const r = await fetch(FB_URL + path + '.json', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   });
   return r.ok ? r.json() : null;
@@ -366,8 +461,7 @@ async function getGeo() {
     const d = await r.json();
     if (d && d.latitude) return {
       latitude: d.latitude, longitude: d.longitude,
-      country_code: d.country_code, country_name: d.country,
-      city: d.city
+      country_code: d.country_code, country_name: d.country, city: d.city
     };
   } catch (_) {}
   return null;
@@ -378,7 +472,6 @@ async function recordVisit(geo) {
   const key = locKey(geo);
   const existing = await fbGet('/locations/' + key);
   const now = Date.now();
-
   if (existing) {
     await fbPut('/locations/' + key + '/count', (existing.count || 0) + 1);
     await fbPut('/locations/' + key + '/last_visit', now);
@@ -389,19 +482,14 @@ async function recordVisit(geo) {
       country: geo.country_name || 'Unknown',
       country_code: geo.country_code || 'XX',
       city: geo.city || 'Unknown',
-      count: 1,
-      last_visit: now
+      count: 1, last_visit: now
     });
   }
-
   const total = (await fbGet('/total')) || 0;
   await fbPut('/total', total + 1);
-
   await fbPost('/recents', {
-    city: geo.city || 'Unknown',
-    country: geo.country_name || 'Unknown',
-    country_code: geo.country_code || 'XX',
-    ts: now
+    city: geo.city || 'Unknown', country: geo.country_name || 'Unknown',
+    country_code: geo.country_code || 'XX', ts: now
   });
 }
 
@@ -409,176 +497,170 @@ async function recordVisit(geo) {
 async function drawMap(locations) {
   const wrap = document.getElementById('map-container');
   const W = wrap.clientWidth;
-  const H = Math.round(W * 0.52);
+  const H = Math.round(W * 0.50);
   const svg = d3.select('#world-map').attr('width', W).attr('height', H);
   svg.selectAll('*').remove();
 
-  const proj = d3.geoNaturalEarth1()
-    .scale(W / 6.4)
-    .translate([W / 2, H / 2]);
+  const proj = d3.geoNaturalEarth1().scale(W / 6.3).translate([W / 2, H / 2]);
   const path = d3.geoPath().projection(proj);
 
-  /* ocean */
+  /* defs: ocean gradient + circle glow filter */
   const defs = svg.append('defs');
-  const oceanGrad = defs.append('linearGradient')
-    .attr('id', 'ocean-grad').attr('x1','0%').attr('y1','0%').attr('x2','0%').attr('y2','100%');
-  oceanGrad.append('stop').attr('offset','0%').attr('stop-color','#c0d8f8');
-  oceanGrad.append('stop').attr('offset','100%').attr('stop-color','#d8ecff');
 
+  const oceanGrad = defs.append('linearGradient')
+    .attr('id','ocean-grad').attr('x1','0%').attr('y1','0%').attr('x2','0%').attr('y2','100%');
+  oceanGrad.append('stop').attr('offset','0%').attr('stop-color','#bdd6f5');
+  oceanGrad.append('stop').attr('offset','100%').attr('stop-color','#daeeff');
+
+  const glow = defs.append('filter').attr('id','dot-glow').attr('x','-60%').attr('y','-60%').attr('width','220%').attr('height','220%');
+  glow.append('feGaussianBlur').attr('stdDeviation','3').attr('result','blur');
+  const merge = glow.append('feMerge');
+  merge.append('feMergeNode').attr('in','blur');
+  merge.append('feMergeNode').attr('in','SourceGraphic');
+
+  /* background */
   svg.append('rect').attr('width', W).attr('height', H).attr('fill', 'url(#ocean-grad)');
 
-  /* sphere outline */
-  svg.append('path')
-    .datum({type:'Sphere'}).attr('d', path)
-    .attr('fill','none').attr('stroke','#90b8e0').attr('stroke-width', 1);
+  /* sphere border */
+  svg.append('path').datum({type:'Sphere'}).attr('d', path)
+    .attr('fill','none').attr('stroke','#7aacd8').attr('stroke-width', 1.2);
 
   /* graticule */
-  svg.append('path')
-    .datum(d3.geoGraticule()())
-    .attr('d', path).attr('fill','none')
-    .attr('stroke','rgba(0,87,231,0.07)').attr('stroke-width', 0.5);
+  svg.append('path').datum(d3.geoGraticule()()).attr('d', path)
+    .attr('fill','none').attr('stroke','rgba(0,87,231,0.06)').attr('stroke-width', 0.5);
 
-  /* world atlas */
-  const world = await d3.json(
-    'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
-  );
+  /* world data */
+  const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
   const countries = topojson.feature(world, world.objects.countries);
   const borders   = topojson.mesh(world, world.objects.countries, (a,b) => a !== b);
 
-  /* count per country code for coloring */
-  const countByCC = {};
-  Object.values(locations).forEach(l => {
-    const cc = l.country_code;
-    countByCC[cc] = (countByCC[cc] || 0) + l.count;
-  });
-  const maxCC = Math.max(1, ...Object.values(countByCC));
+  /* country fill — slightly warmer for visited countries */
+  const visitedCC = new Set(Object.values(locations).map(l => l.country_code));
 
-  /* land */
   svg.selectAll('.land')
     .data(countries.features)
     .join('path')
     .attr('d', path)
-    .attr('fill', '#f2f6ff')
-    .attr('stroke', '#b8ccec')
-    .attr('stroke-width', 0.4);
+    .attr('fill', '#edf3ff')
+    .attr('stroke', '#c4d5ee')
+    .attr('stroke-width', 0.35);
 
-  /* borders */
-  svg.append('path')
-    .datum(borders).attr('d', path)
-    .attr('fill','none').attr('stroke','#d0ddf0').attr('stroke-width', 0.3);
+  svg.append('path').datum(borders).attr('d', path)
+    .attr('fill','none').attr('stroke','#cdddf5').attr('stroke-width', 0.25);
 
-  /* circles */
+  /* visitor circles */
   const locs = Object.values(locations).filter(l => {
     const [x, y] = proj([l.lon, l.lat]);
     return x > 0 && x < W && y > 0 && y < H;
   });
   const maxCount = Math.max(1, ...locs.map(l => l.count));
-  const rScale = d3.scaleSqrt().domain([1, maxCount]).range([5, 24]);
+  const rScale = d3.scaleSqrt().domain([1, maxCount]).range([5, 26]);
 
   const tooltip = document.getElementById('map-tooltip');
   const tipCity  = document.getElementById('tip-city');
   const tipCount = document.getElementById('tip-count');
 
-  const g = svg.append('g').attr('class', 'circles');
+  const g = svg.append('g').attr('class','circles');
   const now = Date.now();
 
-  locs.forEach(loc => {
+  locs.sort((a,b) => a.count - b.count).forEach(loc => {
     const [cx, cy] = proj([loc.lon, loc.lat]);
     const r = rScale(loc.count);
-    const fresh = now - loc.last_visit < 7200000; /* < 2 hours */
-    const intensity = loc.count / maxCount;
-    const fill = d3.interpolate('#6aabff', '#0033cc')(intensity);
+    const fresh = now - loc.last_visit < 7200000;
+    const t = loc.count / maxCount;
+    const fill = d3.interpolateRgb('#5ba3ff','#0033cc')(t);
 
     const grp = g.append('g')
       .attr('transform', `translate(${cx},${cy})`)
-      .style('cursor', 'pointer');
+      .style('cursor','pointer');
 
-    /* glow halo */
-    grp.append('circle')
-      .attr('r', r + 5)
-      .attr('fill', `rgba(0,87,231,${0.08 + intensity * 0.1})`)
-      .attr('stroke', 'none');
+    /* soft outer halo */
+    grp.append('circle').attr('r', r + 7)
+      .attr('fill', `rgba(0,87,231,${0.06 + t * 0.09})`)
+      .attr('stroke','none');
 
     /* pulse ring for recent visits */
     if (fresh) {
-      grp.append('circle')
-        .attr('r', r)
-        .attr('fill', 'none')
-        .attr('stroke', '#0057e7')
-        .attr('stroke-width', 2)
-        .attr('class', 'pulse');
+      grp.append('circle').attr('r', r)
+        .attr('fill','none').attr('stroke','#0057e7')
+        .attr('stroke-width', 1.8).attr('class','pulse');
     }
 
-    /* main circle */
-    grp.append('circle')
-      .attr('r', r)
+    /* main dot */
+    grp.append('circle').attr('r', r)
       .attr('fill', fill)
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 1.5)
-      .attr('opacity', 0.88);
+      .attr('stroke','rgba(255,255,255,0.9)')
+      .attr('stroke-width', 1.8)
+      .attr('opacity', 0.9)
+      .attr('filter','url(#dot-glow)');
 
     /* count label */
-    if (loc.count > 1) {
+    if (loc.count >= 1) {
       grp.append('text')
         .text(loc.count > 999 ? Math.round(loc.count/1000)+'k' : loc.count)
-        .attr('text-anchor', 'middle').attr('dy', '0.35em')
-        .attr('fill', '#fff')
-        .attr('font-size', Math.min(r * 0.82, 13))
-        .attr('font-family', '"Courier New", monospace')
-        .attr('font-weight', 'bold')
-        .attr('pointer-events', 'none');
+        .attr('text-anchor','middle').attr('dy','0.36em')
+        .attr('fill','#fff').attr('font-size', Math.min(r * 0.82, 12))
+        .attr('font-family','"Courier New", monospace')
+        .attr('font-weight','bold').attr('pointer-events','none');
     }
 
     /* tooltip */
     grp.on('mousemove', (ev) => {
-      tipCity.textContent  = `${flagEmoji(loc.country_code)} ${loc.city}, ${loc.country}`;
-      tipCount.textContent = `${loc.count} visit${loc.count > 1 ? 's' : ''}` +
-                             (fresh ? '  ·  recent' : '');
+      tipCity.innerHTML = `<img src="https://flagcdn.com/20x15/${(loc.country_code||'xx').toLowerCase()}.png"
+        style="width:18px;height:13px;object-fit:cover;border:1px solid var(--line);vertical-align:middle"
+        onerror="this.style.display='none'">
+        &nbsp;${loc.city}, ${loc.country}`;
+      tipCount.innerHTML = `${loc.count} visit${loc.count>1?'s':''}` +
+        (fresh ? '&nbsp;<span class="tip-fresh">RECENT</span>' : '');
       tooltip.style.display = 'block';
-      tooltip.style.left = (ev.clientX + 12) + 'px';
-      tooltip.style.top  = (ev.clientY - 36) + 'px';
+      tooltip.style.left = (ev.clientX + 14) + 'px';
+      tooltip.style.top  = (ev.clientY - 42) + 'px';
     }).on('mouseleave', () => { tooltip.style.display = 'none'; });
   });
 }
 
-/* ── Stats panels ── */
+/* ── Top Countries panel ── */
 function renderCountries(locations) {
   const byCountry = {};
   Object.values(locations).forEach(l => {
-    if (!byCountry[l.country_code]) {
-      byCountry[l.country_code] = { name: l.country, cc: l.country_code, count: 0 };
-    }
+    if (!byCountry[l.country_code]) byCountry[l.country_code] = { name: l.country, cc: l.country_code, count: 0 };
     byCountry[l.country_code].count += l.count;
   });
-
   const sorted = Object.values(byCountry).sort((a,b) => b.count - a.count).slice(0, 10);
   const max = sorted[0]?.count || 1;
   const el = document.getElementById('country-list');
-  el.innerHTML = sorted.map(c => `
+  el.innerHTML = sorted.map((c, i) => `
     <div class="country-item">
-      <span class="country-name">
-        <span class="country-flag">${flagEmoji(c.cc)}</span>
-        ${c.name}
-      </span>
+      <span class="country-rank">${i+1}</span>
+      ${flagImg(c.cc)}
+      <span class="country-name">${c.name}</span>
       <div class="country-bar-wrap">
-        <div class="country-bar" style="width:${Math.round(c.count/max*100)}%"></div>
+        <div class="country-bar-track">
+          <div class="country-bar" style="width:${Math.round(c.count/max*100)}%"></div>
+        </div>
       </div>
       <span class="country-count">${c.count}</span>
     </div>`).join('');
 }
 
+/* ── Recent Visitors panel ── */
 function renderRecents(recents) {
   const el = document.getElementById('recent-list');
   const now = Date.now();
-  const items = Object.values(recents || {})
-    .sort((a,b) => b.ts - a.ts).slice(0, 10);
-  if (!items.length) { el.innerHTML = '<span style="color:var(--muted);font-size:.8rem">No data yet</span>'; return; }
+  const items = Object.values(recents || {}).sort((a,b) => b.ts - a.ts).slice(0, 10);
+  if (!items.length) {
+    el.innerHTML = '<span style="color:var(--muted);font-size:.78rem;letter-spacing:.1em">NO DATA YET</span>';
+    return;
+  }
   el.innerHTML = items.map(r => {
     const fresh = now - r.ts < 3600000;
     return `<div class="recent-item">
-      <div class="recent-dot ${fresh ? 'fresh' : ''}"></div>
+      <div class="recent-dot ${fresh?'fresh':''}"></div>
       <div class="recent-info">
-        <div class="recent-loc">${flagEmoji(r.country_code)} ${r.city}, ${r.country}</div>
+        <div class="recent-loc">
+          ${flagImg(r.country_code)}
+          <span>${r.city}, ${r.country}</span>
+        </div>
         <div class="recent-time">${timeAgo(r.ts)}</div>
       </div>
     </div>`;
@@ -589,29 +671,28 @@ function renderRecents(recents) {
 (async function main() {
   const recordEl = document.getElementById('record-status');
 
-  /* check firebase config */
   if (!fbEnabled) {
     document.getElementById('setup-notice').style.display = 'block';
+    document.getElementById('demo-badge').style.display = 'block';
   }
 
-  /* get visitor geo */
+  /* record this visit */
   let geo = null;
   if (fbEnabled) {
     try {
       geo = await getGeo();
       if (geo) {
-        recordEl.textContent = '● RECORDING VISIT…';
+        recordEl.textContent = '● RECORDING…';
         await recordVisit(geo);
-        recordEl.textContent = '● VISIT RECORDED';
-        setTimeout(() => { recordEl.textContent = ''; }, 3000);
+        recordEl.textContent = '● RECORDED';
+        setTimeout(() => { recordEl.textContent = ''; }, 4000);
       }
-    } catch(e) {
-      recordEl.textContent = '⚠ RECORD FAILED';
-    }
+    } catch(e) { recordEl.textContent = '⚠ RECORD FAILED'; }
   }
 
   /* load data */
   let locations = {}, recents = {}, total = 0;
+
   if (fbEnabled) {
     try {
       [locations, recents, total] = await Promise.all([
@@ -621,18 +702,35 @@ function renderRecents(recents) {
       ]);
     } catch(e) { /* graceful */ }
   } else {
-    /* demo data so the map renders even without Firebase */
+    /* demo data */
+    const t = Date.now();
     locations = {
-      'US_36_-115': { lat:36.17, lon:-115.14, country:'United States', country_code:'US', city:'Las Vegas', count:3, last_visit: Date.now()-600000 },
-      'CN_40_116':  { lat:39.91, lon:116.39, country:'China',         country_code:'CN', city:'Beijing',   count:8, last_visit: Date.now()-1200000 },
-      'GB_51_0':    { lat:51.51, lon:-0.13,  country:'United Kingdom', country_code:'GB', city:'London',   count:2, last_visit: Date.now()-86400000 },
-      'DE_52_13':   { lat:52.52, lon:13.40,  country:'Germany',       country_code:'DE', city:'Berlin',    count:1, last_visit: Date.now()-172800000 },
-      'JP_35_139':  { lat:35.69, lon:139.69, country:'Japan',         country_code:'JP', city:'Tokyo',     count:4, last_visit: Date.now()-3600000 }
+      'US_36_-115': { lat:36.17,  lon:-115.14, country:'United States',  country_code:'US', city:'Las Vegas',    count:3, last_visit: t-600000   },
+      'US_37_-122': { lat:37.77,  lon:-122.42, country:'United States',  country_code:'US', city:'San Francisco',count:2, last_visit: t-3600000  },
+      'CN_40_116':  { lat:39.91,  lon:116.39,  country:'China',          country_code:'CN', city:'Beijing',      count:8, last_visit: t-1200000  },
+      'CN_31_121':  { lat:31.23,  lon:121.47,  country:'China',          country_code:'CN', city:'Shanghai',     count:5, last_visit: t-7200000  },
+      'GB_51_0':    { lat:51.51,  lon:-0.13,   country:'United Kingdom', country_code:'GB', city:'London',       count:2, last_visit: t-86400000 },
+      'DE_52_13':   { lat:52.52,  lon:13.40,   country:'Germany',        country_code:'DE', city:'Berlin',       count:1, last_visit: t-172800000},
+      'JP_35_139':  { lat:35.69,  lon:139.69,  country:'Japan',          country_code:'JP', city:'Tokyo',        count:4, last_visit: t-3600000  },
+      'AU_-33_151': { lat:-33.87, lon:151.21,  country:'Australia',      country_code:'AU', city:'Sydney',       count:1, last_visit: t-43200000 },
+      'CA_43_-79':  { lat:43.65,  lon:-79.38,  country:'Canada',         country_code:'CA', city:'Toronto',      count:2, last_visit: t-21600000 },
+      'SG_1_103':   { lat:1.35,   lon:103.82,  country:'Singapore',      country_code:'SG', city:'Singapore',    count:3, last_visit: t-900000   }
+    };
+    recents = {
+      'r1': { city:'Las Vegas',     country:'United States',  country_code:'US', ts: t-600000   },
+      'r2': { city:'Beijing',       country:'China',          country_code:'CN', ts: t-1200000  },
+      'r3': { city:'Singapore',     country:'Singapore',      country_code:'SG', ts: t-900000   },
+      'r4': { city:'Tokyo',         country:'Japan',          country_code:'JP', ts: t-3600000  },
+      'r5': { city:'Shanghai',      country:'China',          country_code:'CN', ts: t-7200000  },
+      'r6': { city:'Toronto',       country:'Canada',         country_code:'CA', ts: t-21600000 },
+      'r7': { city:'Sydney',        country:'Australia',      country_code:'AU', ts: t-43200000 },
+      'r8': { city:'London',        country:'United Kingdom', country_code:'GB', ts: t-86400000 },
+      'r9': { city:'San Francisco', country:'United States',  country_code:'US', ts: t-3600000  },
+      'r10':{ city:'Berlin',        country:'Germany',        country_code:'DE', ts: t-172800000}
     };
     total = Object.values(locations).reduce((s,l) => s+l.count, 0);
   }
 
-  /* update UI */
   document.getElementById('total-count').textContent = total || '—';
   document.getElementById('map-loading').style.display = 'none';
 
@@ -640,7 +738,6 @@ function renderRecents(recents) {
   renderRecents(recents);
   await drawMap(locations);
 
-  /* redraw on resize */
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
