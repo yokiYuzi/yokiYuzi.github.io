@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Global Visitors | Chang Wang</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson@3/dist/topojson.min.js"></script>
+
+  <style>
+    /* ── Hero ── */
+    .visitor-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+    .visitor-hero h1 {
+      font-size: clamp(1rem, 2.5vw, 1.6rem);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin: 0;
+    }
+    .total-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 16px var(--glow);
+      padding: 0.5rem 1.4rem;
+    }
+    .total-badge .num {
+      font-size: 2rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      line-height: 1.1;
+    }
+    .total-badge .lbl {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    /* ── Setup notice ── */
+    #setup-notice {
+      background: var(--surface-alt);
+      border: 1px dashed var(--accent);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      display: none;
+    }
+    #setup-notice strong { color: var(--accent); }
+    #setup-notice code {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 0.1em 0.4em;
+      color: var(--accent2);
+      font-size: 0.9em;
+    }
+
+    /* ── Map ── */
+    .map-wrap {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      box-shadow: 0 0 24px var(--glow);
+      margin-bottom: 1.2rem;
+      overflow: hidden;
+      position: relative;
+    }
+    #world-map { display: block; width: 100%; }
+
+    .map-status {
+      position: absolute;
+      bottom: 0.7rem;
+      left: 1rem;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+    #record-status {
+      position: absolute;
+      top: 0.7rem;
+      right: 1rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+
+    /* Legend */
+    .map-legend {
+      position: absolute;
+      bottom: 0.7rem;
+      right: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .legend-circle {
+      border-radius: 50%;
+      border: 1.5px solid rgba(0,87,231,0.5);
+      background: rgba(0,87,231,0.25);
+      display: inline-block;
+    }
+
+    /* ── Stats grid ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+    @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 1rem 1.2rem;
+      transition: border-color 0.25s;
+    }
+    .stat-card:hover { border-color: var(--accent); }
+    .stat-card h3 {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Country list */
+    .country-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--surface-alt);
+      font-size: 0.82rem;
+    }
+    .country-item:last-child { border-bottom: none; }
+    .country-name { color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+    .country-flag { font-size: 1rem; }
+    .country-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      margin: 0 0.8rem;
+    }
+    .country-bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      min-width: 4px;
+      transition: width 0.6s ease;
+    }
+    .country-count {
+      font-size: 0.78rem;
+      color: var(--accent);
+      min-width: 2rem;
+      text-align: right;
+    }
+
+    /* Recent list */
+    .recent-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--surface-alt);
+      font-size: 0.8rem;
+    }
+    .recent-item:last-child { border-bottom: none; }
+    .recent-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 0.35rem;
+      flex-shrink: 0;
+    }
+    .recent-dot.fresh { background: #00c853; box-shadow: 0 0 6px #00c853; }
+    .recent-info { flex: 1; }
+    .recent-loc { color: var(--text); }
+    .recent-time { color: var(--muted); font-size: 0.72rem; }
+
+    /* Tooltip */
+    #map-tooltip {
+      position: fixed;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      box-shadow: 0 4px 16px var(--glow);
+      padding: 0.5rem 0.8rem;
+      font-size: 0.78rem;
+      pointer-events: none;
+      display: none;
+      z-index: 999;
+      letter-spacing: 0.04em;
+    }
+    #map-tooltip .tip-city { color: var(--text); font-size: 0.84rem; }
+    #map-tooltip .tip-count { color: var(--accent); }
+
+    /* Pulse animation */
+    @keyframes pulse-ring {
+      0%   { transform: scale(1);   opacity: 0.8; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    .pulse { animation: pulse-ring 2s ease-out infinite; }
+
+    /* Loading spinner */
+    .loading-text {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      animation: blink 1.3s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero -->
+    <div class="visitor-hero">
+      <h1>// GLOBAL VISITORS</h1>
+      <div class="total-badge">
+        <span class="num" id="total-count">—</span>
+        <span class="lbl">Total Visits</span>
+      </div>
+    </div>
+
+    <!-- Setup notice (shown when FB_URL not configured) -->
+    <div id="setup-notice">
+      <strong>⚙ Firebase Setup Required</strong><br>
+      To enable real visitor tracking, open <code>visitors/index.html</code>,
+      find the <code>FB_URL</code> constant near the top of the &lt;script&gt; block,
+      and replace it with your Firebase Realtime Database URL.<br><br>
+      Steps: <strong>console.firebase.google.com</strong> → New project → Build → Realtime Database
+      → Create database (test mode) → copy the URL (looks like
+      <code>https://your-project-default-rtdb.firebaseio.com</code>).
+    </div>
+
+    <!-- World Map -->
+    <div class="map-wrap section" id="map-container">
+      <div class="loading-text" id="map-loading">LOADING MAP DATA...</div>
+      <svg id="world-map"></svg>
+      <span class="map-status">Natural Earth · ipapi.co · Firebase</span>
+      <span id="record-status"></span>
+      <div class="map-legend">
+        <span class="legend-circle" style="width:8px;height:8px;"></span><span>1</span>
+        <span class="legend-circle" style="width:14px;height:14px;"></span><span>10</span>
+        <span class="legend-circle" style="width:20px;height:20px;"></span><span>50+</span>
+        <span style="margin-left:.4rem">visits</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Top Countries</h3>
+        <div id="country-list"><span style="color:var(--muted);font-size:.8rem">Loading…</span></div>
+      </div>
+      <div class="stat-card">
+        <h3>Recent Visitors</h3>
+        <div id="recent-list"><span style="color:var(--muted);font-size:.8rem">Loading…</span></div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="map-tooltip">
+    <div class="tip-city" id="tip-city"></div>
+    <div class="tip-count" id="tip-count"></div>
+  </div>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURATION — replace FB_URL with your Firebase Realtime
+   Database URL, e.g.:
+   https://my-project-default-rtdb.firebaseio.com
+   ═══════════════════════════════════════════════════════════════ */
+const FB_URL = 'YOUR_FIREBASE_URL';   // ← paste here
+
+/* ── helpers ── */
+function flagEmoji(cc) {
+  if (!cc || cc.length !== 2) return '🌐';
+  return String.fromCodePoint(
+    ...cc.toUpperCase().split('').map(c => 0x1F1E0 + c.charCodeAt(0) - 65)
+  );
+}
+
+function timeAgo(ms) {
+  const s = Math.floor((Date.now() - ms) / 1000);
+  if (s < 60)  return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  if (s < 86400) return Math.floor(s/3600) + 'h ago';
+  return Math.floor(s/86400) + 'd ago';
+}
+
+function locKey(geo) {
+  return (geo.country_code || 'XX') + '_' +
+         Math.round(geo.latitude) + '_' +
+         Math.round(geo.longitude);
+}
+
+/* ── Firebase REST ── */
+const fbEnabled = FB_URL !== 'YOUR_FIREBASE_URL';
+
+async function fbGet(path) {
+  const r = await fetch(FB_URL + path + '.json');
+  return r.ok ? r.json() : null;
+}
+async function fbPut(path, data) {
+  await fetch(FB_URL + path + '.json', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+}
+async function fbPost(path, data) {
+  const r = await fetch(FB_URL + path + '.json', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  return r.ok ? r.json() : null;
+}
+
+/* ── Geo detection ── */
+async function getGeo() {
+  try {
+    const r = await fetch('https://ipapi.co/json/');
+    const d = await r.json();
+    if (d && d.latitude) return d;
+  } catch (_) {}
+  try {
+    const r = await fetch('https://ipwhois.app/json/');
+    const d = await r.json();
+    if (d && d.latitude) return {
+      latitude: d.latitude, longitude: d.longitude,
+      country_code: d.country_code, country_name: d.country,
+      city: d.city
+    };
+  } catch (_) {}
+  return null;
+}
+
+/* ── Record visit ── */
+async function recordVisit(geo) {
+  const key = locKey(geo);
+  const existing = await fbGet('/locations/' + key);
+  const now = Date.now();
+
+  if (existing) {
+    await fbPut('/locations/' + key + '/count', (existing.count || 0) + 1);
+    await fbPut('/locations/' + key + '/last_visit', now);
+  } else {
+    await fbPut('/locations/' + key, {
+      lat: parseFloat(geo.latitude.toFixed(2)),
+      lon: parseFloat(geo.longitude.toFixed(2)),
+      country: geo.country_name || 'Unknown',
+      country_code: geo.country_code || 'XX',
+      city: geo.city || 'Unknown',
+      count: 1,
+      last_visit: now
+    });
+  }
+
+  const total = (await fbGet('/total')) || 0;
+  await fbPut('/total', total + 1);
+
+  await fbPost('/recents', {
+    city: geo.city || 'Unknown',
+    country: geo.country_name || 'Unknown',
+    country_code: geo.country_code || 'XX',
+    ts: now
+  });
+}
+
+/* ── Draw world map ── */
+async function drawMap(locations) {
+  const wrap = document.getElementById('map-container');
+  const W = wrap.clientWidth;
+  const H = Math.round(W * 0.52);
+  const svg = d3.select('#world-map').attr('width', W).attr('height', H);
+  svg.selectAll('*').remove();
+
+  const proj = d3.geoNaturalEarth1()
+    .scale(W / 6.4)
+    .translate([W / 2, H / 2]);
+  const path = d3.geoPath().projection(proj);
+
+  /* ocean */
+  const defs = svg.append('defs');
+  const oceanGrad = defs.append('linearGradient')
+    .attr('id', 'ocean-grad').attr('x1','0%').attr('y1','0%').attr('x2','0%').attr('y2','100%');
+  oceanGrad.append('stop').attr('offset','0%').attr('stop-color','#c0d8f8');
+  oceanGrad.append('stop').attr('offset','100%').attr('stop-color','#d8ecff');
+
+  svg.append('rect').attr('width', W).attr('height', H).attr('fill', 'url(#ocean-grad)');
+
+  /* sphere outline */
+  svg.append('path')
+    .datum({type:'Sphere'}).attr('d', path)
+    .attr('fill','none').attr('stroke','#90b8e0').attr('stroke-width', 1);
+
+  /* graticule */
+  svg.append('path')
+    .datum(d3.geoGraticule()())
+    .attr('d', path).attr('fill','none')
+    .attr('stroke','rgba(0,87,231,0.07)').attr('stroke-width', 0.5);
+
+  /* world atlas */
+  const world = await d3.json(
+    'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+  );
+  const countries = topojson.feature(world, world.objects.countries);
+  const borders   = topojson.mesh(world, world.objects.countries, (a,b) => a !== b);
+
+  /* count per country code for coloring */
+  const countByCC = {};
+  Object.values(locations).forEach(l => {
+    const cc = l.country_code;
+    countByCC[cc] = (countByCC[cc] || 0) + l.count;
+  });
+  const maxCC = Math.max(1, ...Object.values(countByCC));
+
+  /* land */
+  svg.selectAll('.land')
+    .data(countries.features)
+    .join('path')
+    .attr('d', path)
+    .attr('fill', '#f2f6ff')
+    .attr('stroke', '#b8ccec')
+    .attr('stroke-width', 0.4);
+
+  /* borders */
+  svg.append('path')
+    .datum(borders).attr('d', path)
+    .attr('fill','none').attr('stroke','#d0ddf0').attr('stroke-width', 0.3);
+
+  /* circles */
+  const locs = Object.values(locations).filter(l => {
+    const [x, y] = proj([l.lon, l.lat]);
+    return x > 0 && x < W && y > 0 && y < H;
+  });
+  const maxCount = Math.max(1, ...locs.map(l => l.count));
+  const rScale = d3.scaleSqrt().domain([1, maxCount]).range([5, 24]);
+
+  const tooltip = document.getElementById('map-tooltip');
+  const tipCity  = document.getElementById('tip-city');
+  const tipCount = document.getElementById('tip-count');
+
+  const g = svg.append('g').attr('class', 'circles');
+  const now = Date.now();
+
+  locs.forEach(loc => {
+    const [cx, cy] = proj([loc.lon, loc.lat]);
+    const r = rScale(loc.count);
+    const fresh = now - loc.last_visit < 7200000; /* < 2 hours */
+    const intensity = loc.count / maxCount;
+    const fill = d3.interpolate('#6aabff', '#0033cc')(intensity);
+
+    const grp = g.append('g')
+      .attr('transform', `translate(${cx},${cy})`)
+      .style('cursor', 'pointer');
+
+    /* glow halo */
+    grp.append('circle')
+      .attr('r', r + 5)
+      .attr('fill', `rgba(0,87,231,${0.08 + intensity * 0.1})`)
+      .attr('stroke', 'none');
+
+    /* pulse ring for recent visits */
+    if (fresh) {
+      grp.append('circle')
+        .attr('r', r)
+        .attr('fill', 'none')
+        .attr('stroke', '#0057e7')
+        .attr('stroke-width', 2)
+        .attr('class', 'pulse');
+    }
+
+    /* main circle */
+    grp.append('circle')
+      .attr('r', r)
+      .attr('fill', fill)
+      .attr('stroke', '#fff')
+      .attr('stroke-width', 1.5)
+      .attr('opacity', 0.88);
+
+    /* count label */
+    if (loc.count > 1) {
+      grp.append('text')
+        .text(loc.count > 999 ? Math.round(loc.count/1000)+'k' : loc.count)
+        .attr('text-anchor', 'middle').attr('dy', '0.35em')
+        .attr('fill', '#fff')
+        .attr('font-size', Math.min(r * 0.82, 13))
+        .attr('font-family', '"Courier New", monospace')
+        .attr('font-weight', 'bold')
+        .attr('pointer-events', 'none');
+    }
+
+    /* tooltip */
+    grp.on('mousemove', (ev) => {
+      tipCity.textContent  = `${flagEmoji(loc.country_code)} ${loc.city}, ${loc.country}`;
+      tipCount.textContent = `${loc.count} visit${loc.count > 1 ? 's' : ''}` +
+                             (fresh ? '  ·  recent' : '');
+      tooltip.style.display = 'block';
+      tooltip.style.left = (ev.clientX + 12) + 'px';
+      tooltip.style.top  = (ev.clientY - 36) + 'px';
+    }).on('mouseleave', () => { tooltip.style.display = 'none'; });
+  });
+}
+
+/* ── Stats panels ── */
+function renderCountries(locations) {
+  const byCountry = {};
+  Object.values(locations).forEach(l => {
+    if (!byCountry[l.country_code]) {
+      byCountry[l.country_code] = { name: l.country, cc: l.country_code, count: 0 };
+    }
+    byCountry[l.country_code].count += l.count;
+  });
+
+  const sorted = Object.values(byCountry).sort((a,b) => b.count - a.count).slice(0, 10);
+  const max = sorted[0]?.count || 1;
+  const el = document.getElementById('country-list');
+  el.innerHTML = sorted.map(c => `
+    <div class="country-item">
+      <span class="country-name">
+        <span class="country-flag">${flagEmoji(c.cc)}</span>
+        ${c.name}
+      </span>
+      <div class="country-bar-wrap">
+        <div class="country-bar" style="width:${Math.round(c.count/max*100)}%"></div>
+      </div>
+      <span class="country-count">${c.count}</span>
+    </div>`).join('');
+}
+
+function renderRecents(recents) {
+  const el = document.getElementById('recent-list');
+  const now = Date.now();
+  const items = Object.values(recents || {})
+    .sort((a,b) => b.ts - a.ts).slice(0, 10);
+  if (!items.length) { el.innerHTML = '<span style="color:var(--muted);font-size:.8rem">No data yet</span>'; return; }
+  el.innerHTML = items.map(r => {
+    const fresh = now - r.ts < 3600000;
+    return `<div class="recent-item">
+      <div class="recent-dot ${fresh ? 'fresh' : ''}"></div>
+      <div class="recent-info">
+        <div class="recent-loc">${flagEmoji(r.country_code)} ${r.city}, ${r.country}</div>
+        <div class="recent-time">${timeAgo(r.ts)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Main ── */
+(async function main() {
+  const recordEl = document.getElementById('record-status');
+
+  /* check firebase config */
+  if (!fbEnabled) {
+    document.getElementById('setup-notice').style.display = 'block';
+  }
+
+  /* get visitor geo */
+  let geo = null;
+  if (fbEnabled) {
+    try {
+      geo = await getGeo();
+      if (geo) {
+        recordEl.textContent = '● RECORDING VISIT…';
+        await recordVisit(geo);
+        recordEl.textContent = '● VISIT RECORDED';
+        setTimeout(() => { recordEl.textContent = ''; }, 3000);
+      }
+    } catch(e) {
+      recordEl.textContent = '⚠ RECORD FAILED';
+    }
+  }
+
+  /* load data */
+  let locations = {}, recents = {}, total = 0;
+  if (fbEnabled) {
+    try {
+      [locations, recents, total] = await Promise.all([
+        fbGet('/locations').then(d => d || {}),
+        fbGet('/recents').then(d => d || {}),
+        fbGet('/total').then(d => d || 0)
+      ]);
+    } catch(e) { /* graceful */ }
+  } else {
+    /* demo data so the map renders even without Firebase */
+    locations = {
+      'US_36_-115': { lat:36.17, lon:-115.14, country:'United States', country_code:'US', city:'Las Vegas', count:3, last_visit: Date.now()-600000 },
+      'CN_40_116':  { lat:39.91, lon:116.39, country:'China',         country_code:'CN', city:'Beijing',   count:8, last_visit: Date.now()-1200000 },
+      'GB_51_0':    { lat:51.51, lon:-0.13,  country:'United Kingdom', country_code:'GB', city:'London',   count:2, last_visit: Date.now()-86400000 },
+      'DE_52_13':   { lat:52.52, lon:13.40,  country:'Germany',       country_code:'DE', city:'Berlin',    count:1, last_visit: Date.now()-172800000 },
+      'JP_35_139':  { lat:35.69, lon:139.69, country:'Japan',         country_code:'JP', city:'Tokyo',     count:4, last_visit: Date.now()-3600000 }
+    };
+    total = Object.values(locations).reduce((s,l) => s+l.count, 0);
+  }
+
+  /* update UI */
+  document.getElementById('total-count').textContent = total || '—';
+  document.getElementById('map-loading').style.display = 'none';
+
+  renderCountries(locations);
+  renderRecents(recents);
+  await drawMap(locations);
+
+  /* redraw on resize */
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => drawMap(locations), 300);
+  });
+})();
+</script>
+</body>
+</html>
