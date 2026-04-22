@@ -37,15 +37,13 @@
     /* spin the icon */
     if (btn) {
       btn.classList.remove('spinning');
-      void btn.offsetWidth;          /* reflow → restart animation */
+      void btn.offsetWidth;
       btn.classList.add('spinning');
       setTimeout(function () { btn.classList.remove('spinning'); }, 600);
     }
 
-    /* scan line sweeps across page */
     triggerPageScan();
 
-    /* add transition class, swap theme at scan midpoint */
     html.classList.add('theme-switching');
     setTimeout(function () {
       html.setAttribute('data-theme', next);
@@ -53,15 +51,43 @@
       updateBtn(next);
     }, 220);
 
-    /* remove transition class after animation completes */
     setTimeout(function () {
       html.classList.remove('theme-switching');
     }, 750);
   }
 
-  /* ── Inject the button into <body> ── */
+  /* ── Highlight the active nav link ── */
+  function highlightNav() {
+    var path = window.location.pathname;
+    var links = document.querySelectorAll('.nav-links a');
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      var href = a.getAttribute('href');
+      var match = href === '/'
+        ? path === '/'
+        : path === href || path.indexOf(href) === 0;
+      if (match) {
+        a.classList.add('nav-active');
+        a.setAttribute('aria-current', 'page');
+      }
+    }
+  }
+
+  /* ── Enhance footer with contact links ── */
+  function enhanceFooter() {
+    var f = document.querySelector('footer .container');
+    if (!f) return;
+    f.innerHTML =
+      '\u00a9 2026 Chang Wang' +
+      ' \u00a0\u00b7\u00a0 ' +
+      '<a href="https://github.com/yokiYuzi" target="_blank" rel="noopener">GitHub</a>' +
+      ' \u00a0\u00b7\u00a0 ' +
+      '<a href="mailto:changw11@unlv.nevada.edu">Email</a>';
+  }
+
+  /* ── Inject theme-toggle button ── */
   function injectButton() {
-    if (document.getElementById('theme-toggle')) return;  /* already injected */
+    if (document.getElementById('theme-toggle')) return;
 
     var btn = document.createElement('button');
     btn.id = 'theme-toggle';
@@ -80,6 +106,9 @@
     btn.appendChild(lbl);
     btn.addEventListener('click', toggle);
     document.body.appendChild(btn);
+
+    highlightNav();
+    enhanceFooter();
   }
 
   /* ── Boot ── */

@@ -31,8 +31,14 @@
   </header>
 
   <main class="container">
-    <section class="hero">
-      <h1>曲折穷途天地窄，重重灾劫生死危。</h1>
+    <section class="iso-hero-section">
+      <canvas id="iso-canvas"></canvas>
+      <div class="iso-text-overlay">
+        <p class="iso-sys-label">// STRUCT.GEN — <span id="iso-struct-label">LOADING</span></p>
+        <h1 class="iso-poem">曲折穷途天地窄<br>重重灾劫生死危</h1>
+        <p class="iso-sub">Chang Wang · PhD · UNLV ECE</p>
+      </div>
+      <span class="iso-regen-hint">[ click to regenerate ]</span>
     </section>
 
     <section class="grid">
@@ -64,6 +70,7 @@
     <div class="container">© 2026 Chang Wang</div>
   </footer>
   <script src="/js/mobius.js"></script>
+  <script src="/js/iso-hero.js"></script>
   <script>
     (function loadHomeBlog() {
       var list = document.getElementById('home-blog-list');

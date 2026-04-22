@@ -5,7 +5,56 @@
   <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Resume | Chang Wang</title>
+  <meta name="description" content="Academic CV and resume of Chang Wang, PhD student in Electrical and Computer Engineering at UNLV.">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .resume-hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.6rem;
+    }
+    .resume-hero h1 {
+      font-size: clamp(1rem, 2.4vw, 1.5rem);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin: 0;
+    }
+    .resume-hero .sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.13em;
+      margin-top: 0.3rem;
+    }
+    .btn-print {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1.5px solid var(--accent);
+      background: var(--surface);
+      color: var(--accent);
+      font-family: "Courier New", monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.1rem;
+      cursor: pointer;
+      transition: box-shadow 0.22s, background 0.22s, color 0.22s;
+      text-decoration: none;
+    }
+    .btn-print:hover {
+      background: var(--accent);
+      color: var(--surface);
+      box-shadow: 0 0 22px var(--glow-strong);
+    }
+    @media print {
+      header, footer, .btn-print, #theme-toggle { display: none !important; }
+      body { background: #fff; color: #000; }
+      .section { border: none; box-shadow: none; padding: 0.8rem 0; }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -23,6 +72,14 @@
   </header>
 
   <main class="container">
+    <div class="resume-hero">
+      <div>
+        <h1>// RESUME</h1>
+        <p class="sub">Chang Wang · PhD · UNLV ECE</p>
+      </div>
+      <button class="btn-print" onclick="window.print()">⎙ Print / Save PDF</button>
+    </div>
+
     <section class="section">
       <h2>Chang Wang</h2>
       <p>Phone: +1(725) 318 7360 | Email: changw11@unlv.nevada.edu</p>

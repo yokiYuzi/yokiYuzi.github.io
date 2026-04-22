@@ -9,7 +9,22 @@
   --line: #b8cef0;
   --glow: rgba(0, 87, 231, 0.14);
   --glow-strong: rgba(0, 87, 231, 0.28);
+  --scrollbar-thumb: #b8cef0;
+  --scrollbar-track: #e8f0ff;
 }
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+* { scrollbar-width: thin; scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track); }
+
+/* ── Text selection ── */
+::selection { background: rgba(0, 87, 231, 0.18); color: var(--text); }
 
 * {
   box-sizing: border-box;
@@ -133,63 +148,136 @@ header {
   transform: scaleX(1);
 }
 
-/* ── Hero ── */
-.hero {
+/* Active nav link — current page */
+.nav-links a.nav-active {
+  color: var(--accent);
+}
+.nav-links a.nav-active::after {
+  transform: scaleX(1);
+  background: var(--accent2);
+}
+
+/* ── Iso Hero ── */
+.iso-hero-section {
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(rgba(0, 87, 231, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 87, 231, 0.045) 1px, transparent 1px),
-    var(--surface);
-  background-size: 42px 42px;
   border: 1px solid var(--accent);
-  box-shadow: 0 0 28px var(--glow), inset 0 0 40px rgba(0, 87, 231, 0.03);
-  padding: 2.6rem 2rem;
+  box-shadow: 0 0 36px var(--glow), inset 0 0 60px rgba(0, 87, 231, 0.03);
   margin-bottom: 1.5rem;
+  height: clamp(280px, 42vw, 480px);
+  background: var(--surface);
 }
 
-/* Corner label */
-.hero::before {
+#iso-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.iso-text-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 2.6rem;
+  pointer-events: none;
+  /* text lives on the left ~40% of the canvas */
+  max-width: 46%;
+}
+
+.iso-sys-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  opacity: 0.75;
+  margin-bottom: 0.9rem;
+}
+
+#iso-struct-label {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.iso-poem {
+  font-size: clamp(1.05rem, 2.4vw, 1.8rem);
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 18px var(--glow-strong);
+}
+
+.iso-sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* Regenerate hint — bottom right */
+.iso-regen-hint {
+  position: absolute;
+  bottom: 0.65rem;
+  right: 1rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  color: var(--accent2);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity 0.3s;
+}
+.iso-hero-section:hover .iso-regen-hint {
+  opacity: 0.55;
+}
+
+/* Corner decoration */
+.iso-hero-section::before {
   content: "// SYS.READY";
   position: absolute;
-  top: 0.65rem;
+  top: 0.7rem;
   right: 1rem;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: var(--accent);
-  opacity: 0.45;
-  letter-spacing: 0.18em;
+  opacity: 0.35;
+  letter-spacing: 0.22em;
+  z-index: 2;
 }
 
-/* Scanning line */
-.hero::after {
+/* Bottom scan line */
+.iso-hero-section::after {
   content: "";
   position: absolute;
   left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
-  opacity: 0.45;
-  animation: scan 5s linear infinite;
+  opacity: 0.3;
+  animation: iso-scan 6s linear infinite;
+  z-index: 2;
 }
 
-@keyframes scan {
+@keyframes iso-scan {
   0%   { top: 0%;   }
   100% { top: 100%; }
 }
 
-.hero h1 {
-  font-size: clamp(1.3rem, 3vw, 2.1rem);
-  color: var(--accent);
-  letter-spacing: 0.04em;
-  margin-bottom: 0.6rem;
-  position: relative;
-  z-index: 1;
+/* Dark mode adjustments */
+[data-theme="dark"] .iso-poem {
+  text-shadow: 0 0 24px rgba(74, 158, 255, 0.55);
 }
 
-.hero p {
-  color: var(--muted);
-  font-size: 0.98rem;
-  position: relative;
-  z-index: 1;
+@media (max-width: 600px) {
+  .iso-text-overlay {
+    max-width: 100%;
+    background: linear-gradient(to right, var(--surface) 55%, transparent 100%);
+    padding: 1.4rem 1.4rem;
+  }
+  .iso-poem { font-size: 1rem; }
+  .iso-hero-section { height: clamp(220px, 55vw, 320px); }
 }
 
 /* ── Grid & Cards ── */
@@ -259,6 +347,10 @@ header {
   margin: 0.35rem 0;
 }
 
+.section li::marker {
+  color: var(--accent2);
+}
+
 .meta {
   color: var(--muted);
   font-size: 0.88rem;
@@ -310,11 +402,21 @@ header {
 footer {
   border-top: 1px solid var(--line);
   margin-top: 2rem;
-  padding: 1rem 0 2rem;
+  padding: 1rem 0 2.5rem;
   color: var(--muted);
   background: var(--surface);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   letter-spacing: 0.06em;
+}
+
+footer a {
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: var(--accent2);
+  opacity: 1;
 }
 
 /* ── Page fade-in ── */
@@ -335,8 +437,10 @@ footer {
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
-  .hero, .section, .card { padding: 1rem; }
+  .section, .card { padding: 1rem; }
   .brand { font-size: 1.2rem; }
+  .nav-links { gap: 0.9rem; }
+  .nav-links a { font-size: 0.7rem; }
 }
 
 /* ══════════════════════════════════════════════════════
@@ -355,14 +459,16 @@ footer {
   --glow-strong: rgba(74, 158, 255, 0.45);
 }
 
-/* Dark hero: re-tint the grid lines */
-[data-theme="dark"] .hero {
-  background:
-    linear-gradient(rgba(74,158,255,0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74,158,255,0.07) 1px, transparent 1px),
-    var(--surface);
-  background-size: 42px 42px;
-  box-shadow: 0 0 28px var(--glow), inset 0 0 40px rgba(74,158,255,0.04);
+/* Dark scrollbar + selection */
+[data-theme="dark"] {
+  --scrollbar-thumb: #14263f;
+  --scrollbar-track: #091525;
+}
+[data-theme="dark"] ::selection { background: rgba(74, 158, 255, 0.22); color: var(--text); }
+
+/* Dark iso-hero: stronger border glow */
+[data-theme="dark"] .iso-hero-section {
+  box-shadow: 0 0 48px rgba(74,158,255,0.28), inset 0 0 60px rgba(74,158,255,0.04);
 }
 
 /* ── Smooth global colour transition while switching ── */

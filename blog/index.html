@@ -5,6 +5,7 @@
   <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Blog | Chang Wang</title>
+  <meta name="description" content="Blog posts by Chang Wang on signal processing, machine learning, federated systems, and more.">
   <link rel="stylesheet" href="/css/style.css">
 
   <style>
@@ -313,6 +314,18 @@
     }
     .post-row-title:hover { color: var(--accent2); text-decoration: underline; }
     .post-row-title.inactive { color: var(--muted); cursor: default; pointer-events: none; }
+    .badge-soon {
+      display: inline-block;
+      font-size: 0.52rem;
+      letter-spacing: 0.16em;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      padding: 0.05rem 0.38rem;
+      margin-right: 0.45rem;
+      vertical-align: middle;
+      opacity: 0.75;
+      text-transform: uppercase;
+    }
     .post-row-summary {
       font-size: 0.75rem; color: var(--muted); line-height: 1.65;
       display: -webkit-box;
@@ -530,8 +543,9 @@ window.toggleCat = function (ci) {
 ════════════════════════════════════════════════════ */
 function postRowHTML(p) {
   const inactive = !p.path || p.path === '#';
+  const soonBadge = inactive ? '<span class="badge-soon">Coming Soon</span>' : '';
   const titleTag = inactive
-    ? `<span class="post-row-title inactive">${esc(p.title || 'Untitled')}</span>`
+    ? `<span class="post-row-title inactive">${soonBadge}${esc(p.title || 'Untitled')}</span>`
     : `<a class="post-row-title" href="${p.path}">${esc(p.title || 'Untitled')}</a>`;
   const arrow = inactive ? '' : '<span class="post-row-arrow">›</span>';
   return `<div class="post-row">
