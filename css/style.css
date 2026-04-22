@@ -162,10 +162,11 @@ header {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--accent);
-  box-shadow: 0 0 36px var(--glow), inset 0 0 60px rgba(0, 87, 231, 0.03);
+  box-shadow: 0 0 40px var(--glow), inset 0 0 80px rgba(0, 87, 231, 0.02);
   margin-bottom: 1.5rem;
-  height: clamp(280px, 42vw, 480px);
-  background: var(--surface);
+  /* Taller on desktop so the structure truly fills the background */
+  height: clamp(300px, 52vw, 580px);
+  background: var(--bg);
 }
 
 #iso-canvas {
@@ -176,25 +177,34 @@ header {
   display: block;
 }
 
+/* Text panel — left 46%, fades to transparent so structure shows through */
 .iso-text-overlay {
   position: absolute;
-  inset: 0;
+  top: 0; bottom: 0; left: 0;
+  width: 46%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 2rem 2.6rem;
+  padding: 2.2rem 2.8rem 2.2rem 2.4rem;
   pointer-events: none;
-  /* text lives on the left ~40% of the canvas */
-  max-width: 46%;
+  z-index: 2;
+  /* gradient: opaque on left edge, fully transparent at right */
+  background: linear-gradient(
+    to right,
+    rgba(240, 245, 255, 0.97) 48%,
+    rgba(240, 245, 255, 0.82) 68%,
+    rgba(240, 245, 255, 0.40) 84%,
+    transparent 100%
+  );
 }
 
 .iso-sys-label {
-  font-size: 0.62rem;
+  font-size: 0.60rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--accent2);
-  opacity: 0.75;
-  margin-bottom: 0.9rem;
+  opacity: 0.85;
+  margin-bottom: 0.85rem;
 }
 
 #iso-struct-label {
@@ -203,17 +213,17 @@ header {
 }
 
 .iso-poem {
-  font-size: clamp(1.05rem, 2.4vw, 1.8rem);
+  font-size: clamp(1.1rem, 2.5vw, 2rem);
   color: var(--accent);
   letter-spacing: 0.06em;
   line-height: 1.55;
   margin-bottom: 1rem;
-  text-shadow: 0 0 18px var(--glow-strong);
+  text-shadow: 0 0 20px var(--glow-strong);
 }
 
 .iso-sub {
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
+  font-size: 0.70rem;
+  letter-spacing: 0.22em;
   color: var(--muted);
   text-transform: uppercase;
 }
@@ -229,35 +239,37 @@ header {
   opacity: 0;
   pointer-events: none;
   z-index: 3;
-  transition: opacity 0.3s;
+  transition: opacity 0.35s;
 }
 .iso-hero-section:hover .iso-regen-hint {
-  opacity: 0.55;
+  opacity: 0.6;
 }
 
-/* Corner decoration */
+/* Corner label */
 .iso-hero-section::before {
   content: "// SYS.READY";
   position: absolute;
   top: 0.7rem;
   right: 1rem;
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   color: var(--accent);
-  opacity: 0.35;
+  opacity: 0.32;
   letter-spacing: 0.22em;
-  z-index: 2;
+  z-index: 4;
+  pointer-events: none;
 }
 
-/* Bottom scan line */
+/* Horizontal scan line sweeping down */
 .iso-hero-section::after {
   content: "";
   position: absolute;
   left: 0; right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
-  opacity: 0.3;
-  animation: iso-scan 6s linear infinite;
-  z-index: 2;
+  opacity: 0.28;
+  animation: iso-scan 7s linear infinite;
+  z-index: 4;
+  pointer-events: none;
 }
 
 @keyframes iso-scan {
@@ -265,19 +277,46 @@ header {
   100% { top: 100%; }
 }
 
-/* Dark mode adjustments */
+/* ── Dark mode ── */
+[data-theme="dark"] .iso-text-overlay {
+  background: linear-gradient(
+    to right,
+    rgba(4, 9, 15, 0.97) 48%,
+    rgba(4, 9, 15, 0.82) 68%,
+    rgba(4, 9, 15, 0.38) 84%,
+    transparent 100%
+  );
+}
 [data-theme="dark"] .iso-poem {
-  text-shadow: 0 0 24px rgba(74, 158, 255, 0.55);
+  text-shadow: 0 0 26px rgba(74, 158, 255, 0.60);
+}
+[data-theme="dark"] .iso-hero-section {
+  box-shadow: 0 0 52px rgba(74, 158, 255, 0.30), inset 0 0 80px rgba(74, 158, 255, 0.03);
 }
 
+/* ── Mobile ── */
 @media (max-width: 600px) {
+  .iso-hero-section { height: clamp(240px, 58vw, 340px); }
   .iso-text-overlay {
-    max-width: 100%;
-    background: linear-gradient(to right, var(--surface) 55%, transparent 100%);
-    padding: 1.4rem 1.4rem;
+    width: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(240,245,255,0.96) 42%,
+      rgba(240,245,255,0.75) 62%,
+      transparent 90%
+    );
+    padding: 1.5rem 1.5rem;
+  }
+  [data-theme="dark"] .iso-text-overlay {
+    background: linear-gradient(
+      to right,
+      rgba(4,9,15,0.96) 42%,
+      rgba(4,9,15,0.75) 62%,
+      transparent 90%
+    );
   }
   .iso-poem { font-size: 1rem; }
-  .iso-hero-section { height: clamp(220px, 55vw, 320px); }
+  .iso-sys-label { font-size: 0.56rem; }
 }
 
 /* ── Grid & Cards ── */
