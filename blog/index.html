@@ -2,9 +2,341 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Blog | Chang Wang</title>
   <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    /* ══════════════════════════════════════════
+       PAGE HERO
+    ══════════════════════════════════════════ */
+    .blog-hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.8rem;
+    }
+    .blog-hero h1 {
+      font-size: clamp(1rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin: 0;
+    }
+    .blog-hero .sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.13em;
+      margin-top: 0.32rem;
+    }
+    .post-count-badge {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 16px var(--glow);
+      padding: 0.4rem 1.1rem;
+      text-align: center;
+    }
+    .post-count-badge .num { font-size: 1.6rem; color: var(--accent); line-height: 1; }
+    .post-count-badge .lbl { font-size: 0.56rem; color: var(--muted); letter-spacing: 0.26em; text-transform: uppercase; }
+
+    /* ══════════════════════════════════════════
+       CATEGORY BLOCK
+    ══════════════════════════════════════════ */
+    .category-block {
+      margin-bottom: 1rem;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+
+    /* ── Border charge animation on open ── */
+    @keyframes block-charge {
+      0%   { border-color: var(--line);   box-shadow: none; }
+      40%  { border-color: var(--accent2); box-shadow: 0 0 18px rgba(0,180,216,0.35); }
+      100% { border-color: var(--accent); box-shadow: 0 0 22px var(--glow); }
+    }
+    .category-block.charging {
+      animation: block-charge 0.45s ease forwards;
+    }
+    .category-block.open {
+      border-color: var(--accent);
+      box-shadow: 0 0 22px var(--glow);
+    }
+
+    /* Corner accent marks when open */
+    .category-block.open::before,
+    .category-block.open::after {
+      content: '';
+      position: absolute;
+      width: 8px; height: 8px;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 2;
+    }
+    .category-block.open::before {
+      top: -1px; left: -1px;
+      border-top: 2px solid var(--accent2);
+      border-left: 2px solid var(--accent2);
+    }
+    .category-block.open::after {
+      bottom: -1px; right: -1px;
+      border-bottom: 2px solid var(--accent2);
+      border-right: 2px solid var(--accent2);
+    }
+
+    /* ── Category header ── */
+    .cat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.78rem 1.2rem;
+      cursor: pointer;
+      background: var(--bg);
+      border-bottom: 1px solid transparent;
+      transition: background 0.2s, border-color 0.25s;
+      user-select: none;
+      gap: 0.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .category-block.open .cat-header {
+      background: linear-gradient(90deg, rgba(0,87,231,0.06), transparent 70%);
+      border-bottom-color: var(--line);
+    }
+
+    /* Header flash on click */
+    @keyframes header-flash {
+      0%   { opacity: 1; }
+      30%  { background: rgba(0,180,216,0.18); }
+      100% { background: transparent; }
+    }
+    .cat-header.flashing::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,180,216,0.15);
+      animation: header-flash 0.35s ease forwards;
+      pointer-events: none;
+    }
+
+    .cat-left { display: flex; align-items: center; gap: 0.65rem; min-width: 0; }
+
+    /* Rotating arrow icon */
+    .cat-icon {
+      font-size: 0.68rem;
+      color: var(--accent2);
+      transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.25s;
+      flex-shrink: 0;
+      display: inline-block;
+    }
+    .category-block.open .cat-icon {
+      transform: rotate(90deg);
+      color: var(--accent);
+    }
+
+    .cat-name {
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text);
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.25s;
+    }
+    .category-block.open .cat-name { color: var(--accent); }
+
+    .cat-right { display: flex; align-items: center; gap: 0.55rem; flex-shrink: 0; }
+    .cat-count {
+      font-size: 0.6rem; letter-spacing: 0.12em;
+      color: var(--muted); background: var(--surface-alt);
+      border: 1px solid var(--line); padding: 0.1rem 0.48rem;
+      white-space: nowrap;
+    }
+    .cat-toggle-label {
+      font-size: 0.58rem; letter-spacing: 0.14em;
+      color: var(--accent); text-transform: uppercase;
+      white-space: nowrap; opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .category-block:hover .cat-toggle-label { opacity: 0.8; }
+    .category-block.open .cat-toggle-label { opacity: 1; }
+
+    /* ── Preview area (always visible) ── */
+    .cat-preview { border-bottom: 1px solid var(--surface-alt); }
+    .cat-preview:last-child { border-bottom: none; }
+
+    /* ══════════════════════════════════════════
+       ★ SCI-FI EXPAND ANIMATION SYSTEM
+    ══════════════════════════════════════════ */
+
+    /* Extras container */
+    .cat-extras {
+      position: relative;
+      max-height: 0;
+      overflow: hidden;
+      /* height transition happens in JS for accurate scrollHeight */
+      transition: max-height 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── 1. Scan line sweeps down through content ── */
+    .scan-line {
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      pointer-events: none;
+      z-index: 10;
+      background: linear-gradient(
+        90deg,
+        transparent   0%,
+        var(--accent2) 15%,
+        rgba(200,240,255,0.95) 50%,
+        var(--accent2) 85%,
+        transparent   100%
+      );
+      box-shadow:
+        0 0 6px  var(--accent2),
+        0 0 16px rgba(0,180,216,0.6),
+        0 0 28px rgba(0,87,231,0.3);
+      animation: scan-travel var(--scan-dur, 0.5s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes scan-travel {
+      0%   { top: 0%;   opacity: 1; }
+      88%  { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* scan line residual glow that fades on the content */
+    .scan-glow {
+      position: absolute;
+      left: 0; right: 0;
+      height: 40px;
+      pointer-events: none;
+      z-index: 9;
+      background: linear-gradient(180deg, rgba(0,180,216,0.12), transparent);
+      animation: glow-follow var(--scan-dur, 0.5s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+    @keyframes glow-follow {
+      0%   { top: -20px; opacity: 0.9; }
+      100% { top: calc(100% - 20px); opacity: 0; }
+    }
+
+    /* ── 2. Post row decode — fade in from left, staggered ── */
+    @keyframes row-decode {
+      0%   { opacity: 0; transform: translateX(-14px); filter: blur(2.5px); }
+      45%  { filter: blur(0.5px); }
+      100% { opacity: 1; transform: translateX(0);    filter: none; }
+    }
+    .post-row.decoding {
+      animation: row-decode 0.38s ease both;
+    }
+
+    /* ── 3. Row collapse — fade right then disappear ── */
+    @keyframes row-collapse {
+      0%   { opacity: 1; transform: translateX(0); filter: none; }
+      100% { opacity: 0; transform: translateX(10px); filter: blur(2px); }
+    }
+    .post-row.collapsing {
+      animation: row-collapse 0.22s ease forwards;
+    }
+
+    /* ── 4. Scan line sweeps UP on collapse ── */
+    .scan-line.reverse {
+      animation: scan-travel-up 0.32s ease-in forwards;
+    }
+    @keyframes scan-travel-up {
+      0%   { top: 100%; opacity: 1; }
+      100% { top: 0%;   opacity: 0; }
+    }
+
+    /* ── Expand footer ── */
+    .cat-expand-footer {
+      display: none;
+      padding: 0.45rem 1.2rem;
+      border-top: 1px dashed var(--line);
+      background: var(--bg);
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cat-expand-btn {
+      background: none; border: none;
+      font-family: "Courier New", monospace;
+      font-size: 0.64rem; letter-spacing: 0.14em;
+      color: var(--accent2); cursor: pointer;
+      text-transform: uppercase; padding: 0;
+      transition: color 0.18s;
+    }
+    .cat-expand-btn:hover { color: var(--accent); }
+    /* blinking cursor after the button text */
+    .cat-expand-btn::after {
+      content: '▍';
+      animation: cursor-blink 1s step-end infinite;
+      margin-left: 0.3em;
+      opacity: 0.6;
+    }
+    @keyframes cursor-blink { 0%,100%{opacity:0.6} 50%{opacity:0} }
+
+    /* ══════════════════════════════════════════
+       POST ROWS
+    ══════════════════════════════════════════ */
+    .post-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      padding: 0.78rem 1.2rem;
+      border-bottom: 1px solid var(--surface-alt);
+      border-left: 2px solid transparent;
+      transition: background 0.18s, padding-left 0.2s, border-left-color 0.2s;
+    }
+    .post-row:last-child { border-bottom: none; }
+    .post-row:hover {
+      background: linear-gradient(90deg, rgba(0,87,231,0.04), transparent 70%);
+      padding-left: 1.5rem;
+      border-left-color: var(--accent2);
+    }
+
+    .post-row-left { flex: 1; min-width: 0; }
+    .post-row-date {
+      font-size: 0.62rem; color: var(--muted);
+      letter-spacing: 0.1em; margin-bottom: 0.2rem;
+    }
+    .post-row-title {
+      font-size: 0.88rem; color: var(--accent);
+      text-decoration: none; letter-spacing: 0.03em;
+      display: block; margin-bottom: 0.22rem;
+      transition: color 0.18s;
+    }
+    .post-row-title:hover { color: var(--accent2); text-decoration: underline; }
+    .post-row-title.inactive { color: var(--muted); cursor: default; pointer-events: none; }
+    .post-row-summary {
+      font-size: 0.75rem; color: var(--muted); line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .post-row-arrow {
+      font-size: 0.72rem; color: var(--line);
+      align-self: center; flex-shrink: 0;
+      transition: color 0.18s, transform 0.18s;
+    }
+    .post-row:hover .post-row-arrow { color: var(--accent); transform: translateX(4px); }
+
+    /* ══════════════════════════════════════════
+       LOADING
+    ══════════════════════════════════════════ */
+    .loading-text {
+      text-align: center; padding: 3rem; color: var(--muted);
+      font-size: 0.76rem; letter-spacing: 0.24em;
+      animation: blink 1.3s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
+  </style>
 </head>
 <body>
   <header>
@@ -22,42 +354,259 @@
   </header>
 
   <main class="container">
-    <section class="section">
-      <h2>My Blog</h2>
-      <p class="meta">你可以直接编辑仓库文件 <code>blog/posts.json</code> 来新增、修改或删除博客条目。</p>
-      <ul id="blog-list" class="blog-list"></ul>
-    </section>
+
+    <div class="blog-hero">
+      <div>
+        <h1>// BLOG</h1>
+        <div class="sub">Organized by category &nbsp;·&nbsp; Click to expand</div>
+      </div>
+      <div class="post-count-badge">
+        <div class="num" id="total-count">—</div>
+        <div class="lbl">Posts</div>
+      </div>
+    </div>
+
+    <div id="category-list">
+      <div class="loading-text">LOADING POSTS…</div>
+    </div>
+
   </main>
 
   <footer>
     <div class="container">© 2026 Chang Wang</div>
   </footer>
 
-  <script>
-    async function loadBlogPosts() {
-      const list = document.getElementById('blog-list');
-      try {
-        const response = await fetch('/blog/posts.json', { cache: 'no-store' });
-        const posts = await response.json();
+<script>
+/* ════════════════════════════════════════════════════
+   Helpers
+════════════════════════════════════════════════════ */
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
 
-        if (!Array.isArray(posts) || posts.length === 0) {
-          list.innerHTML = '<li>暂无博客内容，请在 blog/posts.json 中添加文章。</li>';
-          return;
-        }
+/* ════════════════════════════════════════════════════
+   ★ SCI-FI ANIMATION ENGINE
+════════════════════════════════════════════════════ */
 
-        list.innerHTML = posts.map(post => {
-          const title = post.title || 'Untitled';
-          const date = post.date || 'No date';
-          const summary = post.summary || '';
-          const path = post.path || '#';
-          return `\n            <li>\n              <span class="blog-date">${date}</span>\n              <a href="${path}">${title}</a>\n              <p>${summary}</p>\n            </li>\n          `;
-        }).join('');
-      } catch (error) {
-        list.innerHTML = '<li>博客列表读取失败，请确认 blog/posts.json 文件格式为有效 JSON。</li>';
-      }
+/* Spawn scan line + glow trail inside a container element */
+function spawnScanLine(container, reverse) {
+  /* duration scales with content height */
+  const h = container.scrollHeight || 200;
+  const dur = Math.min(0.65, Math.max(0.32, h / 500)) + 's';
+  container.style.setProperty('--scan-dur', dur);
+
+  const scan = document.createElement('div');
+  scan.className = 'scan-line' + (reverse ? ' reverse' : '');
+  container.appendChild(scan);
+
+  const glow = document.createElement('div');
+  glow.className = 'scan-glow';
+  if (reverse) glow.style.animation = 'none';  /* no glow on collapse */
+  container.appendChild(glow);
+
+  const cleanupMs = (parseFloat(dur) * 1000) + 100;
+  setTimeout(() => { scan.remove(); glow.remove(); }, cleanupMs);
+}
+
+/* Trigger decode animation on all rows inside extras (staggered) */
+function decodeRows(extrasEl) {
+  const rows = extrasEl.querySelectorAll('.post-row');
+  rows.forEach((row, i) => {
+    row.classList.remove('decoding', 'collapsing');
+    void row.offsetWidth;   /* force reflow to restart animation */
+    row.style.animationDelay = (i * 55) + 'ms';
+    row.classList.add('decoding');
+    const cleanup = 420 + i * 55;
+    setTimeout(() => {
+      row.classList.remove('decoding');
+      row.style.animationDelay = '';
+    }, cleanup);
+  });
+}
+
+/* Trigger collapse animation on rows (reverse stagger: bottom → top) */
+function collapseRows(extrasEl, onDone) {
+  const rows = Array.from(extrasEl.querySelectorAll('.post-row'));
+  if (!rows.length) { onDone(); return; }
+
+  rows.reverse().forEach((row, i) => {
+    row.classList.remove('decoding', 'collapsing');
+    void row.offsetWidth;
+    row.style.animationDelay = (i * 35) + 'ms';
+    row.classList.add('collapsing');
+  });
+
+  const totalMs = 220 + rows.length * 35;
+  setTimeout(onDone, totalMs);
+}
+
+/* Header click flash */
+function flashHeader(headerEl) {
+  headerEl.classList.remove('flashing');
+  void headerEl.offsetWidth;
+  headerEl.classList.add('flashing');
+  setTimeout(() => headerEl.classList.remove('flashing'), 400);
+}
+
+/* ════════════════════════════════════════════════════
+   State map: ci → { open: bool, groups, catNames }
+════════════════════════════════════════════════════ */
+let _groups    = {};
+let _catNames  = [];
+let _busy      = {};   /* prevent double-click jitter */
+
+window.toggleCat = function (ci) {
+  if (_busy[ci]) return;
+  const block   = document.getElementById('cat-' + ci);
+  const extras  = document.getElementById('extras-' + ci);
+  const lbl     = document.getElementById('lbl-' + ci);
+  const footer  = document.getElementById('footer-' + ci);
+  const footBtn = document.getElementById('footbtn-' + ci);
+  const header  = block ? block.querySelector('.cat-header') : null;
+  if (!block || !extras) return;
+
+  const isOpen  = block.classList.contains('open');
+  _busy[ci]     = true;
+
+  flashHeader(header);
+
+  if (!isOpen) {
+    /* ── OPEN ── */
+    /* 1. Border charge */
+    block.classList.remove('charging');
+    void block.offsetWidth;
+    block.classList.add('charging');
+    setTimeout(() => { block.classList.remove('charging'); block.classList.add('open'); }, 450);
+
+    /* 2. Expand height */
+    extras.style.maxHeight = extras.scrollHeight + 'px';
+
+    /* 3. Scan line */
+    setTimeout(() => spawnScanLine(extras, false), 60);
+
+    /* 4. Staggered decode */
+    setTimeout(() => decodeRows(extras), 80);
+
+    /* Update labels */
+    if (lbl) lbl.textContent = 'collapse';
+    if (footBtn) {
+      const n = (_groups[_catNames[ci]] || []).length - 1;
+      footBtn.innerHTML = '▲ Collapse';
     }
 
-    loadBlogPosts();
-  </script>
+    _busy[ci] = false;
+
+  } else {
+    /* ── CLOSE ── */
+    /* 1. Reverse scan line */
+    spawnScanLine(extras, true);
+
+    /* 2. Rows fade out, then collapse height */
+    collapseRows(extras, () => {
+      extras.style.maxHeight = '0';
+      block.classList.remove('open');
+
+      /* re-decode so rows look fresh next open */
+      extras.querySelectorAll('.post-row').forEach(r => {
+        r.classList.remove('decoding', 'collapsing');
+        r.style.animationDelay = '';
+      });
+
+      if (lbl) lbl.textContent = 'expand';
+      if (footBtn) {
+        const n = (_groups[_catNames[ci]] || []).length - 1;
+        footBtn.innerHTML = `▼ Show ${n} more post${n > 1 ? 's' : ''}`;
+      }
+
+      _busy[ci] = false;
+    });
+  }
+};
+
+/* ════════════════════════════════════════════════════
+   Render
+════════════════════════════════════════════════════ */
+function postRowHTML(p) {
+  const inactive = !p.path || p.path === '#';
+  const titleTag = inactive
+    ? `<span class="post-row-title inactive">${esc(p.title || 'Untitled')}</span>`
+    : `<a class="post-row-title" href="${p.path}">${esc(p.title || 'Untitled')}</a>`;
+  const arrow = inactive ? '' : '<span class="post-row-arrow">›</span>';
+  return `<div class="post-row">
+    <div class="post-row-left">
+      <div class="post-row-date">${p.date || ''}</div>
+      ${titleTag}
+      <div class="post-row-summary">${esc(p.summary || '')}</div>
+    </div>
+    ${arrow}
+  </div>`;
+}
+
+(async function () {
+  const container = document.getElementById('category-list');
+  let posts = [];
+  try {
+    const r = await fetch('/blog/posts.json', { cache: 'no-store' });
+    posts = await r.json();
+  } catch (e) {
+    container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:2rem;letter-spacing:.1em">Failed to load posts.</p>';
+    return;
+  }
+
+  /* Group by category, sort within group by date desc */
+  posts.forEach(p => {
+    const cat = p.category || 'General';
+    if (!_groups[cat]) _groups[cat] = [];
+    _groups[cat].push(p);
+  });
+  Object.values(_groups).forEach(arr =>
+    arr.sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+  );
+  _catNames = Object.keys(_groups);
+
+  document.getElementById('total-count').textContent = posts.length;
+
+  container.innerHTML = _catNames.map((cat, ci) => {
+    const items   = _groups[cat];
+    const preview = items[0];
+    const extras  = items.slice(1);
+    const hasMore = extras.length > 0;
+
+    return `
+    <div class="category-block" id="cat-${ci}">
+
+      <div class="cat-header" onclick="toggleCat(${ci})">
+        <div class="cat-left">
+          <span class="cat-icon">▶</span>
+          <span class="cat-name">${esc(cat)}</span>
+        </div>
+        <div class="cat-right">
+          <span class="cat-count">${items.length}&nbsp;post${items.length > 1 ? 's' : ''}</span>
+          ${hasMore ? `<span class="cat-toggle-label" id="lbl-${ci}">expand</span>` : ''}
+        </div>
+      </div>
+
+      <div class="cat-preview">
+        ${postRowHTML(preview)}
+      </div>
+
+      ${hasMore ? `
+        <div class="cat-extras" id="extras-${ci}">
+          ${extras.map(p => postRowHTML(p)).join('')}
+        </div>
+        <div class="cat-expand-footer" id="footer-${ci}" style="display:flex">
+          <button class="cat-expand-btn" id="footbtn-${ci}" onclick="toggleCat(${ci})">
+            ▼ Show ${extras.length} more post${extras.length > 1 ? 's' : ''}
+          </button>
+        </div>
+      ` : ''}
+
+    </div>`;
+  }).join('');
+})();
+</script>
+  <script src="/js/theme.js"></script>
 </body>
 </html>

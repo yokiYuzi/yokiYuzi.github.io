@@ -298,6 +298,14 @@ header {
   margin-top: 0.3rem;
 }
 
+.blog-cat {
+  font-size: 0.72rem;
+  color: var(--accent2);
+  letter-spacing: 0.08em;
+  margin-right: 0.2rem;
+  font-style: normal;
+}
+
 /* ── Footer ── */
 footer {
   border-top: 1px solid var(--line);
@@ -329,4 +337,153 @@ footer {
 @media (max-width: 640px) {
   .hero, .section, .card { padding: 1rem; }
   .brand { font-size: 1.2rem; }
+}
+
+/* ══════════════════════════════════════════════════════
+   DARK MODE — variables
+══════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:          #050c1a;
+  --surface:     #091525;
+  --surface-alt: #0d1c30;
+  --text:        #bdd4f5;
+  --muted:       #526e96;
+  --accent:      #4a9eff;
+  --accent2:     #00d4ff;
+  --line:        #14263f;
+  --glow:        rgba(74, 158, 255, 0.22);
+  --glow-strong: rgba(74, 158, 255, 0.45);
+}
+
+/* Dark hero: re-tint the grid lines */
+[data-theme="dark"] .hero {
+  background:
+    linear-gradient(rgba(74,158,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,158,255,0.07) 1px, transparent 1px),
+    var(--surface);
+  background-size: 42px 42px;
+  box-shadow: 0 0 28px var(--glow), inset 0 0 40px rgba(74,158,255,0.04);
+}
+
+/* ── Smooth global colour transition while switching ── */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 0.45s ease,
+    color            0.38s ease,
+    border-color     0.35s ease,
+    box-shadow       0.35s ease !important;
+}
+
+/* ══════════════════════════════════════════════════════
+   THEME TOGGLE BUTTON — fixed bottom-right
+══════════════════════════════════════════════════════ */
+#theme-toggle {
+  position: fixed;
+  bottom: 1.6rem;
+  right:  1.6rem;
+  z-index: 9990;
+  width: 48px;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  font-family: "Courier New", monospace;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.25rem 0.32rem;
+  gap: 0.15rem;
+  box-shadow: 0 0 18px var(--glow);
+  transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
+  overflow: visible;
+}
+#theme-toggle:hover {
+  box-shadow: 0 0 32px var(--glow-strong);
+  transform: translateY(-2px);
+  border-color: var(--accent2);
+}
+#theme-toggle:hover #theme-toggle-icon { color: var(--accent2); }
+
+#theme-toggle-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  display: block;
+  transition: color 0.25s, transform 0.35s;
+}
+#theme-toggle-lbl {
+  font-size: 0.46rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1;
+  display: block;
+  transition: color 0.25s;
+}
+
+/* Spin icon on click */
+@keyframes icon-spin {
+  0%   { transform: rotate(0deg)   scale(1);    }
+  45%  { transform: rotate(200deg) scale(0.78); }
+  100% { transform: rotate(360deg) scale(1);    }
+}
+#theme-toggle.spinning #theme-toggle-icon {
+  animation: icon-spin 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Radar-ping ring that emanates from the button */
+#theme-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 1.5px solid var(--accent2);
+  pointer-events: none;
+  opacity: 0;
+  animation: btn-radar 3.5s ease-in-out infinite;
+}
+@keyframes btn-radar {
+  0%, 60%, 100% { transform: scale(1);   opacity: 0;    }
+  30%            { transform: scale(1.5); opacity: 0.45; }
+}
+
+/* ══════════════════════════════════════════════════════
+   PAGE SCAN LINE — injected by theme.js on toggle
+══════════════════════════════════════════════════════ */
+#theme-scan {
+  position: fixed;
+  left: 0; right: 0; top: 0;
+  height: 3px;
+  pointer-events: none;
+  z-index: 99999;
+  background: linear-gradient(
+    90deg,
+    transparent    0%,
+    var(--accent2) 12%,
+    rgba(255,255,255,0.96) 50%,
+    var(--accent2) 88%,
+    transparent    100%
+  );
+  box-shadow:
+    0 0 8px  var(--accent2),
+    0 0 22px rgba(0,180,216,0.65),
+    0 5px 32px rgba(0,87,231,0.28);
+  animation: page-scan 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+/* glow trail beneath scan line */
+#theme-scan::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 2px;
+  height: 60px;
+  background: linear-gradient(180deg, rgba(0,180,216,0.14) 0%, transparent 100%);
+  pointer-events: none;
+}
+@keyframes page-scan {
+  0%   { top: -3px; opacity: 1;   }
+  88%  {             opacity: 1;   }
+  100% { top: 100vh; opacity: 0.2; }
 }

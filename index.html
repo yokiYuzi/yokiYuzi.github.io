@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chang Wang | Personal Website</title>
   <meta name="description" content="Minimal white-cyan personal site for Chang Wang.">
@@ -54,7 +55,7 @@
     </section>
 
     <section class="section">
-      <h2>Recent Posts</h2>
+      <h2>Featured Posts</h2>
       <ul id="home-blog-list" class="blog-list"></ul>
     </section>
   </main>
@@ -70,11 +71,23 @@
       fetch('/blog/posts.json', { cache: 'no-store' })
         .then(function(r) { return r.json(); })
         .then(function(posts) {
-          if (!posts.length) { list.innerHTML = '<li>暂无文章</li>'; return; }
-          list.innerHTML = posts.slice(0, 5).map(function(p) {
+          /* exclude placeholder posts (path === '#') */
+          var valid = posts.filter(function(p) { return p.path && p.path !== '#'; });
+          if (!valid.length) { list.innerHTML = '<li>暂无文章</li>'; return; }
+
+          /* Fisher-Yates shuffle, pick 3 */
+          var pool = valid.slice();
+          for (var i = pool.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+          }
+          var picked = pool.slice(0, Math.min(3, pool.length));
+
+          list.innerHTML = picked.map(function(p) {
+            var cat = p.category ? '<span class="blog-cat">[' + p.category + ']</span> ' : '';
             return '<li>' +
               '<span class="blog-date">' + (p.date || '') + '</span>' +
-              '<a href="' + (p.path || '#') + '">' + (p.title || 'Untitled') + '</a>' +
+              '<a href="' + p.path + '">' + cat + (p.title || 'Untitled') + '</a>' +
               '<p>' + (p.summary || '') + '</p>' +
               '</li>';
           }).join('');
@@ -82,5 +95,6 @@
         .catch(function() { list.innerHTML = '<li>加载失败</li>'; });
     })();
   </script>
+  <script src="/js/theme.js"></script>
 </body>
 </html>
