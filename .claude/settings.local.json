@@ -6,7 +6,8 @@
       "Bash(cp \"/c/Users/zhaib/Documents/Tencent Files/2279600314/nt_qq/nt_data/Pic/2026-04/Thumb/c389697b0275b478bf6acf2654614138_720.png\" /c/yokiYuzi.github.io/blog/images/exam-p5.png)",
       "Bash(cp \"/c/Users/zhaib/Documents/Tencent Files/2279600314/nt_qq/nt_data\\\\Pic/2026-04/Thumb/33b610efe38122295a62d8515d780bbd_720.png\" /c/yokiYuzi.github.io/blog/images/exam-p6.png)",
       "Bash(python3 -c ' *)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Skill(update-config)"
     ]
   }
 }

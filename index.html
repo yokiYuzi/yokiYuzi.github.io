@@ -35,7 +35,9 @@
       <canvas id="iso-canvas"></canvas>
       <div class="iso-text-overlay">
         <p class="iso-sys-label">// STRUCT.GEN — <span id="iso-struct-label">LOADING</span></p>
-        <h1 class="iso-poem">曲折穷途天地窄<br>重重灾劫生死危</h1>
+        <p class="tractatus-num" id="tractatus-num">§ 1</p>
+        <h1 class="iso-poem tractatus-de" id="tractatus-de">Die Welt ist alles, was der Fall ist.</h1>
+        <p class="tractatus-zh" id="tractatus-zh">世界是一切发生的事情。</p>
         <p class="iso-sub">Chang Wang · PhD · UNLV ECE</p>
       </div>
       <span class="iso-regen-hint">[ click to regenerate ]</span>
@@ -102,6 +104,7 @@
         .catch(function() { list.innerHTML = '<li>加载失败</li>'; });
     })();
   </script>
+  <script src="/js/tractatus.js"></script>
   <script src="/js/theme.js"></script>
 </body>
 </html>

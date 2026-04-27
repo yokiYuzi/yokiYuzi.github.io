@@ -157,6 +157,38 @@ header {
   background: var(--accent2);
 }
 
+/* ── Tractatus quote elements ── */
+.tractatus-num {
+  font-size: 0.58rem;
+  letter-spacing: 0.30em;
+  color: var(--accent2);
+  opacity: 0.80;
+  margin-bottom: 0.55rem;
+  text-transform: uppercase;
+}
+
+.tractatus-de {
+  font-style: italic;
+}
+
+.tractatus-zh {
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  line-height: 1.65;
+  margin-top: 0.6rem;
+  font-style: normal;
+}
+
+@keyframes tractatusFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.tractatus-fade {
+  animation: tractatusFade 0.42s ease both;
+}
+
 /* ── Iso Hero ── */
 .iso-hero-section {
   position: relative;
