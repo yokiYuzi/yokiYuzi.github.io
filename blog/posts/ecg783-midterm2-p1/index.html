@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 783 Midterm #2 — Problem 1 | Chang Wang</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.38rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .post-figure {
+      margin: 1.6rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      width: 100%;
+      max-width: 820px;
+      height: auto;
+      border: 1px solid var(--line);
+      box-shadow: 0 3px 16px var(--glow);
+      transition: box-shadow 0.25s;
+    }
+    .post-figure img:hover { box-shadow: 0 5px 24px var(--glow-strong); }
+    .post-figure figcaption {
+      margin-top: 0.45rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .fig-placeholder {
+      margin: 1.6rem 0;
+      border: 1px dashed var(--line);
+      background: var(--surface-alt);
+      padding: 1rem 1.2rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .fig-placeholder strong { color: var(--accent); display: block; margin-bottom: 0.3rem; }
+
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.80rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.72rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .result-table td:first-child { color: var(--accent2); font-weight: bold; }
+
+    .algo-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      padding: 0.15rem 0.65rem;
+      margin-bottom: 0.65rem;
+      text-transform: uppercase;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .highlight-box strong { color: var(--accent2); }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.4rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+
+    /* block-diagram description box */
+    .block-diagram {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 1.1rem 1.4rem;
+      margin: 1.4rem 0;
+      font-size: 0.82rem;
+    }
+    .block-diagram .bd-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin: 0.3rem 0;
+    }
+    .block-diagram .bd-box {
+      border: 1px solid var(--accent);
+      padding: 0.2rem 0.6rem;
+      color: var(--accent);
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .block-diagram .bd-arrow { color: var(--muted); font-size: 0.9rem; }
+    .block-diagram .bd-label { color: var(--muted); font-size: 0.72rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 783 Midterm #2 — Problem 1: Adaptive System Identification via LMS, SER, and RLS</h1>
+        <span class="meta">
+          Course: ECG 783 &nbsp;·&nbsp;
+          Student: Chang Wang (2002721058) &nbsp;·&nbsp;
+          Instructor: Peter Stubberud &nbsp;·&nbsp;
+          04-27-2026
+        </span>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           1. Problem Statement
+      ══════════════════════════════════════════════ -->
+      <h2>1. Problem Statement</h2>
+      <p>
+        Model an unknown single-input single-output (SISO) system using a
+        <strong>10-weight adaptive linear combiner</strong> (10-tap FIR filter).
+        The "unknown" system is the second-order IIR plant given by the difference equation:
+      </p>
+
+      $$y(n) = \tfrac{1}{2}y(n-1) - \tfrac{1}{4}y(n-2) + \tfrac{1}{8}y(n-3)
+               + x(n) + \tfrac{3}{2}x(n-1) + \tfrac{1}{4}x(n-2).$$
+
+      <p>Three adaptive algorithms are applied in parts (a), (b), and (c):</p>
+      <ul>
+        <li><strong>(a) LMS</strong> — Least Mean Squares</li>
+        <li><strong>(b) SER</strong> — Stochastic Expectation Rescaling (inverse-correlation LMS)</li>
+        <li><strong>(c) RLS</strong> — Recursive Least Squares</li>
+      </ul>
+      <p>
+        Each algorithm must achieve misadjustment $M \le 1\%$.
+        Results include: final weight vectors, weight-trajectory plots,
+        average learning curves with $T_\text{MSE}$ estimates, and frequency-response comparisons.
+      </p>
+
+      <!-- ══════════════════════════════════════════════
+           2. Common Setup
+      ══════════════════════════════════════════════ -->
+      <h2>2. Common Problem Setup</h2>
+
+      <h3>2.1 Unknown System — Transfer Function</h3>
+      <p>Taking the $z$-transform and rearranging:</p>
+
+      $$H(z) = \frac{Y(z)}{X(z)}
+             = \frac{1 + \tfrac{3}{2}z^{-1} + \tfrac{1}{4}z^{-2}}
+                   {1 - \tfrac{1}{2}z^{-1} + \tfrac{1}{4}z^{-2} - \tfrac{1}{8}z^{-3}}.$$
+
+      <h3>2.2 FIR Adaptive Model</h3>
+      <p>
+        The adaptive linear combiner is implemented as a 10-tap FIR filter.
+        Its input vector, output, and error signal are:
+      </p>
+
+      $$\mathbf{x}(n) = \bigl[x(n),\, x(n-1),\, \ldots,\, x(n-9)\bigr]^T,$$
+      $$\hat{y}(n) = \mathbf{w}^T(n)\,\mathbf{x}(n), \qquad
+        e(n) = d(n) - \hat{y}(n),$$
+
+      <p>where $d(n) = y(n)$ is the output of the unknown IIR plant.</p>
+
+      <h3>2.3 System Identification Block Diagram</h3>
+      <div class="block-diagram">
+        <div class="bd-row">
+          <span class="bd-label">x(n)</span>
+          <span class="bd-arrow">──▶</span>
+          <span class="bd-box">Unknown System H(z)</span>
+          <span class="bd-arrow">──▶</span>
+          <span class="bd-label">d(n) = y(n)</span>
+        </div>
+        <div class="bd-row" style="margin-top:0.5rem">
+          <span class="bd-label">x(n), …, x(n-9)</span>
+          <span class="bd-arrow">──▶</span>
+          <span class="bd-box">10-Weight Adaptive FIR</span>
+          <span class="bd-arrow">──▶</span>
+          <span class="bd-label">ŷ(n)</span>
+          <span class="bd-arrow">──▶</span>
+          <span class="bd-box">Σ (−)</span>
+          <span class="bd-arrow">──▶</span>
+          <span class="bd-label">e(n)</span>
+          <span class="bd-arrow">──▶</span>
+          <span class="bd-box">Adaptive Alg. (LMS / SER / RLS)</span>
+          <span class="bd-arrow">──▶ w(n+1)</span>
+        </div>
+        <p style="margin-top:0.5rem;margin-bottom:0;color:var(--muted);font-size:0.76rem;">
+          Fig. 1 — Adaptive system identification block diagram (shared by all three algorithms).
+        </p>
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           3. Wiener Solution
+      ══════════════════════════════════════════════ -->
+      <h2>3. Wiener Solution and Optimal 10-Weight Approximation</h2>
+
+      <h3>3.1 Mean-Square Error and Wiener–Hopf Equation</h3>
+      <p>The MSE surface is:</p>
+      $$J(\mathbf{w}) = E\!\left[e^2(n)\right]
+                       = E\!\left[(d(n) - \mathbf{w}^T\mathbf{x}(n))^2\right].$$
+      <p>The unique global minimum is the Wiener solution:</p>
+      $$\mathbf{w}_\text{opt} = R^{-1}\mathbf{p},$$
+      $$R = E\!\left[\mathbf{x}(n)\mathbf{x}^T(n)\right], \qquad
+        \mathbf{p} = E\!\left[d(n)\mathbf{x}(n)\right].$$
+
+      <h3>3.2 White-Input Simplification</h3>
+      <p>
+        Because the input $x(n)$ is zero-mean white noise with unit variance,
+        the autocorrelation matrix is simply the identity:
+      </p>
+      $$R = I_{10} \implies \mathbf{w}_\text{opt} = \mathbf{p}.$$
+      <p>
+        For white-noise system identification, $\mathbf{p}$ equals the
+        first ten samples of the plant's impulse response $h[n]$.
+        The theoretical optimal 10-tap weights are therefore:
+      </p>
+      $$\mathbf{w}_\text{opt} =
+        \bigl[1,\; 2,\; 1,\; 0.125,\; 0.0625,\; 0.125,\; 0.0625,\;
+              0.0078125,\; 0.00390625,\; 0.0078125\bigr]^T.$$
+
+      <div class="highlight-box">
+        <strong>Minimum MSE due to IIR tail truncation:</strong><br>
+        $J_\min = 1.585717 \times 10^{-5}$
+        (energy of the impulse-response tail beyond tap 9).
+      </div>
+
+      <!-- ══════════════════════════════════════════════
+           4. Final Weight Results
+      ══════════════════════════════════════════════ -->
+      <h2>4. Final Weight Results — All Three Algorithms</h2>
+      <p>
+        Each algorithm was run for 100 independent trials with a white-noise input.
+        LMS and SER final weights are the average of the last 500 weight samples per trial;
+        RLS final weights are averaged over the last 200 samples per trial.
+      </p>
+
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Weight</th>
+            <th>Theoretical $\mathbf{w}_\text{opt}$</th>
+            <th>LMS Final</th>
+            <th>SER Final</th>
+            <th>RLS Final</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>$w_0$</td><td>1.0000000000</td><td>0.9999054015</td><td>0.9998625326</td><td>0.9999651586</td></tr>
+          <tr><td>$w_1$</td><td>2.0000000000</td><td>1.9998125124</td><td>1.9997554933</td><td>1.9999583956</td></tr>
+          <tr><td>$w_2$</td><td>1.0000000000</td><td>0.9999184839</td><td>0.9998698045</td><td>0.9999768270</td></tr>
+          <tr><td>$w_3$</td><td>0.1250000000</td><td>0.1249944333</td><td>0.1249964303</td><td>0.1249792789</td></tr>
+          <tr><td>$w_4$</td><td>0.0625000000</td><td>0.0625144287</td><td>0.0624874838</td><td>0.0624874451</td></tr>
+          <tr><td>$w_5$</td><td>0.1250000000</td><td>0.1250000673</td><td>0.1249953757</td><td>0.1250042056</td></tr>
+          <tr><td>$w_6$</td><td>0.0625000000</td><td>0.0624900021</td><td>0.0624911420</td><td>0.0625135854</td></tr>
+          <tr><td>$w_7$</td><td>0.0078125000</td><td>0.0078073502</td><td>0.0078201031</td><td>0.0078022007</td></tr>
+          <tr><td>$w_8$</td><td>0.0039062500</td><td>0.0039079344</td><td>0.0039026148</td><td>0.0039016386</td></tr>
+          <tr><td>$w_9$</td><td>0.0078125000</td><td>0.0078061882</td><td>0.0078303090</td><td>0.0078089200</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        All three algorithms converge to near-identical weights, confirming that each independently
+        reaches the Wiener solution. RLS shows the smallest coefficient errors because it uses an
+        exact inverse-correlation estimate, yielding faster and more precise convergence.
+      </p>
+
+      <!-- ══════════════════════════════════════════════
+           5. Algorithm Parameters Summary
+      ══════════════════════════════════════════════ -->
+      <h2>5. Algorithm Parameters and Learning-Curve Summary</h2>
+
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Main Parameters</th>
+            <th>Theoretical $M$</th>
+            <th>$T_\text{MSE}$ Theory</th>
+            <th>$T_\text{MSE}$ Estimated</th>
+            <th>Estimated $J_\text{ss}$</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LMS</td>
+            <td>$\mu = 0.0008$</td>
+            <td>0.8%</td>
+            <td>312.5 iter.</td>
+            <td>315.787 iter.</td>
+            <td>$1.628 \times 10^{-5}$</td>
+          </tr>
+          <tr>
+            <td>SER</td>
+            <td>$\mu = 0.0008,\ \alpha = 0.995$</td>
+            <td>0.8%</td>
+            <td>312.5 iter.</td>
+            <td>320.378 iter.</td>
+            <td>$1.618 \times 10^{-5}$</td>
+          </tr>
+          <tr>
+            <td>RLS</td>
+            <td>$\lambda = 1,\ \delta = 0.01,\ P(0) = 100I$</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>1.650 iter.</td>
+            <td>$1.611 \times 10^{-5}$</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════════
+           6. LMS Results
+      ══════════════════════════════════════════════ -->
+      <div class="algo-badge">Part (a) — LMS</div>
+      <h2>6. LMS Results</h2>
+
+      <h3>6.1 Algorithm and Parameter Design</h3>
+      <p>The LMS weight update rule is:</p>
+      $$\mathbf{w}(n+1) = \mathbf{w}(n) + 2\mu\, e(n)\,\mathbf{x}(n).$$
+      <p>
+        The approximate misadjustment for this form is $M \approx \mu\,\text{tr}(R)$.
+        Since $R = I_{10}$, we have $\text{tr}(R) = 10$, so $M \approx 10\mu$.
+        Choosing $\mu = 0.0008$ gives:
+      </p>
+      $$M = 10 \times 0.0008 = 0.008 = 0.8\% \le 1\%. \checkmark$$
+
+      <h3>6.2 Theoretical Learning-Curve Time Constant</h3>
+      <p>
+        With $R = I_{10}$, all eigenvalues $\lambda_k = 1$.
+        The LMS learning-curve time constant is:
+      </p>
+      $$T_\text{MSE} = \frac{1}{4\mu\lambda_\min}
+                     = \frac{1}{4 \times 0.0008 \times 1} = 312.5 \text{ iterations}.$$
+
+      <h3>6.3 Weight Trajectories</h3>
+      <p>
+        The average LMS weight trajectories (over 100 trials) show stable convergence.
+        The three dominant weights $w_0 \to 1$, $w_1 \to 2$, and $w_2 \to 1$ converge
+        smoothly. The smaller weights also settle near their theoretical values
+        with minor stochastic fluctuations from gradient noise.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/lms-weights.png"
+             alt="LMS Average Weight Trajectories over 100 Trials">
+        <figcaption>Fig. 2 — LMS average weight trajectories over 100 trials.
+          Top: $w_0$–$w_4$; Bottom: $w_5$–$w_9$. All weights converge to $\mathbf{w}_\text{opt}$ by ~4000 iterations.</figcaption>
+      </div>
+
+      <h3>6.4 Average Learning Curve</h3>
+      <p>
+        The average of 100 LMS learning curves was computed.
+        An exponential fit to the transient gives an estimated time constant of
+        $T_\text{MSE,est} = 315.787$ iterations — differing from the theoretical
+        312.5 by only $\approx 1.05\%$, confirming the convergence analysis.
+        The steady-state MSE settles at $J_\text{ss} = 1.628 \times 10^{-5}$,
+        close to $J_\min = 1.586 \times 10^{-5}$.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/lms-learning.png"
+             alt="Average of 100 LMS Learning Curves">
+        <figcaption>Fig. 3 — Average of 100 LMS learning curves.
+          $T_\text{MSE,theory}=312.5$ iter., $T_\text{MSE,est}=315.8$ iter. (error $\approx 1.05\%$).</figcaption>
+      </div>
+
+      <h3>6.5 Frequency Response Comparison</h3>
+      <p>
+        The 10-weight LMS filter frequency response nearly overlaps that of the unknown IIR system
+        in both magnitude and phase across the full normalized frequency range $[0,\,\pi]$.
+        The small remaining deviation is expected: a 10-tap FIR can only approximate an
+        infinite-length IIR impulse response.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/lms-freqresp.png"
+             alt="Magnitude and Phase Response: Unknown System vs 10-Weight LMS Linear Combiner">
+        <figcaption>Fig. 4 — Magnitude and phase response comparison for LMS.
+          Solid: unknown IIR $H(z)$; Dashed: 10-weight optimal LMS FIR. Near-perfect overlay across full band.</figcaption>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════════
+           7. SER Results
+      ══════════════════════════════════════════════ -->
+      <div class="algo-badge">Part (b) — SER</div>
+      <h2>7. SER Results</h2>
+
+      <h3>7.1 Algorithm and Parameter Design</h3>
+      <p>
+        SER scales the update direction using an exponentially windowed
+        inverse-correlation estimate $Q^{-1}(n)$. The update rule is:
+      </p>
+      $$\mathbf{w}(n+1) = \mathbf{w}(n) + 2\mu\, Q^{-1}(n)\, e(n)\,\mathbf{x}(n),$$
+      $$Q(n) = \alpha\, Q(n-1) + (1-\alpha)\,\mathbf{x}(n)\mathbf{x}^T(n), \quad Q^{-1}(0) = 10I.$$
+      <p>
+        Parameters: memory factor $\alpha = 0.995$, step size $\mu = 0.0008$.
+        For white input ($R = I_{10}$, $\lambda_\text{av} = 1$):
+      </p>
+      $$M \approx 10\mu = 0.8\% \le 1\%, \qquad
+        T_\text{MSE} = \frac{1}{4\mu\lambda_\text{av}} = 312.5 \text{ iterations}.$$
+
+      <h3>7.2 Design Note</h3>
+      <div class="highlight-box">
+        Because the input is white and $R = I_{10}$, the advantage of SER over LMS is minimal here —
+        the correlation matrix is already diagonal and well-conditioned, so rescaling provides no
+        convergence benefit. Both algorithms exhibit similar convergence speed and misadjustment.
+      </div>
+
+      <h3>7.3 Weight Trajectories</h3>
+      <p>
+        SER weight trajectories converge to the same Wiener solution as LMS.
+        The smaller coefficients show small transient fluctuations but settle to the correct values.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/ser-weights.png"
+             alt="SER Average Weight Trajectories over 100 Trials">
+        <figcaption>Fig. 5 — SER average weight trajectories over 100 trials.
+          Convergence behavior nearly identical to LMS, as expected for white-noise input ($R = I_{10}$).</figcaption>
+      </div>
+
+      <h3>7.4 Average Learning Curve</h3>
+      <p>
+        The estimated SER time constant is $T_\text{MSE,est} = 320.378$ iterations,
+        differing from the theoretical 312.5 by $\approx 2.52\%$.
+        The steady-state MSE is $J_\text{ss} = 1.618 \times 10^{-5}$, close to $J_\min$.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/ser-learning.png"
+             alt="Average of 100 SER Learning Curves">
+        <figcaption>Fig. 6 — Average of 100 SER learning curves.
+          $T_\text{MSE,theory}=312.5$ iter., $T_\text{MSE,est}=320.4$ iter. (error $\approx 2.52\%$).</figcaption>
+      </div>
+
+      <h3>7.5 Frequency Response Comparison</h3>
+      <p>
+        The SER frequency response closely matches the unknown system in both magnitude and phase,
+        confirming the final SER weights provide an accurate 10-tap FIR approximation.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/ser-freqresp.png"
+             alt="Magnitude and Phase Response: Unknown System vs 10-Weight SER Linear Combiner">
+        <figcaption>Fig. 7 — Magnitude and phase response comparison for SER.
+          Solid: unknown IIR $H(z)$; Dashed: 10-weight SER FIR. Near-identical to LMS result.</figcaption>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════════
+           8. RLS Results
+      ══════════════════════════════════════════════ -->
+      <div class="algo-badge">Part (c) — RLS</div>
+      <h2>8. RLS Results</h2>
+
+      <h3>8.1 Algorithm and Parameter Design</h3>
+      <p>
+        RLS uses an exact recursive estimate of the inverse correlation matrix $P(n) = R^{-1}(n)$.
+        The forgetting factor $\lambda = 1$ is appropriate since the plant is time-invariant.
+        Initialization with $\delta = 0.01$ gives $P(0) = \delta^{-1}I = 100I$,
+        providing a large initial adaptation gain for very rapid convergence.
+      </p>
+      <p>The RLS recursion is:</p>
+      $$\mathbf{k}(n) = \frac{P(n-1)\,\mathbf{x}(n)}
+                             {\lambda + \mathbf{x}^T(n)\,P(n-1)\,\mathbf{x}(n)},$$
+      $$\mathbf{w}(n+1) = \mathbf{w}(n) + \mathbf{k}(n)\,e(n),$$
+      $$P(n) = \lambda^{-1}\bigl[P(n-1) - \mathbf{k}(n)\,\mathbf{x}^T(n)\,P(n-1)\bigr].$$
+
+      <h3>8.2 Weight Trajectories</h3>
+      <p>
+        The RLS weight trajectories show that nearly all convergence occurs
+        within the <strong>first few tens of iterations</strong> — dramatically faster than
+        the thousands of iterations required by LMS and SER.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/rls-weights.png"
+             alt="RLS Average Weight Trajectories over 100 Trials">
+        <figcaption>Fig. 8 — RLS average weight trajectories over 100 trials.
+          Convergence complete within $n \approx 20$ iterations — orders of magnitude faster than LMS/SER.</figcaption>
+      </div>
+
+      <h3>8.3 Average Learning Curve and $T_\text{MSE}$ Estimation</h3>
+      <p>
+        Since RLS does not use a fixed scalar step size, the LMS-style theoretical $T_\text{MSE}$
+        does not apply. Instead, $T_\text{MSE}$ is estimated directly from the averaged learning
+        curve using a log-linear fit to the transient portion:
+      </p>
+      $$T_\text{MSE,est} = 1.650 \text{ iterations.}$$
+      <p>
+        This indicates <em>extremely</em> fast convergence. The steady-state MSE is
+        $J_\text{ss} = 1.611 \times 10^{-5}$, the closest to $J_\min$ among all three algorithms.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/rls-learning.png"
+             alt="Average of 100 RLS Learning Curves">
+        <figcaption>Fig. 9 — Average of 100 RLS learning curves.
+          $T_\text{MSE,est}=1.65$ iterations. Steady state reached by $n \approx 30$.</figcaption>
+      </div>
+
+      <h3>8.4 Frequency Response Comparison</h3>
+      <p>
+        The RLS frequency response is almost identical to the unknown system over the full
+        normalized frequency range, confirming that the RLS-derived 10-weight FIR filter
+        accurately captures the dominant plant dynamics.
+      </p>
+      <div class="post-figure">
+        <img src="/blog/images/midterm2-p1/rls-freqresp.png"
+             alt="Magnitude and Phase Response: Unknown System vs 10-Weight RLS Linear Combiner">
+        <figcaption>Fig. 10 — Magnitude and phase response comparison for RLS.
+          Solid: unknown IIR $H(z)$; Dashed: 10-weight RLS FIR. Closest overlay among all three algorithms.</figcaption>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════════
+           9. Overall Comparison and Conclusion
+      ══════════════════════════════════════════════ -->
+      <h2>9. Overall Comparison and Conclusion</h2>
+
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Convergence Speed</th>
+            <th>$M$ (Misadjustment)</th>
+            <th>$T_\text{MSE}$ (iterations)</th>
+            <th>$J_\text{ss}$</th>
+            <th>Coefficient Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LMS</td>
+            <td>Slow (~thousands)</td>
+            <td>0.8%</td>
+            <td>315.8</td>
+            <td>$1.628\times10^{-5}$</td>
+            <td>Good</td>
+          </tr>
+          <tr>
+            <td>SER</td>
+            <td>Slow (~thousands)</td>
+            <td>0.8%</td>
+            <td>320.4</td>
+            <td>$1.618\times10^{-5}$</td>
+            <td>Good</td>
+          </tr>
+          <tr>
+            <td>RLS</td>
+            <td><strong>Extremely fast (~tens)</strong></td>
+            <td>N/A</td>
+            <td><strong>1.65</strong></td>
+            <td>$1.611\times10^{-5}$</td>
+            <td><strong>Best</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Conclusions:</strong>
+        <ul style="margin-top:0.5rem;margin-bottom:0;">
+          <li>
+            All three algorithms converge to the same mean-square-optimal 10-weight FIR
+            approximation of the IIR plant, with final weights closely matching the theoretical
+            Wiener solution $\mathbf{w}_\text{opt}$.
+          </li>
+          <li>
+            LMS and SER (both $\mu = 0.0008$) achieve $M = 0.8\% \le 1\%$ and converge
+            with time constants of ~315–320 iterations, agreeing well with the theoretical
+            312.5 iterations derived from $T_\text{MSE} = 1/(4\mu\lambda_\min)$.
+          </li>
+          <li>
+            RLS converges in approximately <strong>1.65 iterations</strong> — roughly
+            200× faster than LMS/SER — because it directly inverts the sample correlation matrix
+            rather than following a noisy gradient. It also achieves the smallest coefficient
+            errors and the steady-state MSE closest to $J_\min$.
+          </li>
+          <li>
+            The frequency-response plots for all three algorithms closely match the unknown IIR
+            system in both magnitude and phase, validating that a 10-tap FIR provides an accurate
+            mean-square approximation of the given IIR plant.
+          </li>
+        </ul>
+      </div>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+</body>
+</html>

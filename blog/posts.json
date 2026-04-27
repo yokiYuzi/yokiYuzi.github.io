@@ -1,5 +1,12 @@
 [
   {
+    "title": "ECG 783 Midterm #2 — Problem 1: Adaptive System ID via LMS, SER & RLS",
+    "date": "2026-04-27",
+    "summary": "10-weight adaptive FIR identification of a 3rd-order IIR plant using LMS (μ=0.0008, M=0.8%, T_MSE≈316 iter.), SER (α=0.995, T_MSE≈320 iter.), and RLS (λ=1, T_MSE≈1.65 iter.). Includes Wiener solution, weight trajectories, learning curves, and frequency-response comparisons.",
+    "path": "/blog/posts/ecg783-midterm2-p1/",
+    "category": "ECE · Adaptive Signal Processing"
+  },
+  {
     "title": "ECG 783 HW2 — FIR Identification of an IIR System via Wiener Solution",
     "date": "2026-02-22",
     "summary": "FIR modelling of the IIR system d(k)=0.5d(k-1)+32x(k)+32x(k-1) using the Wiener–Hopf solution. Compares L+1=2 (MSE≈787) and L+1=10 (MSE≈0.012), with impulse-response truncation analysis and frequency-response comparison.",
