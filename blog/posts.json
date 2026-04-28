@@ -1,5 +1,12 @@
 [
   {
+    "title": "ECG 783 Midterm #2 — Problem 2: IIR LMS Adaptive Inverse System",
+    "date": "2026-04-27",
+    "summary": "IIR LMS identification of the inverse of a 3rd-order IIR plant H_p(z). 5-weight adaptive IIR filter (a0,a1,a2,b1,b2) converges to w_opt=[1,−1.2,0.6,−1.3,−0.8] in ~3.4×10³ iterations (μ=0.001, N=80,000). Cascade H(z)H_p(z)≈1 verified via frequency response (0 dB, 0° phase).",
+    "path": "/blog/posts/ecg783-midterm2-p2/",
+    "category": "ECE · Adaptive Signal Processing"
+  },
+  {
     "title": "ECG 783 Midterm #2 — Problem 1: Adaptive System ID via LMS, SER & RLS",
     "date": "2026-04-27",
     "summary": "10-weight adaptive FIR identification of a 3rd-order IIR plant using LMS (μ=0.0008, M=0.8%, T_MSE≈316 iter.), SER (α=0.995, T_MSE≈320 iter.), and RLS (λ=1, T_MSE≈1.65 iter.). Includes Wiener solution, weight trajectories, learning curves, and frequency-response comparisons.",
