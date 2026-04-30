@@ -673,3 +673,36 @@ html.theme-switching *::after {
   88%  {             opacity: 1;   }
   100% { top: 100vh; opacity: 0.2; }
 }
+
+/* ══════════════════════════════════════════════════════
+   TRANSLATE BUTTON — inline after back-link on blog posts
+══════════════════════════════════════════════════════ */
+#translate-btn {
+  display: inline-block;
+  margin-left: 1rem;
+  margin-bottom: 2rem;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 0.2rem 0.65rem;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+#translate-btn:hover:not(:disabled) {
+  color: var(--accent2);
+  border-color: var(--accent2);
+  box-shadow: 0 0 8px var(--glow);
+}
+#translate-btn:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+#translate-btn.active {
+  color: var(--accent2);
+  border-color: var(--accent2);
+}
