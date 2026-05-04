@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 783 Midterm #2 — Problem 4 | Chang Wang</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.38rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .post-figure {
+      margin: 1.6rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      width: 100%;
+      max-width: 820px;
+      height: auto;
+      border: 1px solid var(--line);
+      box-shadow: 0 3px 16px var(--glow);
+      transition: box-shadow 0.25s;
+    }
+    .post-figure img:hover { box-shadow: 0 5px 24px var(--glow-strong); }
+    .post-figure figcaption {
+      margin-top: 0.45rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.80rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.72rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .result-table td:first-child { color: var(--accent2); font-weight: bold; }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .highlight-box strong { color: var(--accent2); }
+
+    .prob-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      padding: 0.15rem 0.65rem;
+      margin-bottom: 0.65rem;
+      text-transform: uppercase;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.8rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .code-block {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.78rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.6;
+    }
+
+    .arch-box {
+      font-size: 0.82rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      padding: 0.8rem 1.2rem;
+      margin: 1rem 0;
+      letter-spacing: 0.04em;
+      text-align: center;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin: 1.2rem 0;
+    }
+    .metric-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      padding: 0.7rem 1rem;
+      text-align: center;
+    }
+    .metric-card .metric-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .metric-card .metric-value {
+      font-size: 0.95rem;
+      color: var(--accent2);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">← Back to Blog</a>
+
+    <article>
+      <div class="post-header">
+        <h1>ECG 783 Midterm #2 — Problem 4: FFNN Two-Input Nonlinear System Modeling</h1>
+        <p class="meta">2026-04-27 &nbsp;·&nbsp; ECE · Adaptive Signal Processing</p>
+      </div>
+
+      <div class="post-body">
+
+        <!-- ═══════════════════════════════════════════════
+             SETUP
+        ════════════════════════════════════════════════ -->
+        <div class="prob-badge">Problem 4</div>
+        <h2>1. Problem Setup</h2>
+
+        <p>
+          The objective is to model an unknown two-input single-output nonlinear system using a
+          two-layer feedforward neural network (FFNN). The "unknown" system is defined as
+        </p>
+
+        $$y(k) = \cos\!\bigl[\pi x_1(k)\bigr]\cos\!\bigl[\pi x_2(k)\bigr] + 0.25\,x_1^2(k)$$
+
+        <p>
+          over the input domain $-1 \le x_1(k) \le 1$ and $-1 \le x_2(k) \le 1$.
+          The FFNN must have at least <strong>6 inputs</strong> and at least <strong>50 hidden neurons</strong>,
+          and must achieve a maximum absolute approximation error below $0.15$.
+        </p>
+
+        <!-- ═══════════════════════════════════════════════
+             PART (a)
+        ════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Part (a)</div>
+        <h2>2. Unknown System Surface</h2>
+
+        <p>
+          The system was evaluated on a uniform grid with step size $0.1$ over
+          $[-1,\,1] \times [-1,\,1]$, generating the MATLAB surface via:
+        </p>
+
+        <div class="code-block">step = 0.1;
+x1 = -1:step:1;
+x2 = -1:step:1;
+[X1,X2] = meshgrid(x1,x2);
+y = cos(pi*X1).*cos(pi*X2) + 0.25*X1.^2;</div>
+
+        <p>
+          The product of the two cosine terms makes the surface highly nonlinear, with sharp peaks
+          and valleys. The additional quadratic term $0.25\,x_1^2(k)$ shifts the surface upward
+          symmetrically as $|x_1|$ increases.
+        </p>
+
+        <div class="post-figure">
+          <figure>
+            <img src="/blog/images/midterm2-p4/fig1-system-surface.png"
+                 alt="Unknown system surface: y(k) = cos(pi*x1)*cos(pi*x2) + 0.25*x1^2">
+            <figcaption>
+              Fig. 1 — Part (a): Unknown system surface $y(k) = \cos(\pi x_1)\cos(\pi x_2) + 0.25\,x_1^2$
+              plotted with <code>meshc</code> over $[-1,1]^2$. The surface exhibits strong nonlinearity
+              due to the product of cosine terms.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             INPUT DESIGN
+        ════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Part (b)</div>
+        <h2>3. FFNN Input Design</h2>
+
+        <p>
+          Although the physical system has only two inputs, the problem requires the network to
+          use at least six inputs. The six-dimensional input vector is constructed from the
+          <em>previous, current, and next</em> values of both input variables:
+        </p>
+
+        $$X = \begin{bmatrix}
+          x_1(k_1 - 1) \\ x_1(k_1) \\ x_1(k_1 + 1) \\
+          x_2(k_2 - 1) \\ x_2(k_2) \\ x_2(k_2 + 1)
+        \end{bmatrix} \in \mathbb{R}^6$$
+
+        <p>
+          The target output remains the true system value at the center grid point:
+        </p>
+
+        $$T = f\bigl(x_1(k_1),\; x_2(k_2)\bigr).$$
+
+        <p>
+          This neighbourhood context gives the network local gradient information about the
+          surface curvature without changing the fundamental mapping being learned.
+        </p>
+
+        <h3>Training Dataset</h3>
+        <p>
+          A finer grid with step size $0.05$ was used for training, producing <strong>1681 samples</strong>:
+        </p>
+        <ul>
+          <li>Input matrix: $P \in \mathbb{R}^{6 \times 1681}$</li>
+          <li>Target matrix: $T \in \mathbb{R}^{1 \times 1681}$</li>
+        </ul>
+
+        <!-- ═══════════════════════════════════════════════
+             NETWORK STRUCTURE
+        ════════════════════════════════════════════════ -->
+        <h2>4. Network Structure and Training Algorithm</h2>
+
+        <p>
+          The two-layer FFNN model is
+        </p>
+
+        $$\hat{y}(k) = W_2\,\phi(W_1 X + b_1) + b_2$$
+
+        <p>
+          where $\phi(\cdot)$ is the hidden-layer activation and $\hat{y}(k)$ is the network output.
+          The final architecture was:
+        </p>
+
+        <div class="arch-box">
+          6 inputs &nbsp;→&nbsp; <strong>60 hidden neurons (tansig)</strong> &nbsp;→&nbsp; 1 output (purelin)
+        </div>
+
+        <ul>
+          <li><strong>Hidden layer:</strong> 60 neurons with <code>tansig</code> activation — chosen to exceed
+              the 50-neuron minimum and provide ample representational capacity for the strongly
+              nonlinear $\cos \times \cos$ surface.</li>
+          <li><strong>Output layer:</strong> 1 neuron with <code>purelin</code> (linear) activation,
+              appropriate for a regression target that ranges continuously over $(-1, 1.25)$.</li>
+          <li><strong>Training algorithm:</strong> Levenberg–Marquardt (<code>trainlm</code>),
+              which combines the speed of Gauss–Newton with the robustness of gradient descent.</li>
+          <li><strong>Performance metric:</strong> Mean squared error (MSE).</li>
+        </ul>
+
+        <p>The approximation error at each grid point is defined as</p>
+
+        $$e(k) = y(k) - \hat{y}(k),$$
+
+        <p>and the requirement is $\max|e(k)| < 0.15$.</p>
+
+        <!-- ═══════════════════════════════════════════════
+             RESULTS
+        ════════════════════════════════════════════════ -->
+        <h2>5. Results</h2>
+
+        <h3>Numerical Performance</h3>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-label">max |e(k)|</span>
+            <span class="metric-value">0.000804</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">MSE</span>
+            <span class="metric-value">9.962 × 10⁻⁹</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">RMSE</span>
+            <span class="metric-value">0.000100</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">MAE</span>
+            <span class="metric-value">0.000074</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">R²</span>
+            <span class="metric-value">1.000000</span>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <strong>Requirement satisfied:</strong> $\max|e(k)| = 0.000804 \ll 0.15$.
+          The FFNN approximation error is more than 186× smaller than the required threshold.
+        </div>
+
+        <h3>FFNN Approximation Surface</h3>
+        <p>
+          Figure 2 shows the FFNN output surface evaluated on the test grid.
+          The shape, peaks, valleys, and contour patterns are visually indistinguishable
+          from the true system surface (Figure 1), confirming that the network
+          learned the correct nonlinear mapping.
+        </p>
+
+        <div class="post-figure">
+          <figure>
+            <img src="/blog/images/midterm2-p4/fig2-ffnn-approx.png"
+                 alt="FFNN approximation surface: 6 inputs, 60 hidden neurons">
+            <figcaption>
+              Fig. 2 — Part (b): FFNN approximation surface $\hat{y}(k)$.
+              Architecture: 6 inputs → 60 hidden neurons → 1 output.
+              $\max|e(k)| = 0.0008$. The surface closely reproduces the true system.
+            </figcaption>
+          </figure>
+        </div>
+
+        <h3>Approximation Error Surface</h3>
+        <p>
+          Figure 3 shows the pointwise error $e(k) = y(k) - \hat{y}(k)$ across the full grid.
+          The errors are uniformly small and remain on the order of $10^{-4}$,
+          with the largest deviation of $0.000804$ occurring near the boundary of the domain.
+        </p>
+
+        <div class="post-figure">
+          <figure>
+            <img src="/blog/images/midterm2-p4/fig3-error-surface.png"
+                 alt="FFNN approximation error surface: max |e(k)| = 0.0008">
+            <figcaption>
+              Fig. 3 — Part (b): Approximation error surface $e(k) = y(k) - \hat{y}(k)$.
+              All values are on the order of $10^{-4}$, confirming high-accuracy modeling
+              across the entire input domain.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             DISCUSSION
+        ════════════════════════════════════════════════ -->
+        <h2>6. Discussion</h2>
+
+        <h3>Why 6 Inputs?</h3>
+        <p>
+          Using the previous, current, and next values of $x_1$ and $x_2$ provides the network
+          with local finite-difference information. This effectively supplies approximate
+          first-order context about how the surface changes across the grid, helping the network
+          learn the curvature of the $\cos \times \cos$ product without requiring a deeper architecture.
+        </p>
+
+        <h3>Why 60 Hidden Neurons?</h3>
+        <p>
+          The target surface $y(k) = \cos(\pi x_1)\cos(\pi x_2) + 0.25\,x_1^2$ is strongly
+          nonlinear: the $\cos \times \cos$ term alone creates four lobes with alternating signs
+          over $[-1,1]^2$. A single hidden layer with 60 <code>tansig</code> neurons provides
+          sufficient capacity to partition this input space accurately.
+          Fewer neurons (e.g., the minimum of 50) also achieved $\max|e| < 0.15$,
+          but 60 neurons improved accuracy by roughly $10\times$ on the first training trial.
+        </p>
+
+        <h3>Levenberg–Marquardt vs. Standard Backprop</h3>
+        <p>
+          For small-to-medium networks like this one ($6 \times 60 + 60 \times 1 = 420$ weights),
+          Levenberg–Marquardt converges in far fewer iterations than vanilla gradient descent
+          by approximating the Hessian. The best network was obtained on the very first training
+          trial, indicating that LM found a deep minimum efficiently from the random initialisation.
+        </p>
+
+        <!-- ═══════════════════════════════════════════════
+             CONCLUSION
+        ════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <h2>7. Conclusion</h2>
+
+        <p>
+          A two-layer FFNN (6 inputs → 60 hidden neurons → 1 output) trained with
+          Levenberg–Marquardt successfully modeled the nonlinear system
+          $y(k) = \cos(\pi x_1)\cos(\pi x_2) + 0.25\,x_1^2$ over $[-1,1]^2$.
+          Key results:
+        </p>
+
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+              <th>Requirement</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>max |e(k)|</td><td>0.000804</td><td>&lt; 0.15</td><td>✓ Passed (186× margin)</td></tr>
+            <tr><td>MSE</td><td>$9.962 \times 10^{-9}$</td><td>—</td><td>✓ Excellent</td></tr>
+            <tr><td>RMSE</td><td>0.000100</td><td>—</td><td>✓ Excellent</td></tr>
+            <tr><td>$R^2$</td><td>1.000000</td><td>—</td><td>✓ Perfect fit</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          The six-input neighbourhood design and the 60-neuron hidden layer together gave the
+          network enough capacity and context to learn the highly nonlinear surface in a single
+          Levenberg–Marquardt training run. The approximation error surface confirms that the
+          error remains uniformly small across the entire input domain.
+        </p>
+
+      </div><!-- .post-body -->
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

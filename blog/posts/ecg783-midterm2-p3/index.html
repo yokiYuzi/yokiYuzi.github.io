@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 783 Midterm #2 — Problem 3 | Chang Wang</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.38rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .post-figure {
+      margin: 1.6rem 0;
+      text-align: center;
+    }
+    .post-figure img {
+      width: 100%;
+      max-width: 820px;
+      height: auto;
+      border: 1px solid var(--line);
+      box-shadow: 0 3px 16px var(--glow);
+      transition: box-shadow 0.25s;
+    }
+    .post-figure img:hover { box-shadow: 0 5px 24px var(--glow-strong); }
+    .post-figure figcaption {
+      margin-top: 0.45rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.80rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.72rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .result-table td:first-child { color: var(--accent2); font-weight: bold; }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .highlight-box strong { color: var(--accent2); }
+
+    .prob-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      padding: 0.15rem 0.65rem;
+      margin-bottom: 0.65rem;
+      text-transform: uppercase;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.8rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .arch-box {
+      font-size: 0.82rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      padding: 0.8rem 1.2rem;
+      margin: 1rem 0;
+      letter-spacing: 0.04em;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .success-word {
+      display: block;
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 0.4em;
+      color: var(--accent2);
+      font-weight: bold;
+      margin: 1.2rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">← Back to Blog</a>
+
+    <article>
+      <div class="post-header">
+        <h1>ECG 783 Midterm #2 — Problem 3: Neural Network Character Recognition (E / C / U / S)</h1>
+        <p class="meta">2026-04-27 &nbsp;·&nbsp; ECE · Adaptive Signal Processing</p>
+      </div>
+
+      <div class="post-body">
+
+        <!-- ═══════════════════════════════════════════════
+             SETUP
+        ════════════════════════════════════════════════ -->
+        <div class="prob-badge">Problem 3</div>
+        <h2>1. Problem Setup</h2>
+
+        <p>
+          The goal is to design and train a two-layer feedforward neural network to perform
+          character recognition on four $5 \times 4$ binary pixel patterns: <strong>E, C, U,</strong> and <strong>S</strong>.
+          Each black pixel is encoded as $-1$ and each white pixel as $+1$.
+          The network must learn to map each character to a pair of binary outputs $(y_0, y_1)$:
+        </p>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Character</th><th>$y_0$</th><th>$y_1$</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>E</td><td>$-1$</td><td>$-1$</td></tr>
+            <tr><td>C</td><td>$-1$</td><td>$+1$</td></tr>
+            <tr><td>U</td><td>$+1$</td><td>$-1$</td></tr>
+            <tr><td>S</td><td>$+1$</td><td>$+1$</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          The total squared error criterion used during training is
+        </p>
+
+        $$E_t = \sum_{m=0}^{K} \varepsilon_m^2(n)$$
+
+        <p>
+          and training continues until $E_t$ falls below a prescribed tolerance.
+        </p>
+
+        <!-- ═══════════════════════════════════════════════
+             DATA REPRESENTATION
+        ════════════════════════════════════════════════ -->
+        <h2>2. Data Representation</h2>
+
+        <p>
+          Each $5 \times 4$ character matrix is vectorized by stacking its columns into a
+          $20 \times 1$ input vector $x = \text{vec}(M)$.
+          For example, the letter <strong>E</strong> has the pixel matrix
+        </p>
+
+        $$\mathbf{E} = \begin{bmatrix}
+          -1 & -1 & -1 & 1 \\
+          -1 &  1 &  1 & 1 \\
+          -1 & -1 &  1 & 1 \\
+          -1 &  1 &  1 & 1 \\
+          -1 & -1 & -1 & 1
+        \end{bmatrix}$$
+
+        <p>which stacks column-wise into the $20 \times 1$ vector</p>
+
+        $$\mathbf{e} = [-1\;-1\;-1\;-1\;-1\;\;-1\;1\;-1\;1\;-1\;\;-1\;1\;1\;1\;-1\;\;1\;1\;1\;1\;1]^T.$$
+
+        <p>
+          This column-wise vectorization is applied consistently to all four training characters
+          and all test inputs. Figure 1 shows the four training templates.
+        </p>
+
+        <div class="post-figure">
+          <figure>
+            <img src="/blog/images/midterm2-p3/fig1-training-patterns.png"
+                 alt="Training character patterns for E, C, U, S. Black = -1, White = +1.">
+            <figcaption>
+              Fig. 1 — Training character patterns. Black pixels $= -1$, white pixels $= +1$.
+              Each $5 \times 4$ grid is vectorized into a $20 \times 1$ input.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             NETWORK ARCHITECTURE
+        ════════════════════════════════════════════════ -->
+        <h2>3. Network Architecture</h2>
+
+        <p>
+          A two-layer feedforward neural network with the following structure was used:
+        </p>
+
+        <div class="arch-box">
+          $x \in \mathbb{R}^{20}$ → $W \in \mathbb{R}^{4 \times 20}$ → $\tanh(\cdot)$ → $z \in \mathbb{R}^{4}$ → $V \in \mathbb{R}^{2 \times 4}$ → $\tanh(\cdot)$ → $y \in \mathbb{R}^{2}$ → $\text{sgn}(y)$
+        </div>
+
+        <p>
+          The hidden layer contains <strong>4 neurons</strong> — one per training class — giving
+          enough capacity to discriminate the four character patterns without over-parameterising
+          the model. The activation function for both layers is
+        </p>
+
+        $$f(t) = \tanh(t),$$
+
+        <p>
+          whose output range $(-1, +1)$ matches the binary target coding.
+          The forward-propagation equations are
+        </p>
+
+        $$z = \tanh(Wx), \qquad y = \tanh(Vz).$$
+
+        <p>
+          After training, a hard sign function is applied to the output layer:
+        </p>
+
+        $$\text{sgn}(t) = \begin{cases} +1, & t > 0, \\ -1, & t < 0. \end{cases}$$
+
+        <!-- ═══════════════════════════════════════════════
+             TRAINING METHOD
+        ════════════════════════════════════════════════ -->
+        <h2>4. Training Method — Backpropagation</h2>
+
+        <p>
+          The network was trained using <strong>backpropagation with stochastic gradient descent</strong>.
+          The total squared error over all four training samples is
+        </p>
+
+        $$E_{\text{total}} = \sum_{p=1}^{4} \sum_{m=0}^{1} \bigl(d_m^{(p)} - y_m^{(p)}\bigr)^2,$$
+
+        <p>where $d^{(p)}$ is the desired output for the $p$-th character.</p>
+
+        <h3>Gradient Computation</h3>
+        <p>
+          Using $\tfrac{d}{dt}\tanh(t) = 1 - \tanh^2(t)$, the local gradients are:
+        </p>
+
+        $$\delta^o = (d - y) \odot (1 - y^2) \qquad \text{(output layer)}$$
+
+        $$\delta^h = (V^T \delta^o) \odot (1 - z^2) \qquad \text{(hidden layer)}$$
+
+        <h3>Weight Updates</h3>
+
+        $$V \leftarrow V + \eta\,\delta^o z^T, \qquad W \leftarrow W + \eta\,\delta^h x^T.$$
+
+        <h3>Training Parameters</h3>
+        <ul>
+          <li>Learning rate: $\eta = 0.2$</li>
+          <li>Hidden neurons: $4$</li>
+          <li>Tolerance: $E_{\text{total}} < 10^{-4}$</li>
+          <li>Weight initialisation: small random values (avoids $\tanh$ saturation)</li>
+        </ul>
+
+        <!-- ═══════════════════════════════════════════════
+             CONVERGENCE
+        ════════════════════════════════════════════════ -->
+        <h2>5. Training Convergence</h2>
+
+        <p>
+          The network converged after <strong>6627 epochs</strong>.
+          The total squared error decreased from
+        </p>
+
+        $$E_{\text{initial}} = 8.021633919 \quad \longrightarrow \quad E_{\text{final}} = 9.998564064 \times 10^{-5},$$
+
+        <p>satisfying the required tolerance $10^{-4}$. Figure 2 shows the log-scale convergence curve.</p>
+
+        <div class="post-figure">
+          <figure>
+            <img src="/blog/images/midterm2-p3/fig2-convergence.png"
+                 alt="Training convergence: total squared error vs. epoch on log scale">
+            <figcaption>
+              Fig. 2 — Training convergence curve (log scale). The error decreases steadily
+              from $\approx 8$ to below $10^{-4}$ over 6627 epochs.
+              The dashed orange line marks the tolerance threshold.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             PART (a) — WEIGHT MATRICES
+        ════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Part (a)</div>
+        <h2>6. Final Weight Matrices W and V</h2>
+
+        <p>
+          The hidden-layer weight matrix $W \in \mathbb{R}^{4 \times 20}$ is split into four
+          $4 \times 5$ column-blocks corresponding to the four groups of five input pixels:
+        </p>
+
+        $$W_1 = \begin{bmatrix}
+          -0.1302 & -0.1590 &  0.4180 &  0.4185 &  0.2737 \\
+           0.5970 &  0.0702 &  0.0566 &  0.1333 &  0.1778 \\
+           0.6934 &  0.0709 &  0.2269 &  0.3094 &  0.4157 \\
+           0.0296 &  0.1334 & -0.4014 & -0.3889 & -0.2916
+        \end{bmatrix}$$
+
+        $$W_2 = \begin{bmatrix}
+           0.4247 &  0.1044 & -0.2200 &  0.1611 & -0.1432 \\
+          -0.2523 & -0.0461 &  0.1664 & -0.0578 &  0.0990 \\
+          -0.2824 &  0.0098 &  0.1491 & -0.0594 &  0.0862 \\
+          -0.3660 & -0.0704 &  0.1488 & -0.1335 &  0.1212
+        \end{bmatrix}$$
+
+        $$W_3 = \begin{bmatrix}
+           0.3750 &  0.1536 & -0.4451 &  0.1309 & -0.0892 \\
+          -0.2977 & -0.0391 & -0.0969 & -0.1121 &  0.1339 \\
+          -0.2817 & -0.0318 & -0.2434 & -0.0880 &  0.0699 \\
+          -0.3198 & -0.1223 &  0.4239 & -0.1100 &  0.0687
+        \end{bmatrix}$$
+
+        $$W_4 = \begin{bmatrix}
+          -0.4312 &  0.2281 & -0.3886 & -0.3556 &  0.1610 \\
+           0.2149 & -0.2172 &  0.2906 & -0.2647 & -0.0585 \\
+           0.2485 & -0.2121 &  0.2877 & -0.4276 & -0.0602 \\
+           0.3667 & -0.1661 &  0.3334 &  0.3655 & -0.1336
+        \end{bmatrix}$$
+
+        <p>so the full matrix is $W = [W_1\;W_2\;W_3\;W_4] \in \mathbb{R}^{4 \times 20}$.</p>
+
+        <p>The output-layer weight matrix is</p>
+
+        $$V = \begin{bmatrix}
+           1.8042 & -0.3101 &  0.2319 & -1.5812 \\
+          -0.1569 &  1.2673 &  2.1117 & -0.1788
+        \end{bmatrix} \in \mathbb{R}^{2 \times 4}.$$
+
+        <h3>Training Verification</h3>
+        <p>After applying the learned weights and the $\text{sgn}(\cdot)$ function,
+           all four training characters are correctly classified:</p>
+
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Character</th>
+              <th>Target $(y_0,\,y_1)$</th>
+              <th>Network Output</th>
+              <th>After sgn</th>
+              <th>Decoded</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>E</td><td>$(-1,-1)$</td><td>$(-0.9967,\,-0.9963)$</td><td>$(-1,-1)$</td><td>E ✓</td></tr>
+            <tr><td>C</td><td>$(-1,+1)$</td><td>$(-0.9964,\,+0.9963)$</td><td>$(-1,+1)$</td><td>C ✓</td></tr>
+            <tr><td>U</td><td>$(+1,-1)$</td><td>$(+0.9966,\,-0.9966)$</td><td>$(+1,-1)$</td><td>U ✓</td></tr>
+            <tr><td>S</td><td>$(+1,+1)$</td><td>$(+0.9961,\,+0.9968)$</td><td>$(+1,+1)$</td><td>S ✓</td></tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box">
+          <strong>Result:</strong> All network outputs lie within $0.004$ of $\pm 1$,
+          confirming successful convergence to the optimal weight configuration.
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             PART (b) — DECODING
+        ════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Part (b)</div>
+        <h2>7. Decoding Seven Unknown Letters</h2>
+
+        <p>
+          The trained network is applied to seven unknown $20 \times 1$ binary input vectors.
+          Each vector is passed through $W$, $\tanh$, $V$, $\tanh$, and finally $\text{sgn}(\cdot)$
+          to obtain a binary output pair $(y_0, y_1)$, which is mapped to a character:
+        </p>
+
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Letter</th>
+              <th>Network Output $(y_0,\,y_1)$</th>
+              <th>After sgn</th>
+              <th>Decoded</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>$(+0.9976,\,+0.9654)$</td><td>$(+1,+1)$</td><td>S</td></tr>
+            <tr><td>2</td><td>$(+0.9905,\,-0.9974)$</td><td>$(+1,-1)$</td><td>U</td></tr>
+            <tr><td>3</td><td>$(-0.9977,\,+0.9888)$</td><td>$(-1,+1)$</td><td>C</td></tr>
+            <tr><td>4</td><td>$(-0.9964,\,+0.9963)$</td><td>$(-1,+1)$</td><td>C</td></tr>
+            <tr><td>5</td><td>$(-0.9967,\,-0.9963)$</td><td>$(-1,-1)$</td><td>E</td></tr>
+            <tr><td>6</td><td>$(+0.9976,\,+0.9654)$</td><td>$(+1,+1)$</td><td>S</td></tr>
+            <tr><td>7</td><td>$(+0.9961,\,+0.9968)$</td><td>$(+1,+1)$</td><td>S</td></tr>
+          </tbody>
+        </table>
+
+        <p>Reading the decoded characters in sequence yields:</p>
+        <span class="success-word">S U C C E S S</span>
+
+        <div class="post-figure">
+          <figure>
+            <img src="/blog/images/midterm2-p3/fig3-decoded-success.png"
+                 alt="Seven decoded unknown letters spelling SUCCESS">
+            <figcaption>
+              Fig. 3 — The seven unknown test letters decoded by the trained network.
+              Each pixel grid is classified by the network output pair, spelling <strong>SUCCESS</strong>.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             OUTPUT SPACE
+        ════════════════════════════════════════════════ -->
+        <h2>8. Output-Space Interpretation</h2>
+
+        <p>
+          Figure 4 plots all training and test outputs in the $(y_0, y_1)$ plane.
+          The four quadrants, separated by the sign boundaries $y_0 = 0$ and $y_1 = 0$,
+          correspond to the four character classes:
+        </p>
+
+        $$(-1,-1): E, \quad (-1,+1): C, \quad (+1,-1): U, \quad (+1,+1): S.$$
+
+        <div class="post-figure">
+          <figure>
+            <img src="/blog/images/midterm2-p3/fig4-output-space.png"
+                 alt="Output space after training: y0 vs y1 showing four quadrant classes">
+            <figcaption>
+              Fig. 4 — Output space after training. Training outputs (circles) and test outputs (squares)
+              cluster tightly at the four corners $(\pm 1, \pm 1)$,
+              confirming that the sign function produces stable binary decisions.
+            </figcaption>
+          </figure>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             ROBUSTNESS CHECK
+        ════════════════════════════════════════════════ -->
+        <h2>9. Robustness Check</h2>
+
+        <p>
+          Each test letter was compared against the four training templates by counting
+          pixel differences. Several test letters differ from their closest template by
+          exactly one pixel, yet the network classifies them correctly:
+        </p>
+
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Letter</th>
+              <th>Closest Template</th>
+              <th>Pixel Difference</th>
+              <th>Network Decoded</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>S</td><td>1</td><td>S ✓</td></tr>
+            <tr><td>2</td><td>U</td><td>1</td><td>U ✓</td></tr>
+            <tr><td>3</td><td>C</td><td>1</td><td>C ✓</td></tr>
+            <tr><td>4</td><td>C</td><td>0</td><td>C ✓</td></tr>
+            <tr><td>5</td><td>E</td><td>0</td><td>E ✓</td></tr>
+            <tr><td>6</td><td>S</td><td>1</td><td>S ✓</td></tr>
+            <tr><td>7</td><td>S</td><td>0</td><td>S ✓</td></tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box">
+          <strong>Key insight:</strong> The trained network generalises beyond exact template
+          matching — it tolerates single-pixel noise without misclassification,
+          demonstrating genuine pattern recognition rather than simple memorisation.
+        </div>
+
+        <!-- ═══════════════════════════════════════════════
+             CONCLUSION
+        ════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <h2>10. Conclusion</h2>
+
+        <p>
+          A two-layer feedforward neural network ($20 \to 4 \to 2$) with $\tanh(\cdot)$ activation
+          was trained via backpropagation to classify four $5 \times 4$ binary character patterns.
+          Key results:
+        </p>
+        <ul>
+          <li>Training converged in <strong>6627 epochs</strong> ($\eta = 0.2$, tolerance $= 10^{-4}$).</li>
+          <li>Total squared error reduced from $8.022$ to $9.999 \times 10^{-5}$.</li>
+          <li>All four training characters correctly classified after applying $\text{sgn}(\cdot)$.</li>
+          <li>All seven unknown letters correctly decoded — the hidden message is
+              <strong>SUCCESS</strong>.</li>
+          <li>The network tolerates 1-pixel deviations from training templates.</li>
+        </ul>
+
+      </div><!-- .post-body -->
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

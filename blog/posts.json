@@ -1,5 +1,19 @@
 [
   {
+    "title": "ECG 783 Midterm #2 — Problem 4: FFNN Two-Input Nonlinear System Modeling",
+    "date": "2026-04-27",
+    "summary": "6-input, 60-neuron FFNN (Levenberg-Marquardt, tansig/purelin) trained to model y(k)=cos(πx₁)cos(πx₂)+0.25x₁². Max approximation error = 0.000804 ≪ 0.15, R²=1.000000. Neighbourhood input design supplies local curvature context to the network.",
+    "path": "/blog/posts/ecg783-midterm2-p4/",
+    "category": "ECE · Adaptive Signal Processing"
+  },
+  {
+    "title": "ECG 783 Midterm #2 — Problem 3: Neural Network Character Recognition (E/C/U/S)",
+    "date": "2026-04-27",
+    "summary": "Two-layer FFNN (20→4→2, tanh, backprop) trained in 6627 epochs (η=0.2, tolerance=10⁻⁴) to classify 5×4 binary characters E, C, U, S. Seven unknown test letters decoded as SUCCESS. Network tolerates 1-pixel deviations from training templates.",
+    "path": "/blog/posts/ecg783-midterm2-p3/",
+    "category": "ECE · Adaptive Signal Processing"
+  },
+  {
     "title": "ECG 783 Midterm #1 — Wiener Solution, Leaky LMS & Nonlinear Adaptive Filter",
     "date": "2026-04-20",
     "summary": "Three-problem midterm: (1) 2-weight Wiener solution for noisy periodic input, W*=[1,4]^T, convergence range 0<μ<1/3; (2) Leaky LMS derivation, stability bound μ<1/(α+λ_max), steady-state E[W]=(αI+R)^{-1}P; (3) Nonlinear tanh adaptive filter update W_{n+1}=W_n+2με(n)[1−y²(n)]X_n.",
