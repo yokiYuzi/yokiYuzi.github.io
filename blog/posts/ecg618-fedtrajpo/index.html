@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FedTrajPO++: Compliance-Constrained Federated Trajectory Preference Optimization for Tool-Using Agents | Chang Wang</title>
+  <meta name="description" content="ECG 618 Final Paper. FedTrajPO++ reduces federated LLM agent violations by 94.6% and tool calls by 74.2% vs. FedAvg-SFT via warm-started mixed SFT+DPO, modular skill banks, and support-aware aggregation. UNLV ECE 618.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg618-fedtrajpo/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.38rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.80rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.72rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .result-table td:first-child { color: var(--accent2); font-weight: bold; }
+    .result-table tr.best td { background: rgba(0,87,231,0.06); }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .highlight-box strong { color: var(--accent2); }
+
+    .warn-box {
+      background: var(--surface-alt);
+      border-left: 3px solid #e55;
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .warn-box strong { color: #e55; }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.8rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .abstract-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      padding: 1.1rem 1.3rem;
+      margin: 1.5rem 0;
+      font-size: 0.85rem;
+      line-height: 1.78;
+      color: var(--text);
+    }
+    .abstract-box .abstract-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.55rem;
+    }
+
+    .caption { font-size: 0.74rem; color: var(--muted); letter-spacing: 0.04em; margin-top: 0.4rem; }
+
+    .figure-note {
+      background: var(--surface-alt);
+      border: 1px dashed var(--line);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.80rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .ref-list {
+      font-size: 0.78rem;
+      line-height: 1.82;
+      padding-left: 1.8rem;
+      margin-bottom: 0.9rem;
+    }
+    .ref-list li { margin: 0.28rem 0; }
+
+    .appendix-title {
+      font-size: 0.78rem;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin: 2.4rem 0 0.3rem;
+    }
+
+    .index-terms {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 1.2rem 0 0;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">← Back to Blog</a>
+
+    <article>
+      <div class="post-header">
+        <h1>FedTrajPO++: Compliance-Constrained Federated Trajectory Preference Optimization for Tool-Using Agents</h1>
+        <p class="meta">2026-05-11 &nbsp;·&nbsp; ECG 618 Final Paper &nbsp;·&nbsp; Federated Learning · LLM Agents · DPO</p>
+        <p class="index-terms"><strong>Index Terms —</strong> Federated learning, tool-using agents, direct preference optimization, policy compliance, modular adaptation, privacy-preserving alignment.</p>
+      </div>
+
+      <div class="post-body">
+
+        <div class="abstract-box">
+          <div class="abstract-label">Abstract</div>
+          <p style="margin:0">
+            Tool-using language agents are trained from interaction trajectories that may contain private user requests, tool
+            arguments, application programming interface returns, environment states, and workflow logic. This makes centralized
+            agent alignment difficult in enterprise and personal deployments. This article reformulates federated post-training
+            for tool-using agents as a <strong>compliance-constrained alignment problem</strong> rather than a raw-success
+            maximization problem. We present <strong>FedTrajPO++</strong>, a warm-started mixed objective that combines
+            verifier-approved trajectory behavior cloning with trajectory-level direct preference optimization, together with
+            a modular skill bank and support-aware aggregation over active tool modules. On the ToolWorld-v2 full stress
+            setting, federated supervised fine-tuning achieves higher final task success than FedTrajPO++ (0.320 versus 0.209)
+            and higher repeated-trial reliability (0.446 versus 0.279), but also produces severe tool overuse and policy
+            violations. FedTrajPO++ reduces average violations from 7.44 to 0.405 and average tool calls from 8.30 to 2.14 —
+            reductions of <strong>94.6%</strong> and <strong>74.2%</strong> relative to supervised fine-tuning.
+            These results support a safety-cost trade-off claim for federated agent alignment, while rejecting the stronger
+            claim that trajectory preference optimization unconditionally dominates supervised fine-tuning in task success.
+          </p>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════
+             I. INTRODUCTION
+        ════════════════════════════════════════════════════ -->
+        <h2>I. Introduction</h2>
+
+        <p>
+          Large language model (LLM) agents are no longer passive text generators; they increasingly operate as
+          decision-making systems that call external tools, query databases, navigate web interfaces, and execute
+          multi-step workflows on behalf of users. In such settings, the most informative training signal is not a
+          single answer string but the full <em>interaction trajectory</em>: the sequence of observations, deliberative
+          states, tool calls, arguments, returns, retries, and final environment state. Recent work on reasoning-and-acting
+          agents, self-supervised tool use, large-scale API training, and agent benchmarks has made this shift clear: reliable
+          tool use requires learning when to act, which tool to invoke, how to recover from intermediate failures, and how
+          to satisfy a goal that may only be verifiable at the end of a long-horizon process [1]–[7].
+        </p>
+
+        <p>
+          The trajectories needed for this form of post-training are also the data organizations are least willing to
+          centralize. Enterprise assistants, clinical workflow agents, legal-document agents, financial-analysis agents,
+          and personal productivity agents may expose private user requests, proprietary documents, database states,
+          API returns, credentials, and internal business rules. <strong>Federated learning</strong> provides a natural
+          collaboration model: clients retain raw data locally and contribute only constrained model updates. Classical
+          and modern federated optimization methods show how to train under communication constraints, non-identically
+          distributed clients, and system heterogeneity, while secure aggregation, differential privacy, and leakage
+          analyses clarify that update sharing reduces but does not eliminate privacy risk [8]–[17]. This paper adopts
+          that realistic view: FedTrajPO++ avoids centralizing trajectories, but it does not claim that federated
+          updates alone constitute a complete privacy guarantee.
+        </p>
+
+        <p>
+          Federated LLM post-training has recently progressed through parameter-efficient fine-tuning and low-rank
+          adaptation. LoRA-style adapters make client-side fine-tuning more feasible, and heterogeneous LoRA aggregation
+          methods address mismatched ranks, resource budgets, and client data distributions. Federated instruction-tuning
+          and value-alignment frameworks further show that distributed private corpora can improve LLM behavior without
+          pooling local text [18]–[22]. However, these methods are still primarily response- or instruction-oriented.
+          Tool-using agents require a stronger notion of supervision: a trajectory should be judged by end-state success,
+          repeated-trial reliability, tool-use cost, and policy compliance — not merely by whether an isolated response
+          appears fluent or helpful.
+        </p>
+
+        <p>
+          Preference optimization is attractive because it can compare alternative behaviors without requiring a
+          hand-designed scalar reward for every step. Human-preference reinforcement learning, summarization from feedback,
+          instruction alignment, direct preference optimization (DPO), and recent variants demonstrate that preference
+          signals can efficiently shape language model behavior [23]–[30]. Yet applying response-level preference learning
+          directly to tool agents is insufficient. A single action can look locally plausible while causing later tool
+          overuse, hidden state corruption, or a compliance violation. Conversely, a short low-action trajectory may
+          appear safe because it produces few violations, even though it fails the task. The central difficulty is
+          therefore not simply to optimize preferences, but to optimize trajectory preferences under coverage, cost,
+          compliance, and federated-data constraints.
+        </p>
+
+        <p>
+          This paper frames that difficulty as <strong>compliance-constrained federated trajectory preference
+          optimization</strong>. In deployments governed by policy rules, service-level reliability, or tool-call budgets,
+          raw task success is not a complete measure of progress. A method that solves more tasks by issuing many
+          unnecessary calls or by violating domain rules may be less deployable than one that solves fewer tasks with
+          substantially lower risk. Recent tool-agent and web-agent benchmarks increasingly emphasize reproducibility,
+          domain rules, repeated trials, and end-state validation [31]–[34], reinforcing the need to evaluate agents on
+          a frontier of success, reliability, safety, and cost. FedTrajPO++ is designed for that frontier rather than
+          for a one-dimensional success leaderboard.
+        </p>
+
+        <p>The four contributions of this paper are:</p>
+        <ol>
+          <li>Formulating private tool-agent post-training as a <strong>compliance-constrained objective</strong> over success, pass-$k$ reliability, rule violations, tool calls, and worst-client performance.</li>
+          <li>Proposing <strong>FedTrajPO++</strong>, a warm-started mixed SFT+DPO method that constructs same-task trajectory preferences from local verifier signals while keeping trajectories on clients.</li>
+          <li>Introducing a <strong>modular skill-bank update and support-aware aggregation</strong> rule so that sparse tool evidence is not confused with negative evidence.</li>
+          <li>Reporting controlled ToolWorld-v2 experiments that clarify both the strength and the limitation of the method — FedTrajPO++ is not the raw-success winner, but it substantially improves the <strong>safety-cost profile</strong> and exposes a critical no-op failure mode of pure trajectory DPO.</li>
+        </ol>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             II. RELATED WORK
+        ════════════════════════════════════════════════════ -->
+        <h2>II. Related Work</h2>
+
+        <h3>A. Federated LLM Post-Training</h3>
+        <p>
+          Federated LLM post-training combines the classical federated-learning objective of training without raw-data
+          pooling with the modern need to adapt large foundation models under client heterogeneity. FedAvg established
+          the standard local-update and server-averaging paradigm [8], while LEAF, FedProx, SCAFFOLD, and adaptive
+          federated optimization highlight realistic benchmarking, client drift, system heterogeneity, non-IID data,
+          and communication-efficient aggregation [9]–[12]. Privacy-preserving deployment further requires secure
+          aggregation, differential privacy, and explicit awareness of gradient leakage risks [13]–[15], and
+          fairness/personalization work shows that a single global objective can disadvantage minority or atypical
+          clients [16], [17].
+        </p>
+        <p>
+          On the LLM side, LoRA provides the low-rank adaptation primitive [18]; FLoRA and FlexLoRA address
+          heterogeneous low-rank aggregation and client resource differences [19], [20]; FedIT and OpenFedLLM show
+          that instruction tuning and value alignment can be studied in decentralized private-data settings [21], [22].
+          FedTrajPO++ builds on these foundations but aggregates sparse, module-level updates induced by long-horizon
+          tool trajectories rather than dense updates from ordinary supervised examples.
+        </p>
+
+        <h3>B. Federated Preference Alignment</h3>
+        <p>
+          Federated preference alignment studies how to train aligned LLMs without centralizing user preferences.
+          Classical preference learning, summarization from feedback, and instruction alignment demonstrate the value
+          of pairwise or ranked feedback for shaping model behavior [23]–[25]. DPO removes the need for an explicit
+          reward model and reinforcement-learning loop [26], while newer alignment objectives and rule-based AI-feedback
+          methods explore alternative preference or utility formulations [27], [28]. FedBiscuit and FedRLHF further
+          investigate federated preference aggregation, personalization, and privacy-preserving RLHF [29], [30].
+        </p>
+        <p>
+          FedTrajPO++ differs in that preferences are derived from local agent rollouts and domain verifiers; the signal
+          includes end-state correctness, tool cost, repeated-trial reliability, and rule violations. This changes the
+          optimization risk because a low-cost failed trajectory can be preferred by a naive objective if the model has
+          not yet learned successful tool behavior.
+        </p>
+
+        <h3>C. Agent Benchmarks and Trajectory Evaluation</h3>
+        <p>
+          Agent benchmarks and environments increasingly expose the limits of response-level evaluation. AgentBench,
+          WebArena, and OSWorld emphasize interactive environments, realistic web or desktop operation, and
+          execution-based evaluation [5]–[7]. WebArena-Verified, BrowserGym, and tau-bench further stress
+          reproducibility, deterministic scoring, domain rules, end-state checking, and repeated-trial reliability
+          [31]–[33]. FEDAGENT and FedAgentGym motivate decentralized agent learning under preference, coverage, and
+          hardness heterogeneity [34].
+        </p>
+        <p>
+          The present evidence uses a controlled ToolWorld-v2 environment to isolate algorithmic behavior before
+          scaling to these benchmark-grade environments. This staged strategy keeps the claim focused: the paper
+          analyzes a compliance-cost trade-off and a DPO failure mode rather than claiming benchmark dominance.
+        </p>
+
+        <h3>D. Preference Optimization for Trajectories</h3>
+        <p>
+          DPO optimizes a policy from pairwise preferences using a classification-style objective and an implicit
+          KL-regularized reward model [26]. Applying DPO to whole trajectories is attractive because task success,
+          rule violations, tool costs, and final-state correctness are trajectory-level quantities rather than
+          token-level labels. However, preference learning from trajectory summaries is also vulnerable to coverage
+          failure. When the starting policy rarely produces successful tool use, a pairwise score that penalizes
+          violations and calls may prefer short failed trajectories over exploratory but recoverable ones.
+        </p>
+        <p>
+          The SFT anchor in FedTrajPO++ is therefore part of the method, not an implementation trick: it supplies a
+          coverage prior that keeps the policy inside the region where trajectory preferences are meaningful.
+        </p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             III. PROBLEM FORMULATION
+        ════════════════════════════════════════════════════ -->
+        <h2>III. Problem Formulation &amp; Metrics</h2>
+
+        <h3>A. Federated Tool-Agent Setting</h3>
+
+        <p>
+          We consider $N$ clients. Client $i$ owns a private task distribution $\mathcal{D}_i$,
+          a local tool set $\mathcal{T}_i$, and a local verifier that can score task success and rule violations.
+          The global base model with parameters $\theta_0$ is frozen or partially frozen.
+          The trainable parameters $\phi$ are PEFT adapters decomposed into modules $\{\phi^k\}_{k=1}^K$,
+          where modules correspond to tools or reusable interaction primitives.
+          Client $i$ activates a sparse subset $A_i$ of modules during local rollouts.
+        </p>
+
+        <p>A trajectory is $\tau = (h_1, a_1, o_1, \ldots, h_T, a_T, o_T)$, where $h_t$ is the agent history,
+        $a_t$ is a language or tool action, and $o_t$ is the observation returned by the environment or tool.
+        The trajectory log-probability under policy $\pi_\phi$ is:</p>
+
+        $$\log \pi_\phi(\tau) = \sum_t \log \pi_\phi(a_t \mid h_t) \tag{1}$$
+
+        <p>Clients never upload $\tau$, tool inputs/outputs, or environment states. They communicate sparse module
+        deltas and optional aggregate support statistics. This interface is weaker than a full privacy guarantee because
+        model updates can still leak information, but it avoids centralizing raw trajectories and is compatible with
+        secure aggregation, clipping, and differential privacy in a deployment-grade implementation.</p>
+
+        <h3>B. Compliance-Constrained Objective</h3>
+
+        <p>
+          Let $S(\pi)$ denote held-out task success, $P(\pi)$ denote pass-$k$ reliability,
+          $V(\pi)$ denote average policy violations, and $C(\pi)$ denote average tool calls.
+          We treat deployment alignment as a <em>constrained</em> objective rather than a single unconstrained
+          accuracy target:
+        </p>
+
+        $$\max_\phi\; S(\pi_\phi) + \alpha P(\pi_\phi) \quad \text{s.t.} \quad V(\pi_\phi) \leq \epsilon_v,\; C(\pi_\phi) \leq \epsilon_c \tag{2}$$
+
+        <p>For transparent model selection, this is converted to a Lagrangian diagnostic score:</p>
+
+        $$U_\lambda(\pi) = S(\pi) + \alpha P(\pi) - \lambda_v V(\pi) - \lambda_c C(\pi) \tag{3}$$
+
+        <p>We do not hide the trade-off inside a scalar metric. The main tables report success, pass-$k$ reliability,
+        violations, tool calls, and worst-client success separately. This is necessary because a method can be superior
+        under compliance constraints while still inferior in raw success.</p>
+
+        <h3>C. Why Raw Success Is Insufficient</h3>
+
+        <p>
+          The constrained view changes what counts as a valid contribution. A method that improves success by increasing
+          calls to risky tools may be useful for unconstrained automation but unsuitable for regulated deployment.
+          Conversely, a method that reduces all tool use to zero is not aligned either, because it satisfies the safety
+          constraint by abandoning the task. We therefore distinguish:
+        </p>
+
+        <div class="highlight-box">
+          <strong>Productive alignment</strong> — retains task progress while reducing violations and calls.<br>
+          <strong>Aggressive imitation</strong> — raises success through excessive tool use.<br>
+          <strong>No-op collapse</strong> — lowers violations because the agent stops acting.<br><br>
+          FedTrajPO++ targets productive alignment, although the current implementation reaches a conservative point on
+          the frontier rather than a strictly dominant point.
+        </div>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             IV. FEDTRAJPO++ METHOD
+        ════════════════════════════════════════════════════ -->
+        <h2>IV. FedTrajPO++ Method</h2>
+
+        <h3>A. Same-Task Trajectory Preference Construction</h3>
+
+        <p>
+          For each task $x$, client $i$ samples multiple rollouts. Each trajectory receives a local scalar ordering
+          score:
+        </p>
+
+        $$q_i(\tau) = r_s \cdot \mathbf{1}[\text{success}(\tau)] - \lambda_v v(\tau) - \lambda_c c(\tau) - \lambda_T T(\tau) \tag{4}$$
+
+        <p>
+          where $v(\tau)$ is the number or severity of rule violations, $c(\tau)$ is the number of tool calls, and
+          $T(\tau)$ is trajectory length. Same-task pairs $(\tau_\text{pos}, \tau_\text{neg})$ are constructed when
+          $q_i(\tau_\text{pos}) > q_i(\tau_\text{neg})$ by a margin. Same-task pairing prevents the model from
+          confusing task difficulty with trajectory quality. High-quality successful trajectories also enter a
+          behavior-cloning buffer $\mathcal{B}_i$.
+        </p>
+
+        <h3>B. Warm-Started Mixed Local Objective</h3>
+
+        <p>The local preference loss is a trajectory-level DPO objective:</p>
+
+        $$\mathcal{L}_i^{\text{traj}}(\phi) = -\mathbb{E}_{\mathcal{P}_i} \log\sigma\{\beta(\Delta_\phi - \Delta_{\text{ref}})\} \tag{5}$$
+
+        $$\Delta_\phi = \log\pi_\phi(\tau_\text{pos}) - \log\pi_\phi(\tau_\text{neg}) \tag{6}$$
+
+        <p>The reference policy is the broadcast global model from the previous round. The SFT anchor on
+        verifier-approved trajectories is:</p>
+
+        $$\mathcal{L}_i^{\text{sft}}(\phi) = -\mathbb{E}_{\mathcal{B}_i} \log\pi_\phi(\tau) \tag{7}$$
+
+        <p>The full local loss combines both with a proximal drift term:</p>
+
+        $$\mathcal{L}_i(\phi) = \mathcal{L}_i^{\text{traj}}(\phi) + \gamma \mathcal{L}_i^{\text{sft}}(\phi) + \mu\|\phi - \phi_{\text{ref}}\|_2^2 \tag{8}$$
+
+        <p>
+          Training first warm-starts with SFT on verifier-approved trajectories, then continues with the mixed
+          objective. This design directly follows the observed failure mode: pure DPO can collapse toward no-op
+          behavior because no-op trajectories have few tool calls and few violations even when they fail.
+          The reference policy $\phi_{\text{ref}}$ is the broadcast global model from the previous round.
+        </p>
+
+        <h3>C. Failure Mode: Preference Without Coverage Can Prefer No-Op</h3>
+
+        <div class="warn-box">
+          <strong>No-op collapse:</strong> Suppose two failed trajectories have similar task reward,
+          but one calls no tools (zero violations) while the other calls several tools but makes a violation.
+          A pure preference objective ranks the no-op failure <em>above</em> the exploratory failure.
+          Repeating this update decreases the probability of tool calls before the policy learns enough successful
+          behavior to counterbalance it. The result is an apparently safe but <em>useless</em> policy.
+          Warm-started SFT changes the local geometry by giving successful actions positive likelihood before DPO
+          begins penalizing unsafe alternatives. Mixed SFT during later rounds also prevents the preference objective
+          from treating all high-cost trajectories as equally bad when some are necessary for success.
+          The SFT anchor in FedTrajPO++ is therefore part of the method, not a stabilization trick —
+          it supplies a coverage prior that keeps the policy inside the region where trajectory preferences are meaningful.
+        </div>
+
+        <h3>D. Modular Skill Bank and Support-Aware Aggregation</h3>
+
+        <p>
+          Each module $k$ has a server adapter $\phi^k$. Client $i$ updates only modules $k \in A_i$ activated by its
+          trajectories. For a LoRA-style module, client $i$ may use rank $r_{ik}$ with factors $A_i^k$ and $B_i^k$,
+          and reconstructed update:
+        </p>
+
+        $$\Delta W_i^k = B_i^k A_i^k \tag{9}$$
+
+        <p>
+          Let $S_k$ be the set of clients that updated module $k$ in a communication round, and $n_i^k$ be the number
+          of local trajectories or action tokens supporting that module. The server computes:
+        </p>
+
+        $$\Delta W^k = \frac{\sum_{i \in S_k} \omega_i^k \Delta W_i^k}{\sum_{i \in S_k} \omega_i^k}, \qquad \omega_i^k = \frac{n_i^k}{n_i^k + \eta} \tag{10}$$
+
+        <p>
+          A module with no support is left unchanged or updated by server momentum only. If the server rank is $r_k$,
+          the aggregated update is projected back to rank $r_k$ by truncated singular value decomposition. This
+          reconstruction-and-projection rule supports heterogeneous client ranks and avoids averaging LoRA factors
+          that live in incompatible low-rank spaces.
+        </p>
+
+        <div class="highlight-box">
+          <strong>Key distinction:</strong> In standard FedAvg, an absent update is accidentally treated like a zero
+          update. For sparse tools this is wrong — if a client did not use a tool, it has <em>no evidence</em> about
+          that module, not <em>negative evidence</em>. Equation (10) averages only over clients that updated the module
+          and down-weights very low-support updates.
+        </div>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             V. DESIGN RATIONALE
+        ════════════════════════════════════════════════════ -->
+        <h2>V. Design Rationale</h2>
+
+        <h3>A. Same-Task Pairing Isolates Trajectory Quality</h3>
+        <p>
+          A naive preference dataset can compare a successful easy task against a failed hard task and accidentally
+          teach <em>task selection</em> rather than better decision-making. Tool agents make this problem worse because
+          task hardness is entangled with the required number of tool calls. A longer successful trajectory can be
+          preferred over a shorter failed one, but a naive cost penalty can rank it lower. FedTrajPO++ constructs
+          preference pairs only within the same task whenever possible, so the preference update targets planning
+          quality, tool choice, and rule following — not cross-task difficulty.
+        </p>
+
+        <h3>B. The SFT Anchor Is a Coverage Prior</h3>
+        <p>
+          In ordinary response alignment, a pretrained LLM already assigns reasonable probability to many candidate
+          answers. In tool-agent training from weak policies, the action distribution may have poor coverage over
+          valid tool sequences. Preference optimization cannot reliably increase the probability of a successful
+          trajectory if that trajectory is absent from the local buffer. Warm-started SFT supplies this coverage
+          prior by making verified tool paths reachable. Mixed SFT then maintains coverage while DPO reshapes the
+          relative preference between safe and unsafe rollouts. This is why $\gamma$ in equation (8) is a core
+          algorithmic parameter rather than a stabilization trick.
+        </p>
+
+        <h3>C. Modularity Targets Tool-Specific Negative Transfer</h3>
+        <p>
+          A monolithic adapter receives gradients from all clients and all tools, even when a client never observes
+          a given tool. Under non-IID coverage, this can couple unrelated tool behaviors and cause updates for common
+          tools to overwrite rare-tool capabilities. The modular bank makes the support pattern explicit. A search
+          module is updated by search trajectories; a form-filling module is updated by form trajectories; and a
+          planning or reflection module can be shared across many tasks. This structure does not guarantee higher raw
+          success, as the experiments show, but it makes compliance behavior more controllable and lets the server
+          reason about module starvation.
+        </p>
+
+        <h3>D. Support-Aware Aggregation Separates Missing Evidence from Negative Evidence</h3>
+        <p>
+          In standard FedAvg-style aggregation, an absent update can be accidentally treated like a zero update. For
+          sparse tools, this is wrong: if a client did not use a tool, it has no evidence about that module. Equation
+          (10) averages only over clients that updated the module and down-weights very low-support updates. The
+          no-support ablation removes this distinction. Its Medium behavior — initial learning followed by high
+          violations — suggests that unsupported or weakly supported module updates can destabilize the skill bank.
+        </p>
+
+        <h3>E. The Method Optimizes a Frontier</h3>
+        <p>
+          Different deployments may choose different safety budgets. A customer-service agent governed by policy rules
+          may require near-zero violations even at lower success, while an internal data-analysis assistant may tolerate
+          more calls if the tools are low risk. FedTrajPO++ is compatible with either choice: the pair score, the SFT
+          mixture, and the checkpoint-selection utility can be adjusted before training. The present experiments
+          instantiate a strict compliance setting and should be interpreted relative to that choice.
+        </p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             VI. EXPERIMENTAL SETUP
+        ════════════════════════════════════════════════════ -->
+        <h2>VI. Experimental Setup</h2>
+
+        <h3>A. Environment</h3>
+
+        <p>
+          All experiments use <strong>ToolWorld-v2</strong>, a controlled tool-agent environment with
+          deterministic verifiers, private client task distributions, heterogeneous tool coverage, and staged difficulty.
+          The Easy stage checks whether the environment and training loop are learnable. Medium introduces more coverage
+          sparsity and longer tool paths. Full stress combines harder tasks, greater heterogeneity, higher violation
+          risk, and more opportunities for over-calling tools.
+        </p>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Stage</th><th>Config</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Easy</td><td>Fixed easy tasks</td><td>Learnability sanity check; verifies training loop and no-op collapse failure mode</td></tr>
+            <tr><td>Medium</td><td>More coverage sparsity + longer plans</td><td>Most informative test for support-aware aggregation</td></tr>
+            <tr><td>Full Stress</td><td>Harder tasks, greater heterogeneity</td><td>Main deployment-style result: violations and tool overuse become severe</td></tr>
+          </tbody>
+        </table>
+
+        <p>
+          Easy is not used to claim deployment readiness; it verifies that the environment, action routing, and
+          training loop can learn. Medium is the most informative current support-sparsity test because the no-support
+          baseline becomes unstable and accumulates high violations. Full stress is the main deployment-style result
+          because tool overuse and compliance violations become severe for success-oriented methods.
+        </p>
+
+        <h3>B. Baselines</h3>
+        <ul>
+          <li><strong>FedAvg-SFT</strong> — imitates successful trajectories; positive control for raw success</li>
+          <li><strong>FedTrajPO++ no-support</strong> — ablation: removes support-aware weighting</li>
+          <li><strong>Monolithic TrajDPO</strong> — trains a single shared adapter rather than modular skills; global pair construction</li>
+          <li><strong>Response-level DPO</strong> — optimizes local response pairs instead of whole trajectories</li>
+          <li><strong>Full-participation federated</strong> — all clients participate every round (not a true centralized oracle, which would pool raw trajectories)</li>
+        </ul>
+
+        <h3>C. Metrics</h3>
+        <p>
+          We report final-round held-out success, pass-$k$ reliability, average violations, average tool calls, and
+          worst-client success. Final-round reporting avoids choosing the best checkpoint after the fact. However,
+          because several methods oscillate, benchmark-grade reporting should additionally include best validation
+          checkpoint, last-five-round average, area under the learning curve, and success under explicit violation
+          thresholds.
+        </p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             VII. RESULTS
+        ════════════════════════════════════════════════════ -->
+        <h2>VII. Results</h2>
+
+        <h3>A. Full Stress: Safer Policies at Lower Success</h3>
+
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Success ↑</th>
+              <th>Pass-k ↑</th>
+              <th>Violations ↓</th>
+              <th>Tool calls ↓</th>
+              <th>Worst-client ↑</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>FedAvg-SFT</td><td>0.3198</td><td>0.4456</td><td>7.4389</td><td>8.2973</td><td>0.1328</td></tr>
+            <tr class="best"><td>FedTrajPO++ (ours)</td><td>0.2089</td><td>0.2787</td><td><strong>0.4048</strong></td><td><strong>2.1405</strong></td><td>0.0234</td></tr>
+            <tr><td>FedTrajPO no-support</td><td>0.2011</td><td>0.2619</td><td>0.4531</td><td>2.1602</td><td>0.0078</td></tr>
+            <tr><td>Monolithic TrajDPO</td><td>0.2737</td><td>0.4694</td><td>3.4186</td><td>6.2133</td><td>0.0938</td></tr>
+            <tr><td>Response DPO</td><td>0.1244</td><td>0.2006</td><td>5.2297</td><td>7.0791</td><td>0.0000</td></tr>
+            <tr><td>Full-participation federated</td><td>0.2466</td><td>0.3381</td><td>1.5559</td><td>3.3894</td><td>0.0781</td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Table I — Full Stress final-round results. FedAvg-SFT has the highest final success among the listed federated methods, but its behavior is unsafe and expensive. FedTrajPO++ achieves the lowest violations and tool calls.</p>
+
+        <div class="figure-note">
+          <strong>Fig. 2 — Full Stress Trade-off (Success vs. Violations scatter plot)</strong><br>
+          Moving up improves task success; moving left improves safety. FedTrajPO++ and no-support occupy the low-violation region
+          (violations ≈ 0.4–0.45), while FedAvg-SFT lies at (7.44, 0.320) and monolithic DPO at (3.42, 0.274).
+          Response-DPO achieves low violations but near-zero success — a no-op, not a safe success.
+          The correct interpretation is a Pareto-style trade-off: FedTrajPO++ learns a conservative, low-violation
+          tool-use policy, not an unconstrained success-maximizing policy.
+        </div>
+
+        <p>
+          FedAvg-SFT has the highest final success (0.320) among federated methods, but its behavior is unsafe and
+          expensive: 7.44 violations and 8.30 tool calls on average. Monolithic trajectory DPO obtains stronger
+          pass-$k$ reliability than FedTrajPO++ but also produces 3.42 violations and 6.21 tool calls.
+          Response-level DPO is weak in both success and compliance.
+        </p>
+
+        <p>
+          FedTrajPO++ is not the raw-success winner. It reaches 0.209 success and 0.279 pass-$k$ reliability, below
+          FedAvg-SFT and monolithic DPO. Its advantage is compliance and cost: violations fall to 0.405 and tool calls
+          to 2.14. Relative to FedAvg-SFT, this is a <strong>94.6% reduction in violations</strong> and a
+          <strong>74.2% reduction in tool calls</strong>. Relative to monolithic trajectory DPO, the reductions are
+          88.2% and 65.5%.
+        </p>
+
+        <h3>B. Illustrative Constrained Utility</h3>
+
+        <p>
+          Table II reports an illustrative Lagrangian score ($\alpha=0.5$, $\lambda_v=0.1$, $\lambda_c=0.03$)
+          and a strict safe-success indicator (violations $\leq 1$ and tool calls $\leq 4$).
+          These weights are not tuned and are not the primary metric; they show how the ordering changes when
+          compliance and cost matter. Under this diagnostic, SFT and monolithic DPO lose their advantage because
+          their violation and tool-call rates exceed the safety budget. FedTrajPO++ has the highest illustrative
+          utility and the highest safe success among methods satisfying both constraints.
+        </p>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Method</th><th>$U_\lambda$ ↑</th><th>SafeSucc ↑</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>FedAvg-SFT</td><td>-0.450</td><td>0.000</td></tr>
+            <tr class="best"><td>FedTrajPO++ (ours)</td><td><strong>0.244</strong></td><td><strong>0.209</strong></td></tr>
+            <tr><td>No-support</td><td>0.222</td><td>0.201</td></tr>
+            <tr><td>Monolithic TrajDPO</td><td>-0.020</td><td>0.000</td></tr>
+            <tr><td>Response DPO</td><td>-0.511</td><td>0.000</td></tr>
+            <tr><td>Full-participation federated</td><td>0.158</td><td>0.000</td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Table II — Constrained diagnostics. Only FedTrajPO++ and no-support satisfy both $V \leq 1$ and $C \leq 4$.</p>
+
+        <h3>C. Medium: Support-Aware Aggregation Helps Under Coverage Sparsity</h3>
+
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Success ↑</th>
+              <th>Pass-k ↑</th>
+              <th>Violations ↓</th>
+              <th>Tool calls ↓</th>
+              <th>Worst-client ↑</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>FedAvg-SFT</td><td>0.7572</td><td>0.8250</td><td>1.8424</td><td>2.8633</td><td>0.5469</td></tr>
+            <tr class="best"><td>FedTrajPO++ (ours)</td><td>0.1816</td><td>0.2477</td><td><strong>0.0871</strong></td><td><strong>0.4268</strong></td><td>0.0586</td></tr>
+            <tr><td>No-support</td><td>0.0947</td><td>0.2000</td><td>6.7633</td><td>0.3230</td><td>0.0117</td></tr>
+            <tr><td>Monolithic TrajDPO</td><td>0.2656</td><td>0.3289</td><td>2.5760</td><td>1.3582</td><td>0.1016</td></tr>
+            <tr><td>Full-participation federated</td><td>0.2842</td><td>0.4367</td><td>0.7398</td><td>1.4451</td><td>0.1055</td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Table III — Medium final-round results. FedTrajPO++ vs. no-support: support-aware aggregation nearly doubles success and reduces violations from 6.76 to 0.087. Monolithic DPO has higher success than FedTrajPO++ but its violation count is about 29.6× larger.</p>
+
+        <p>
+          The Medium result is the clearest evidence that <strong>support-aware aggregation matters</strong> when
+          modules receive sparse and uneven client support. FedTrajPO++ almost doubles final success vs. the no-support
+          variant (0.182 vs. 0.095), increases worst-client success by ~5×, and reduces violations from 6.76 to 0.087.
+          The no-support baseline's high violations suggest unsupported module updates can destabilize the skill bank.
+          Under a strict deployment constraint such as $V \leq 1$, FedTrajPO++ would be preferable even though its
+          raw success is lower than monolithic DPO.
+        </p>
+
+        <h3>D. Easy Ablations: Pure DPO Collapses Without an Anchor</h3>
+
+        <p>
+          Easy is a sanity check: if a method cannot learn Easy, it is not appropriate for harder federated agent
+          settings.
+        </p>
+
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Success ↑</th>
+              <th>Pass-k ↑</th>
+              <th>Violations ↓</th>
+              <th>Tool calls ↓</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>FedAvg-SFT</td><td>0.7539</td><td>0.9902</td><td>2.4731</td><td>3.2622</td></tr>
+            <tr><td>Pure TrajDPO</td><td>0.0005</td><td>0.0020</td><td>0.0000</td><td>0.0005</td></tr>
+            <tr><td>Mixed SFT+DPO</td><td>0.3115</td><td>0.7109</td><td>0.4531</td><td>1.6089</td></tr>
+            <tr class="best"><td>Warm-start + mixed</td><td>0.3594</td><td>0.7129</td><td><strong>0.0381</strong></td><td>1.7417</td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Table IV — Easy ablation. Pure trajectory DPO collapses to near-zero tool use (no-op collapse). Warm-start+mixed recovers to 0.359 success with only 0.038 violations.</p>
+
+        <p>
+          Pure trajectory DPO achieves: success = 0.0005, tool calls = 0.0005, violations = 0.000.
+          This is <em>not</em> safe success — it is <strong>no-op collapse</strong>. The agent simply stopped acting.
+          In contrast, FedAvg-SFT learns the environment well, reaching 0.754 success and 0.990 pass-$k$ reliability.
+          Mixed SFT+DPO substantially recovers learning (0.312 success, 0.711 pass-$k$).
+          With warm-start plus mixed SFT, FedTrajPO++ reaches 0.359 success, 0.713 pass-$k$, and only 0.038 violations.
+          These ablations justify making the SFT anchor a formal part of the algorithm.
+        </p>
+
+        <h3>E. Learning Dynamics and Checkpoint Selection</h3>
+
+        <p>
+          Final-round tables are intentionally conservative, but they obscure useful dynamics. In Medium, FedTrajPO++
+          reaches a higher intermediate success of approximately 0.309 before ending at 0.182. The no-support baseline
+          also reaches an intermediate success near 0.308, but later drops to 0.095 while accumulating 6.763 violations.
+          In Full stress, FedTrajPO++ peaks around 0.256 success before ending at 0.209. These trajectories suggest
+          that the optimization signal is real, but training dynamics remain unstable.
+        </p>
+
+        <p>
+          For a deployment system, the right checkpoint is not necessarily the last round. It should be selected by a
+          validation rule such as maximizing success subject to violation and call budgets, or maximizing equation (3)
+          with pre-registered weights. This would avoid two failure modes: selecting an unsafe high-success checkpoint,
+          or discarding a safe checkpoint because later rounds drift. Validation-based constrained selection should be
+          part of the final evaluation protocol, not a post-hoc cherry-picking device.
+        </p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             VIII. DISCUSSION
+        ════════════════════════════════════════════════════ -->
+        <h2>VIII. Discussion &amp; Limitations</h2>
+
+        <h3>A. What the Results Support</h3>
+        <p>
+          The main supported claim is not that FedTrajPO++ is universally better than SFT. SFT is a strong positive
+          control and achieves the best raw success in all reported stages. The supported claim is that warm-started
+          trajectory preference optimization can reshape a federated tool agent toward much lower violation and tool-use
+          cost. This is valuable when the deployment objective is to complete tasks subject to compliance and cost limits.
+        </p>
+
+        <h3>B. Why Response-Level DPO Is Weak</h3>
+        <p>
+          Response-level DPO lacks access to long-horizon consequences. A single action may look locally reasonable
+          while causing later tool overuse or a rule violation. Tool agents need preference signals over entire rollouts,
+          especially when success depends on multi-step tool composition and recovery. This explains why response-level
+          DPO is a weak baseline in the present experiments.
+        </p>
+
+        <h3>C. Why Support-Aware Aggregation Is Only Partially Established</h3>
+        <p>
+          Medium provides a strong support-aware signal, but full stress shows only a small gap between FedTrajPO++
+          and no-support. This means the current full setting is not a decisive stress test for the aggregator.
+          A stronger test should deliberately create rare modules, disjoint tool coverage, low participation, and
+          module starvation, then report rare-tool success, bottom-client success, and per-module update frequency.
+        </p>
+
+        <h3>D. Status of the Original Hypotheses</h3>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Hypothesis</th><th>Revised Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>H1 — TrajDPO beats SFT in raw success</td><td>Revise. Trajectory preferences do not beat SFT in raw success; they improve compliance-cost trade-offs.</td></tr>
+            <tr><td>H2 — Modular bank beats monolithic DPO</td><td>Partial. The modular bank is safer than monolithic DPO, but monolithic retains higher success and pass-k reliability.</td></tr>
+            <tr><td>H3 — Support-aware aggregation helps</td><td>Medium supports support-aware aggregation; full stress is inconclusive because no-support is close.</td></tr>
+            <tr><td>H4 — Multi-bank preference heterogeneity</td><td>Not tested. Multi-bank preference heterogeneity should remain future work or appendix-only.</td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Table V — Revised status of the original hypotheses. This status table prevents the paper from making claims that the present experiments do not establish.</p>
+
+        <h3>E. Evidence Needed for an IEEE Journal Submission</h3>
+        <p>The current article should be read as evidence for the constrained-alignment direction and algorithmic failure analysis, not a final benchmark submission. A stronger journal version needs:</p>
+        <ul>
+          <li>Multi-seed confidence intervals for all headline tables</li>
+          <li>Deliberately sparse rare-module stress test (low participation rate, few clients per rare tool) to report rare-tool success, module starvation, and bottom-client success</li>
+          <li>Parameter-matched and communication-matched monolithic adapter baselines</li>
+          <li>A true pooled centralized oracle (privacy-violating, pools all raw trajectories)</li>
+          <li>Validation-based constrained checkpoint selection</li>
+        </ul>
+
+        <h3>F. Privacy and Deployment Considerations</h3>
+        <p>
+          FedTrajPO++ reduces exposure relative to centralized trajectory pooling because prompts, environment states,
+          tool arguments, tool outputs, trajectory texts, and preference pairs stay on clients. However, sparse model
+          updates and module-level support counts are not a complete privacy guarantee. A deployment-grade system should
+          combine the sparse interface with secure aggregation, update clipping, differential privacy when appropriate,
+          and domain-specific safety evaluation. The method also risks over-conservatism: a low-violation agent can be
+          unhelpful if it refuses necessary tool use. This is why success and safety must be reported together.
+        </p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             IX. CONCLUSION
+        ════════════════════════════════════════════════════ -->
+        <h2>IX. Conclusion</h2>
+
+        <p>
+          We presented FedTrajPO++, a federated trajectory preference framework for private tool-using agents,
+          combining same-task trajectory preferences, warm-started mixed SFT+DPO training, modular skill-bank updates,
+          and support-aware aggregation. The empirical conclusion is deliberately constrained:
+          in full stress, FedTrajPO++ forms a safer and lower-cost policy,
+          reducing violations by <strong>94.6%</strong> and tool calls by <strong>74.2%</strong> relative to FedAvg-SFT,
+          but it sacrifices success and pass-$k$ reliability.
+        </p>
+
+        <p>
+          This supports compliance-constrained federated agent alignment and rejects the stronger claim of unconditional
+          highest success. Future work should add multi-seed benchmark results, rare-module stress tests, true
+          centralized-oracle comparisons, communication-matched controls, and explicit validation-based constrained
+          checkpoint selection.
+        </p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             APPENDIX A
+        ════════════════════════════════════════════════════ -->
+        <p class="appendix-title">Appendix A</p>
+        <h2 style="margin-top:0.5rem;">Additional Easy and Sparse Ablations</h2>
+
+        <p>
+          This appendix reports additional Easy and Sparse diagnostics that complement the Medium and Full stress
+          results in Section VII. The Easy setting is primarily a learnability and stabilization check: it tests
+          whether each method can acquire productive tool-use behavior before the harder compliance trade-off appears.
+          The Sparse setting is a support-coverage diagnostic: it stresses client participation and module support,
+          and it should be interpreted cautiously because all federated methods remain in a low-success regime.
+          Together, these results support the paper's central framing: FedTrajPO++ is best understood as a stabilized,
+          compliance-constrained trajectory preference method rather than an unconditional raw-success maximizer.
+        </p>
+
+        <div class="figure-note">
+          <strong>Fig. A1 — Easy-setting learning curves (mean over 3 seeds; shaded bands = 95% CI)</strong><br>
+          Four panels: Success, Violations, Tool Calls, Utility vs. Round (0–6).<br>
+          Methods: Centralized pooled ref. (black), FedAvg-SFT (blue), FedTrajPO++ (red),
+          FedTrajPO++ no-support (green), Pure TrajDPO (purple), Mixed w/o warm start (orange).<br><br>
+          In Easy, the centralized pooled reference achieves the best safety-cost profile because it directly pools
+          trajectories. Among federated methods, pure trajectory DPO and mixed training without a warm start do not
+          show a clear advantage over anchored baselines, consistent with the no-op and weak-coverage failure modes
+          discussed in Sections IV-C and V-B. The result supports the use of verifier-approved behavior cloning as
+          a warm-start and continuing anchor before trajectory-level preference pressure becomes strong.
+        </div>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Method</th><th>Success</th><th>Violations</th><th>Tool Calls</th><th>Utility</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Centralized pooled ref.</td><td>0.0352 ± 0.0095</td><td>1.579 ± 0.104</td><td>1.006 ± 0.206</td><td>−0.104 ± 0.016</td></tr>
+            <tr><td>FedAvg-SFT</td><td>0.0310 ± 0.0018</td><td>2.120 ± 0.050</td><td>1.459 ± 0.089</td><td>−0.180 ± 0.012</td></tr>
+            <tr class="best"><td>FedTrajPO++</td><td>0.0264 ± 0.0047</td><td>2.125 ± 0.072</td><td>1.479 ± 0.097</td><td>−0.193 ± 0.008</td></tr>
+            <tr><td>FedTrajPO++ (no support)</td><td>0.0343 ± 0.0087</td><td>2.117 ± 0.056</td><td>1.429 ± 0.066</td><td>−0.171 ± 0.027</td></tr>
+            <tr><td>Pure TrajDPO</td><td>0.0292 ± 0.0072</td><td>2.150 ± 0.021</td><td>1.451 ± 0.052</td><td>−0.187 ± 0.019</td></tr>
+            <tr><td>Mixed w/o warm start</td><td>0.0231 ± 0.0074</td><td>2.157 ± 0.037</td><td>1.452 ± 0.050</td><td>−0.202 ± 0.021</td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Table A-I — Easy final-round summary (Mean ± 95% CI). Methods without an effective coverage anchor do not exhibit a clear advantage.</p>
+
+        <div class="figure-note">
+          <strong>Fig. A2 — Sparse-setting learning curves (mean over 3 seeds; shaded bands = 95% CI)</strong><br>
+          Four panels: Success, Violations, Tool Calls, Utility vs. Round (0–8).<br>
+          Same color coding as Fig. A1.<br><br>
+          In Sparse, all federated methods operate in a low-success regime, and differences between support-aware and
+          non-support variants remain modest. The Sparse condition is a diagnostic stress test rather than decisive
+          evidence for the support-aware aggregator. The more defensible conclusion is that the current sparse-support
+          experiment reveals the difficulty of rare-module learning, while stronger rare-tool stress tests are still
+          needed before making a broad aggregation claim.
+        </div>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Method</th><th>Success</th><th>Violations</th><th>Tool Calls</th><th>Utility</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Centralized pooled ref.</td><td>0.0002 ± 0.0004</td><td>1.102 ± 0.080</td><td>0.135 ± 0.117</td><td>−0.114 ± 0.011</td></tr>
+            <tr><td>FedAvg-SFT</td><td>0.0046 ± 0.0013</td><td>1.881 ± 0.048</td><td>0.996 ± 0.042</td><td>−0.207 ± 0.009</td></tr>
+            <tr class="best"><td>FedTrajPO++</td><td>0.0033 ± 0.0008</td><td>1.890 ± 0.010</td><td>1.020 ± 0.037</td><td>−0.211 ± 0.001</td></tr>
+            <tr><td>FedTrajPO++ (no support)</td><td>0.0039 ± 0.0014</td><td>1.889 ± 0.053</td><td>1.004 ± 0.066</td><td>−0.209 ± 0.007</td></tr>
+            <tr><td>Pure TrajDPO</td><td>0.0041 ± 0.0017</td><td>1.879 ± 0.051</td><td>1.001 ± 0.065</td><td>−0.208 ± 0.007</td></tr>
+            <tr><td>Mixed w/o warm start</td><td>0.0037 ± 0.0008</td><td>1.892 ± 0.091</td><td>1.000 ± 0.076</td><td>−0.210 ± 0.011</td></tr>
+          </tbody>
+        </table>
+        <p class="caption">Table A-II — Sparse final-round summary (Mean ± 95% CI). All federated methods cluster near one another; results should be read as evidence of sparse-support difficulty rather than a decisive victory for any single aggregation rule.</p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             APPENDIX B
+        ════════════════════════════════════════════════════ -->
+        <p class="appendix-title">Appendix B</p>
+        <h2 style="margin-top:0.5rem;">Recommended Additional Experiments</h2>
+
+        <p>
+          A stronger benchmark-grade version should add multi-seed confidence intervals for all headline tables,
+          validation-based constrained checkpoint selection, parameter-matched monolithic adapters,
+          communication-matched controls, true pooled centralized training, and deliberately designed
+          support-sparsity stress tests. The support test should vary rare-tool frequency, tool overlap,
+          participation rate, and minimum module support. Reporting should include rare-tool success,
+          bottom-10 percent client success, module starvation rate, and bytes-to-stable-safe-performance.
+        </p>
+
+        <hr class="divider">
+
+        <!-- ═══════════════════════════════════════════════════
+             REFERENCES
+        ════════════════════════════════════════════════════ -->
+        <h2>References</h2>
+
+        <ol class="ref-list">
+          <li>S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, and Y. Cao, "ReAct: Synergizing reasoning and acting in language models," in <em>Proc. Int. Conf. Learning Representations</em>, 2023.</li>
+          <li>T. Schick, J. Dwivedi-Yu, R. Dessi, R. Raileanu, M. Lomeli, L. Zettlemoyer, N. Cancedda, and T. Scialom, "Toolformer: Language models can teach themselves to use tools," in <em>Adv. Neural Information Processing Systems</em>, vol. 36, 2023, pp. 68539–68551.</li>
+          <li>Y. Qin et al., "ToolLLM: Facilitating large language models to master 16000+ real-world APIs," in <em>Proc. Int. Conf. Learning Representations</em>, 2024.</li>
+          <li>M. Li, Y. Zhao, B. Yu, F. Song, H. Li, H. Yu, Z. Li, F. Huang, and Y. Li, "API-Bank: A comprehensive benchmark for tool-augmented LLMs," arXiv:2304.08244, 2023.</li>
+          <li>X. Liu et al., "AgentBench: Evaluating LLMs as agents," in <em>Proc. Int. Conf. Learning Representations</em>, 2024.</li>
+          <li>S. Zhou et al., "WebArena: A realistic web environment for building autonomous agents," in <em>Proc. Int. Conf. Learning Representations</em>, 2024.</li>
+          <li>X. Li et al., "OSWorld: Benchmarking multimodal agents for open-ended tasks in real computer environments," in <em>Adv. Neural Information Processing Systems</em>, vol. 37, 2024.</li>
+          <li>H. B. McMahan, E. Moore, D. Ramage, S. Hampson, and B. A. y Arcas, "Communication-efficient learning of deep networks from decentralized data," in <em>Proc. 20th Int. Conf. Artificial Intelligence and Statistics</em>, 2017, pp. 1273–1282.</li>
+          <li>S. Caldas et al., "LEAF: A benchmark for federated settings," arXiv:1812.01097, 2018.</li>
+          <li>T. Li, A. K. Sahu, M. Zaheer, M. Sanjabi, A. Talwalkar, and V. Smith, "Federated optimization in heterogeneous networks," in <em>Proc. Machine Learning and Systems</em>, vol. 2, 2020, pp. 429–450.</li>
+          <li>S. P. Karimireddy, S. Kale, M. Mohri, S. J. Reddi, S. U. Stich, and A. T. Suresh, "SCAFFOLD: Stochastic controlled averaging for federated learning," in <em>Proc. 37th Int. Conf. Machine Learning</em>, 2020, pp. 5132–5143.</li>
+          <li>S. J. Reddi, Z. Charles, M. Zaheer, Z. Garrett, K. Rush, J. Konecny, S. Kumar, and H. B. McMahan, "Adaptive federated optimization," in <em>Proc. Int. Conf. Learning Representations</em>, 2021.</li>
+          <li>K. Bonawitz et al., "Practical secure aggregation for privacy-preserving machine learning," in <em>Proc. ACM SIGSAC Conf. Computer and Communications Security</em>, 2017, pp. 1175–1191.</li>
+          <li>M. Abadi et al., "Deep learning with differential privacy," in <em>Proc. ACM SIGSAC Conf. Computer and Communications Security</em>, 2016, pp. 308–318.</li>
+          <li>L. Zhu, Z. Liu, and S. Han, "Deep leakage from gradients," in <em>Adv. Neural Information Processing Systems</em>, vol. 32, 2019.</li>
+          <li>M. Mohri, G. Sivek, and A. T. Suresh, "Agnostic federated learning," in <em>Proc. 36th Int. Conf. Machine Learning</em>, 2019, pp. 4615–4625.</li>
+          <li>M. G. Arivazhagan, V. Aggarwal, A. K. Singh, and S. Choudhary, "Federated learning with personalization layers," arXiv:1912.00818, 2019.</li>
+          <li>E. J. Hu et al., "LoRA: Low-rank adaptation of large language models," in <em>Proc. Int. Conf. Learning Representations</em>, 2022.</li>
+          <li>Z. Wang, Z. Shen, Y. He, G. Sun, H. Wang, L. Lyu, and A. Li, "FLoRA: Federated fine-tuning large language models with heterogeneous low-rank adaptations," in <em>Adv. Neural Information Processing Systems</em>, vol. 37, 2024.</li>
+          <li>J. Bai, D. Chen, B. Qian, L. Yao, and Y. Li, "Federated fine-tuning of large language models under heterogeneous tasks and client resources," in <em>Adv. Neural Information Processing Systems</em>, vol. 37, 2024.</li>
+          <li>J. Zhang, S. Vahidian, M. Kuo, C. Li, R. Zhang, T. Yu, Y. Zhou, G. Wang, and Y. Chen, "Towards building the Federated GPT: Federated instruction tuning," arXiv:2305.05644, 2023.</li>
+          <li>R. Ye, W. Wang, J. Chai, D. Li, Z. Li, Y. Xu, Y. Du, Y. Wang, and S. Chen, "OpenFedLLM: Training large language models on decentralized private data via federated learning," in <em>Proc. 30th ACM SIGKDD Conf. Knowledge Discovery and Data Mining</em>, 2024, pp. 6137–6147.</li>
+          <li>P. F. Christiano, J. Leike, T. B. Brown, M. Martic, S. Legg, and D. Amodei, "Deep reinforcement learning from human preferences," in <em>Adv. Neural Information Processing Systems</em>, vol. 30, 2017.</li>
+          <li>N. Stiennon et al., "Learning to summarize from human feedback," in <em>Adv. Neural Information Processing Systems</em>, vol. 33, 2020, pp. 3008–3021.</li>
+          <li>L. Ouyang et al., "Training language models to follow instructions with human feedback," in <em>Adv. Neural Information Processing Systems</em>, vol. 35, 2022, pp. 27730–27744.</li>
+          <li>R. Rafailov, A. Sharma, E. Mitchell, S. Ermon, C. D. Manning, and C. Finn, "Direct preference optimization: Your language model is secretly a reward model," in <em>Adv. Neural Information Processing Systems</em>, vol. 36, 2023, pp. 53728–53741.</li>
+          <li>K. Ethayarajh, W. Xu, N. Muennighoff, D. Jurafsky, and D. Kiela, "KTO: Model alignment as prospect theoretic optimization," in <em>Proc. 41st Int. Conf. Machine Learning</em>, 2024, pp. 12680–12720.</li>
+          <li>Y. Bai et al., "Constitutional AI: Harmlessness from AI feedback," arXiv:2212.08073, 2022.</li>
+          <li>F. Wu, X. Liu, H. Wang, X. Wang, L. Su, and J. Gao, "Towards federated RLHF with aggregated client preference for LLMs," in <em>Proc. Int. Conf. Learning Representations</em>, 2025.</li>
+          <li>F. X. Fan, C. Tan, Y.-S. Ong, R. Wattenhofer, and W.-T. Ooi, "FedRLHF: A convergence-guaranteed federated framework for privacy-preserving and personalized RLHF," in <em>Proc. 24th Int. Conf. Autonomous Agents and Multiagent Systems</em>, 2025, pp. 713–721.</li>
+          <li>M. Thakkar et al., "WebArena-Verified: Reliable evaluation for web agents," OpenReview, 2025.</li>
+          <li>T. Le Sellier De Chezelles et al., "The BrowserGym ecosystem for web agent research," arXiv:2412.05467, 2024.</li>
+          <li>S. Yao, J. Zhao, N. Shinn, P. Razavi, and K. Narasimhan, "tau-bench: A benchmark for tool-agent-user interaction in real-world domains," arXiv:2406.12045, 2024.</li>
+          <li>C. Chen et al., "Federated agent reinforcement learning," OpenReview, 2026.</li>
+        </ol>
+
+      </div><!-- .post-body -->
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

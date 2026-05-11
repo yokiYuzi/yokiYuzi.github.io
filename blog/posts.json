@@ -1,5 +1,12 @@
 [
   {
+    "title": "FedTrajPO++ — Federated Trajectory Policy Optimization for Tool-Calling LLM Agents",
+    "date": "2026-05-11",
+    "summary": "ECG 618 Final Paper. Compliance-constrained federated trajectory DPO for tool-using LLM agents. FedTrajPO++ reduces violations by 94.6% and tool calls by 74.2% vs. FedAvg-SFT on ToolWorld-v2, via warm-started mixed SFT+DPO, modular skill bank, and support-aware aggregation. Not the raw-success winner — a safety-cost trade-off.",
+    "path": "/blog/posts/ecg618-fedtrajpo/",
+    "category": "ECE · Federated Learning"
+  },
+  {
     "title": "ECG 783 Midterm #2 — Problem 4: FFNN Two-Input Nonlinear System Modeling",
     "date": "2026-04-27",
     "summary": "6-input, 60-neuron FFNN (Levenberg-Marquardt, tansig/purelin) trained to model y(k)=cos(πx₁)cos(πx₂)+0.25x₁². Max approximation error = 0.000804 ≪ 0.15, R²=1.000000. Neighbourhood input design supplies local curvature context to the network.",
