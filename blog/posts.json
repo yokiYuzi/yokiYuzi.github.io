@@ -1,5 +1,12 @@
 [
   {
+    "title": "ECG 783 Final Exam Review — Interference Canceller, Performance Surface, Gradient Estimation, LMS/Newton & IIR",
+    "date": "2026-05-13",
+    "summary": "Five comprehensive derivation problems: (1) optimal interference canceller w*=σ_v²/(σ_v²+σ_q²), J_min, orthogonality; (2) 2-weight Wiener solution W*=[9/7,−1/7]^T, eigen-decomposition λ=3±√2, steepest-descent stability; (3) central-difference gradient variance kJ_min²/(2Ns²) vs. perturbation P=λs²/J_min trade-off; (4) LMS M≈0.19, τ_slow=25 vs. LMS/Newton M≈0.08, τ=12.5; (5) z-domain MSE, IIR sensitivity recursion, SER C_n^{-1} update, and stability triangle for 2nd-order IIR.",
+    "path": "/blog/posts/ecg783-final-review/",
+    "category": "ECE · Adaptive Signal Processing"
+  },
+  {
     "title": "FedTrajPO++ — Federated Trajectory Policy Optimization for Tool-Calling LLM Agents",
     "date": "2026-05-11",
     "summary": "ECG 618 Final Paper. Compliance-constrained federated trajectory DPO for tool-using LLM agents. FedTrajPO++ reduces violations by 94.6% and tool calls by 74.2% vs. FedAvg-SFT on ToolWorld-v2, via warm-started mixed SFT+DPO, modular skill bank, and support-aware aggregation. Not the raw-success winner — a safety-cost trade-off.",

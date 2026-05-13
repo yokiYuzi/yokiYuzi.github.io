@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 783 Final Exam Review — Five Comprehensive Problems | Chang Wang</title>
+  <meta name="description" content="ECG 783 final exam review: interference canceller optimality, Wiener solution & eigen-decomposition, gradient estimation variance, LMS/Newton misadjustment, IIR LMS sensitivity recursion and stability triangle.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg783-final-review/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.38rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .prob-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      padding: 0.15rem 0.65rem;
+      margin-bottom: 0.65rem;
+      text-transform: uppercase;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.8rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .highlight-box strong { color: var(--accent2); }
+
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.80rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.72rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .result-table td:first-child { color: var(--accent2); font-weight: bold; }
+
+    .toc {
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      padding: 1rem 1.4rem;
+      margin-bottom: 2rem;
+      font-size: 0.82rem;
+    }
+    .toc h4 {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.6rem;
+    }
+    .toc ol { margin: 0; padding-left: 1.2rem; }
+    .toc li { margin: 0.25rem 0; }
+    .toc a { color: var(--accent); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">← Back to Blog</a>
+
+    <article>
+      <div class="post-header">
+        <h1>ECG 783 Final Exam Review — Five Comprehensive Derivation Problems</h1>
+        <p class="meta">2026-05-13 &nbsp;·&nbsp; ECE · Adaptive Signal Processing</p>
+      </div>
+
+      <div class="post-body">
+
+        <p>
+          Five comprehensive problems covering Ch1–8 of ECG 783: adaptive interference cancellation,
+          Wiener–Hopf solution and performance surface geometry, finite-difference gradient estimation
+          variance, LMS and LMS/Newton misadjustment and time constants, and IIR adaptive filtering
+          with sensitivity recursion, SER inverse update, and recursive-filter stability.
+          Every problem requires derivation from first principles rather than direct formula substitution.
+        </p>
+
+        <div class="toc">
+          <h4>Contents</h4>
+          <ol>
+            <li><a href="#prob1">Adaptive Interference Canceller — Optimal Weight &amp; $J_{\min}$</a></li>
+            <li><a href="#prob2">2-Weight Performance Surface — Wiener Solution &amp; Principal Coordinates</a></li>
+            <li><a href="#prob3">Finite-Difference Gradient Estimation — Variance &amp; Perturbation Trade-off</a></li>
+            <li><a href="#prob4">LMS Stability, Misadjustment &amp; LMS/Newton Comparison</a></li>
+            <li><a href="#prob5">$z$-Domain Performance Function, IIR LMS, SER &amp; Stability Triangle</a></li>
+          </ol>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 1
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 1</div>
+        <h2 id="prob1">Adaptive Interference Canceller — Optimal Weight &amp; $J_{\min}$</h2>
+
+        <h3>Setup</h3>
+        <p>
+          Consider a single-weight adaptive interference canceller. The primary input is
+        </p>
+        $$d(n) = s(n) + v(n),$$
+        <p>and the reference input is</p>
+        $$x(n) = v(n) + q(n).$$
+        <p>
+          The signals $s(n)$, $v(n)$, $q(n)$ are mutually uncorrelated, zero-mean, with variances
+          $\sigma_s^2$, $\sigma_v^2$, $\sigma_q^2$ respectively.
+          The filter has a single weight $w$, output $y(n) = wx(n)$, and error $e(n) = d(n) - y(n)$.
+        </p>
+
+        <h3>Part 1 — Performance Function $J(w)$</h3>
+        <p>Substituting the signal model:</p>
+        $$e(n) = s(n) + v(n) - w\bigl[v(n)+q(n)\bigr] = s(n) + (1-w)v(n) - wq(n).$$
+        <p>Because $s$, $v$, $q$ are mutually uncorrelated:</p>
+        $$\boxed{J(w) = \sigma_s^2 + (1-w)^2\sigma_v^2 + w^2\sigma_q^2.}$$
+        <p>Expanding:</p>
+        $$J(w) = \sigma_s^2 + \sigma_v^2 - 2w\sigma_v^2 + w^2(\sigma_v^2+\sigma_q^2).$$
+
+        <h3>Part 2 — Optimal Weight $w^*$</h3>
+        <p>Setting $dJ/dw = 0$:</p>
+        $$-2\sigma_v^2 + 2w^*(\sigma_v^2+\sigma_q^2) = 0.$$
+        $$\boxed{w^* = \frac{\sigma_v^2}{\sigma_v^2+\sigma_q^2}.}$$
+        <p>
+          Interpretation: the cleaner the reference (smaller $\sigma_q^2$), the closer $w^*$ is to 1,
+          and the more completely the interference $v(n)$ is cancelled.
+        </p>
+
+        <h3>Part 3 — Minimum MSE $J_{\min}$</h3>
+        <p>Substituting $w^*$ into $J(w)$ and simplifying:</p>
+        $$\boxed{J_{\min} = \sigma_s^2 + \frac{\sigma_v^2\,\sigma_q^2}{\sigma_v^2+\sigma_q^2}.}$$
+        <p>
+          When $\sigma_q^2 = 0$ (perfect reference), $w^* = 1$ and $J_{\min} = \sigma_s^2$:
+          the interference is completely removed and only the desired signal remains.
+        </p>
+
+        <h3>Part 4 — Orthogonality Condition $E[e(n)x(n)] = 0$</h3>
+        <p>Compute directly at $w = w^*$:</p>
+        $$E[e(n)x(n)] = E[d(n)x(n)] - w^*E[x^2(n)].$$
+        <p>Since $s \perp v \perp q$:</p>
+        $$E[d(n)x(n)] = E[(s+v)(v+q)] = \sigma_v^2, \qquad E[x^2(n)] = \sigma_v^2+\sigma_q^2.$$
+        <p>Therefore:</p>
+        $$E[e(n)x(n)] = \sigma_v^2 - \frac{\sigma_v^2}{\sigma_v^2+\sigma_q^2}\,(\sigma_v^2+\sigma_q^2) = 0. \qquad \boxed{\checkmark}$$
+        <p>
+          This is the <strong>Wiener–Hopf orthogonality principle</strong>: at the Wiener optimum,
+          the error is orthogonal to the filter input.
+        </p>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 2
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 2</div>
+        <h2 id="prob2">2-Weight Performance Surface — Wiener Solution &amp; Principal Coordinates</h2>
+
+        <h3>Setup</h3>
+        <p>The MSE performance function for a 2-weight adaptive linear combiner is</p>
+        $$J(W) = E[d^2(n)] - 2P^T W + W^T R W,$$
+        <p>with</p>
+        $$R = \begin{bmatrix}4&1\\1&2\end{bmatrix}, \quad
+          P = \begin{bmatrix}5\\1\end{bmatrix}, \quad
+          E[d^2(n)] = 10.$$
+
+        <h3>Part 1 — Optimal Weight Vector $W^*$</h3>
+        <p>Solve the Wiener–Hopf equation $RW^* = P$:</p>
+        $$R^{-1} = \frac{1}{\det R}\begin{bmatrix}2&-1\\-1&4\end{bmatrix}
+                 = \frac{1}{7}\begin{bmatrix}2&-1\\-1&4\end{bmatrix}.$$
+        $$\boxed{W^* = R^{-1}P = \frac{1}{7}\begin{bmatrix}2&-1\\-1&4\end{bmatrix}\begin{bmatrix}5\\1\end{bmatrix}
+        = \frac{1}{7}\begin{bmatrix}9\\-1\end{bmatrix}.}$$
+
+        <h3>Part 2 — Minimum MSE $J_{\min}$</h3>
+        $$J_{\min} = E[d^2(n)] - P^T W^* = 10 - \frac{1}{7}(45-1) = 10 - \frac{44}{7} = \boxed{\frac{26}{7} \approx 3.714.}$$
+
+        <h3>Part 3 — Eigenvalues of $R$</h3>
+        $$\det(R-\lambda I) = (4-\lambda)(2-\lambda)-1 = \lambda^2-6\lambda+7 = 0.$$
+        $$\boxed{\lambda_{1,2} = 3 \pm \sqrt{2}; \qquad \lambda_{\max}=3+\sqrt{2}\approx4.414,\quad \lambda_{\min}=3-\sqrt{2}\approx1.586.}$$
+
+        <h3>Part 4 — Principal-Coordinate Representation</h3>
+        <p>
+          Let $V = W - W^*$ be the weight error vector. The performance function becomes
+          $J = J_{\min} + V^T R V$.
+          Diagonalising $R = Q\Lambda Q^T$ and substituting $V = QV'$ (principal coordinates):
+        </p>
+        $$\boxed{J(V') = \frac{26}{7} + (3+\sqrt{2})\,(v_1')^2 + (3-\sqrt{2})\,(v_2')^2.}$$
+        <p>
+          The performance surface is a paraboloid whose principal axes are the eigenvectors of $R$;
+          the curvatures along those axes equal the eigenvalues.
+        </p>
+
+        <h3>Part 5 — Steepest-Descent Stability Range</h3>
+        <p>
+          The steepest-descent update is $W_{k+1} = W_k - \mu\nabla J$.
+          The weight-error propagation factor along each eigen-direction is $1-2\mu\lambda_i$.
+          For convergence $|1-2\mu\lambda_i|&lt;1$ for all $i$, which requires
+        </p>
+        $$\boxed{0 < \mu < \frac{1}{\lambda_{\max}} = \frac{1}{3+\sqrt{2}} \approx 0.2265.}$$
+
+        <h3>Part 6 — Convergence Check at $\mu = 0.2$</h3>
+        <p>
+          Since $0.2 < 0.2265$ the algorithm <strong>converges</strong>.
+          However, the factor along the maximum-eigenvalue direction is
+        </p>
+        $$1 - 2(0.2)(3+\sqrt{2}) \approx -0.766 < 0,$$
+        <p>
+          so convergence along that direction is <strong>oscillatory</strong>
+          (sign alternates each iteration, amplitude decays).
+        </p>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 3
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 3</div>
+        <h2 id="prob3">Finite-Difference Gradient Estimation — Variance &amp; Perturbation Trade-off</h2>
+
+        <h3>Setup</h3>
+        <p>
+          In the translated coordinate $v = w - w^*$ the performance function is
+          $J(v) = J_{\min} + \lambda v^2$.
+          The true gradient is $g(v) = dJ/dv = 2\lambda v$.
+          Since $J$ cannot be computed exactly, it is estimated from $N$ samples as
+          $\hat J(v) = \frac{1}{N}\sum e^2(n)$,
+          and the gradient is estimated by the central difference
+        </p>
+        $$\widehat{g}(v) = \frac{\hat J(v+s) - \hat J(v-s)}{2s}.$$
+        <p>Assume $\operatorname{var}[\hat J] \approx kJ_{\min}^2/N$ near the optimum, independent at $\pm s$.</p>
+
+        <h3>Part 1 — Ideal Central-Difference Result</h3>
+        $$J(v+s)-J(v-s) = \lambda[(v+s)^2-(v-s)^2] = 4\lambda vs,$$
+        $$\boxed{g(v) = \frac{4\lambda vs}{2s} = 2\lambda v.} \quad \text{(exact gradient)}$$
+
+        <h3>Part 2 — Gradient Estimate Variance</h3>
+        <p>By independence of the two estimates and linearity of variance:</p>
+        $$\operatorname{var}[\widehat{g}(v)]
+          = \frac{1}{4s^2}\Bigl[\operatorname{var}[\hat J(v+s)]+\operatorname{var}[\hat J(v-s)]\Bigr]
+          = \frac{1}{4s^2}\cdot\frac{2kJ_{\min}^2}{N}.$$
+        $$\boxed{\operatorname{var}[\widehat{g}(v)] = \frac{kJ_{\min}^2}{2Ns^2}.}$$
+        <p>
+          <em>Key insight:</em> variance grows as $s \to 0$, so a smaller perturbation does
+          <strong>not</strong> automatically improve the gradient estimate.
+        </p>
+
+        <h3>Part 3 — Normalised Performance Perturbation</h3>
+        <p>The excess MSE caused by operating at $w^* + s$ rather than $w^*$ is $\gamma = \lambda s^2$. Normalised:</p>
+        $$\boxed{P = \frac{\gamma}{J_{\min}} = \frac{\lambda s^2}{J_{\min}}.}$$
+
+        <h3>Part 4 — Numerical Example</h3>
+        <p>
+          Given $\lambda=4$, $J_{\min}=1$, $k=2$, $N=1000$, target $P=0.01$:
+        </p>
+        $$s^2 = \frac{P\,J_{\min}}{\lambda} = \frac{0.01}{4} = 0.0025 \implies \boxed{s = 0.05.}$$
+        $$\operatorname{var}[\widehat{g}] = \frac{2\cdot 1^2}{2\cdot 1000\cdot 0.0025} = \frac{2}{5} = \boxed{0.4.}$$
+
+        <div class="highlight-box">
+          <strong>Trade-off summary:</strong>
+          A larger $s$ reduces gradient variance but increases performance perturbation $P$.
+          A smaller $s$ reduces $P$ but inflates variance as $1/s^2$.
+          The perturbation tolerance $P$ is therefore the primary constraint for choosing $s$.
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 4
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 4</div>
+        <h2 id="prob4">LMS Stability, Misadjustment &amp; LMS/Newton Comparison</h2>
+
+        <h3>Setup</h3>
+        <p>
+          A 4-tap adaptive FIR filter uses LMS: $W_{n+1} = W_n + 2\mu e(n)X_n$.
+          The input correlation matrix $R$ has eigenvalues
+          $\lambda_0=6$, $\lambda_1=3$, $\lambda_2=1$, $\lambda_3=0.5$.
+          Minimum MSE $J_{\min} = 0.2$.
+        </p>
+
+        <h3>Part 1 — LMS Stability Range</h3>
+        <p>Convergence requires $|1-2\mu\lambda_i|&lt;1$ for all $i$, so $\mu&lt;1/\lambda_{\max}$:</p>
+        $$\boxed{0 < \mu < \frac{1}{6} \approx 0.1667.}$$
+
+        <h3>Part 2 — Misadjustment at $\mu = 0.02$</h3>
+        <p>The approximate LMS misadjustment formula:</p>
+        $$M \approx \mu\,\operatorname{tr}(R) = \mu\sum_{i}\lambda_i = 0.02\times(6+3+1+0.5).$$
+        $$\boxed{M_{\mathrm{LMS}} \approx 0.02 \times 9.5 = 0.19.}$$
+
+        <h3>Part 3 — Excess MSE</h3>
+        $$J_{\mathrm{excess}} = M\,J_{\min} = 0.19\times 0.2 = \boxed{0.038.}$$
+
+        <h3>Part 4 — Slowest MSE Time Constant</h3>
+        <p>The MSE time constant along eigen-direction $i$ is $\tau_{\mathrm{MSE},i} \approx 1/(4\mu\lambda_i)$.
+           The slowest mode corresponds to $\lambda_{\min} = 0.5$:</p>
+        $$\tau_{\mathrm{MSE,slow}} = \frac{1}{4\times 0.02\times 0.5} = \boxed{25\text{ samples.}}$$
+
+        <h3>Part 5 — LMS/Newton ($\mu_N = 0.02$)</h3>
+        <p>
+          LMS/Newton replaces the gradient by $R^{-1}$ times the gradient:
+          $W_{n+1} = W_n + 2\mu_N R^{-1}e(n)X_n$.
+          This normalises all eigen-directions to the same effective step size.
+        </p>
+
+        <p><strong>MSE time constant</strong> (all modes identical):</p>
+        $$\tau_{\mathrm{MSE,Newton}} = \frac{1}{4\mu_N} = \frac{1}{4\times0.02} = \boxed{12.5\text{ samples.}}$$
+
+        <p><strong>Misadjustment</strong> (approximate, $L+1=4$ weights):</p>
+        $$M_{\mathrm{Newton}} \approx (L+1)\,\mu_N = 4\times 0.02 = \boxed{0.08.}$$
+
+        <p>More precise form accounting for $1-\mu_N$ denominator:</p>
+        $$M_{\mathrm{Newton}} = \frac{(L+1)\mu_N}{1-\mu_N} = \frac{0.08}{0.98} \approx 0.0816.$$
+
+        <p><strong>Excess MSE (Newton):</strong></p>
+        $$J_{\mathrm{excess,Newton}} \approx 0.08\times 0.2 = \boxed{0.016.}$$
+
+        <table class="result-table">
+          <thead><tr><th>Algorithm</th><th>$M$</th><th>$J_{\text{excess}}$</th><th>$\tau_{\text{slow}}$</th></tr></thead>
+          <tbody>
+            <tr><td>LMS ($\mu=0.02$)</td><td>0.19</td><td>0.038</td><td>25 samples</td></tr>
+            <tr><td>LMS/Newton ($\mu_N=0.02$)</td><td>0.08</td><td>0.016</td><td>12.5 samples</td></tr>
+          </tbody>
+        </table>
+        <p>
+          LMS/Newton achieves lower misadjustment and faster convergence because $R^{-1}$
+          equalises the curvature across all weight-space directions.
+        </p>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 5
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 5</div>
+        <h2 id="prob5">$z$-Domain Performance Function, IIR LMS, SER &amp; Stability Triangle</h2>
+
+        <h3>Setup</h3>
+        <p>
+          Adaptive IIR filter:
+          $H(z) = (a_0 + a_1 z^{-1})\,/\,(1 - b_1 z^{-1})$,
+          time-domain form $y(n) = a_0 x(n) + a_1 x(n-1) + b_1 y(n-1)$,
+          error $e(n)=d(n)-y(n)$.
+          Input $x(n)$ is white noise with variance $\sigma_x^2$.
+          Unknown plant: $H_p(z)=1+\tfrac{1}{2}z^{-1}$, so $d(n)=x(n)+\tfrac{1}{2}x(n-1)$.
+        </p>
+
+        <h3>Part 1 — $z$-Domain Performance Function</h3>
+        <p>The general MSE is $J = E[e^2(n)]$. In the $z$-domain, for stationary inputs:</p>
+        $$J = \phi_{dd}(0)
+            + \mathcal{Z}^{-1}\!\left\{H(z)H(z^{-1})\,\Phi_{xx}(z)
+              - 2\,\Phi_{dx}(z)\,H(z)\right\}_{n=0},$$
+        <p>where $\Phi_{xx}(z)$ is the input power spectral density and $\Phi_{dx}(z)$ is the cross-PSD.</p>
+        <p>
+          For white noise input $\Phi_{xx}(z)=\sigma_x^2$, and
+          $\Phi_{dx}(z)=H_p(z^{-1})\Phi_{xx}(z)=\sigma_x^2(1+\tfrac{1}{2}z)$, giving
+        </p>
+        $$\boxed{J = \phi_{dd}(0) + \mathcal{Z}^{-1}\!\left\{\sigma_x^2 H(z)H(z^{-1})
+            - 2\sigma_x^2\!\left(1+\tfrac{1}{2}z\right)\!H(z)\right\}_{n=0}.}$$
+
+        <h3>Part 2 — IIR Sensitivity Recursions</h3>
+        <p>
+          Define sensitivity signals as partial derivatives of $y(n)$ with respect to each parameter.
+          Differentiating the recursion $y(n)=a_0 x(n)+a_1 x(n-1)+b_1 y(n-1)$:
+        </p>
+        $$\boxed{\alpha_0(n) = \frac{\partial y(n)}{\partial a_0} = x(n) + b_1\,\alpha_0(n-1),}$$
+        $$\boxed{\alpha_1(n) = \frac{\partial y(n)}{\partial a_1} = x(n-1) + b_1\,\alpha_1(n-1),}$$
+        $$\boxed{\beta_1(n)  = \frac{\partial y(n)}{\partial b_1} = y(n-1) + b_1\,\beta_1(n-1).}$$
+        <p>
+          Each sensitivity signal satisfies the same IIR recursion driven by the corresponding
+          "input" ($x(n)$, $x(n-1)$, or $y(n-1)$), with the same pole $b_1$.
+        </p>
+
+        <h3>Part 3 — IIR LMS Update</h3>
+        <p>Define $W_n = [a_0,a_1,b_1]^T$ and the sensitivity vector $\Psi_n = [\alpha_0(n),\alpha_1(n),\beta_1(n)]^T$.</p>
+        <p>The instantaneous gradient is $\nabla_W\hat J(n) = -2e(n)\Psi_n$, so the LMS update is</p>
+        $$\boxed{W_{n+1} = W_n + 2\mu\,e(n)\,\Psi_n,}$$
+        <p>i.e.:</p>
+        $$\begin{bmatrix}a_0(n+1)\\a_1(n+1)\\b_1(n+1)\end{bmatrix}
+        = \begin{bmatrix}a_0(n)\\a_1(n)\\b_1(n)\end{bmatrix}
+        + 2\mu\,e(n)\begin{bmatrix}\alpha_0(n)\\\alpha_1(n)\\\beta_1(n)\end{bmatrix}.$$
+
+        <h3>Part 4 — SER Inverse-Matrix Recursion</h3>
+        <p>
+          The SER (Stochastic-Estimation RLS) approach maintains an exponentially-weighted
+          correlation matrix $C_n = \alpha C_{n-1} + U_n U_n^T$ and updates its inverse
+          via the matrix inversion lemma. Define $S_n = C_{n-1}^{-1}U_n$. Then:
+        </p>
+        $$\boxed{C_n^{-1} = \frac{1}{\alpha}\left[C_{n-1}^{-1}
+            - \frac{S_n S_n^T}{\alpha + U_n^T S_n}\right], \qquad S_n = C_{n-1}^{-1}U_n.}$$
+        <p>
+          For IIR adaptive filters, $U_n$ is the sensitivity vector $\Psi_n$ (or a regressor
+          built from both $X_n$ and $y(n-1)$ depending on formulation).
+          The resulting LMS/Newton-SER update becomes
+        </p>
+        $$W_{n+1} = W_n + \frac{2\mu}{1-\alpha}\,C_n^{-1}\,e(n)\,U_n.$$
+
+        <h3>Part 5 — Second-Order IIR Stability Triangle</h3>
+        <p>For the system $H(z)=a_0\,/\,(1-b_1 z^{-1}-b_2 z^{-2})$, stability requires
+           all poles inside the unit circle. The necessary and sufficient conditions are:</p>
+        $$\boxed{-1 < b_2 < 1,\qquad b_2 > b_1 - 1,\qquad b_2 > -b_1 - 1.}$$
+        <p>Equivalently: $-1 < b_2 < 1 - |b_1|$.</p>
+
+        <p>Checking the three parameter sets:</p>
+        <table class="result-table">
+          <thead><tr><th>$(b_1,\,b_2)$</th><th>$1-|b_1|$</th><th>$b_2 &lt; 1-|b_1|$?</th><th>$b_2 &gt; -1$?</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>$(0.5,\;0.2)$</td><td>$0.5$</td><td>$0.2 &lt; 0.5$ ✓</td><td>✓</td><td><strong>Stable</strong></td></tr>
+            <tr><td>$(1.4,\;-0.5)$</td><td>$-0.4$</td><td>$-0.5 &lt; -0.4$ ✓</td><td>✓</td><td><strong>Stable</strong></td></tr>
+            <tr><td>$(0.3,\;0.9)$</td><td>$0.7$</td><td>$0.9 &lt; 0.7$? ✗</td><td>✓</td><td><strong>Unstable</strong></td></tr>
+          </tbody>
+        </table>
+
+        <div class="highlight-box">
+          <strong>Stability note for $(1.4,\,-0.5)$:</strong>
+          Although $|b_1|=1.4 > 1$, the second-order system can still be stable because $b_2$ is
+          sufficiently negative to pull both poles inside the unit circle.
+          The stability condition is on the triangle in the $(b_1,b_2)$ plane, not on $|b_i|$ individually.
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             SUMMARY TABLE
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <h2>Summary of Key Results</h2>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Problem</th><th>Core Result</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 — Interference Canceller</td>
+              <td>$w^*=\sigma_v^2/(\sigma_v^2+\sigma_q^2)$;&ensp;
+                  $J_{\min}=\sigma_s^2+\sigma_v^2\sigma_q^2/(\sigma_v^2+\sigma_q^2)$;&ensp;
+                  $E[e\,x]=0$</td>
+            </tr>
+            <tr>
+              <td>2 — Performance Surface</td>
+              <td>$W^*=\tfrac{1}{7}[9,-1]^T$;&ensp;$J_{\min}=26/7$;&ensp;
+                  $\lambda=3\pm\sqrt{2}$;&ensp;$\mu&lt;1/(3+\sqrt{2})$</td>
+            </tr>
+            <tr>
+              <td>3 — Gradient Estimation</td>
+              <td>$\operatorname{var}[\widehat{g}]=kJ_{\min}^2/(2Ns^2)$;&ensp;
+                  $P=\lambda s^2/J_{\min}$;&ensp;$s=0.05,\,\operatorname{var}=0.4$</td>
+            </tr>
+            <tr>
+              <td>4 — LMS vs LMS/Newton</td>
+              <td>$M_{\rm LMS}=0.19$, $\tau=25$;&ensp;$M_{\rm Newton}=0.08$, $\tau=12.5$</td>
+            </tr>
+            <tr>
+              <td>5 — IIR LMS &amp; Stability</td>
+              <td>Sensitivity recursions; SER inverse update; $(0.3,0.9)$ unstable</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- .post-body -->
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>
