@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 783 Final Exam Review — Five Proof Problems | Chang Wang</title>
+  <meta name="description" content="ECG 783 final exam proof problems: Wiener solution and orthogonality, steepest-descent principal-coordinate stability, gradient estimation variance, regularized LMS with reference vector, z-domain performance function and SER inverse matrix recursion.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg783-final-proofs/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.38rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .prob-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      padding: 0.15rem 0.65rem;
+      margin-bottom: 0.65rem;
+      text-transform: uppercase;
+    }
+
+    .proof-badge {
+      display: inline-block;
+      background: var(--accent2, #888);
+      color: #fff;
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      padding: 0.12rem 0.55rem;
+      margin: 0.8rem 0 0.4rem;
+      text-transform: uppercase;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.8rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .highlight-box strong { color: var(--accent2); }
+
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.80rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.38rem 0.72rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .result-table td:first-child { color: var(--accent2); font-weight: bold; }
+
+    .toc {
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      padding: 1rem 1.4rem;
+      margin-bottom: 2rem;
+      font-size: 0.82rem;
+    }
+    .toc h4 {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.6rem;
+    }
+    .toc ol { margin: 0; padding-left: 1.2rem; }
+    .toc li { margin: 0.25rem 0; }
+    .toc a { color: var(--accent); text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+
+    .qed {
+      text-align: right;
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">← Back to Blog</a>
+
+    <article>
+      <div class="post-header">
+        <h1>ECG 783 Final Exam Review — Five Proof Problems</h1>
+        <p class="meta">2026-05-13 &nbsp;·&nbsp; ECE · Adaptive Signal Processing</p>
+      </div>
+
+      <div class="post-body">
+
+        <p>
+          Five derivation-and-proof problems at final-exam level, covering Ch1–8:
+          the Wiener–Hopf equation and orthogonality principle, steepest-descent
+          principal-coordinate analysis and learning curve, finite-difference gradient
+          estimation performance/variance trade-off, regularized LMS with an arbitrary
+          reference vector (generalised leaky LMS), and the $z$-domain performance
+          function together with the SER matrix-inversion-lemma recursion.
+          Every result is derived from first principles with no formula substituted
+          without justification.
+        </p>
+
+        <div class="toc">
+          <h4>Contents</h4>
+          <ol>
+            <li><a href="#prob1">Wiener Solution, Orthogonality &amp; Shifted Performance Surface</a></li>
+            <li><a href="#prob2">Steepest Descent: Principal-Coordinate Recursion, Stability &amp; Learning Curve</a></li>
+            <li><a href="#prob3">Finite-Difference Gradient Estimation: Perturbation &amp; Variance</a></li>
+            <li><a href="#prob4">Regularized LMS with Reference Vector — Generalised Leaky LMS</a></li>
+            <li><a href="#prob5">$z$-Domain Performance Function &amp; SER Inverse-Matrix Recursion</a></li>
+          </ol>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 1
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 1</div>
+        <h2 id="prob1">Wiener Solution, Orthogonality &amp; Shifted Performance Surface</h2>
+
+        <h3>Setup</h3>
+        <p>
+          Consider the adaptive linear combiner $y(n)=W^T X_n$, $e(n)=d(n)-W^T X_n$,
+          with $R=E[X_n X_n^T]$, $P=E[d(n)X_n]$, $\sigma_d^2=E[d^2(n)]$.
+          Assume $R$ is non-singular.
+        </p>
+
+        <!-- Part 1 -->
+        <div class="proof-badge">Proof — $J(W) = \sigma_d^2 - 2P^T W + W^T R W$</div>
+        <p>Starting from $e^2(n)=[d(n)-W^T X_n]^2$, expand:</p>
+        $$e^2(n) = d^2(n) - 2\,d(n)\,W^T X_n + W^T X_n X_n^T W.$$
+        <p>Take the expectation. Since $W$ is a deterministic vector it factors out of $E[\cdot]$:</p>
+        $$E[d(n)\,W^T X_n] = W^T E[d(n)X_n] = W^T P = P^T W,$$
+        $$E[W^T X_n X_n^T W] = W^T E[X_n X_n^T] W = W^T R W.$$
+        <p>Therefore:</p>
+        $$\boxed{J(W) = \sigma_d^2 - 2P^T W + W^T R W.}$$
+        <div class="qed">□</div>
+
+        <!-- Part 2 -->
+        <div class="proof-badge">Proof — $W^* = R^{-1}P$</div>
+        <p>Differentiate $J(W)$ with respect to $W$:</p>
+        $$\nabla J(W) = -2P + 2RW.$$
+        <p>Set $\nabla J(W^*) = 0$:</p>
+        $$2RW^* = 2P \implies RW^* = P.$$
+        <p>Since $R$ is non-singular:</p>
+        $$\boxed{W^* = R^{-1}P.}$$
+        <div class="qed">□</div>
+
+        <!-- Part 3 -->
+        <div class="proof-badge">Proof — Shifted form $J(W) = J_{\min} + (W-W^*)^T R\,(W-W^*)$</div>
+        <p>Let $V = W - W^*$, so $W = W^* + V$. Substitute into $J$:</p>
+        $$J = \sigma_d^2 - 2P^T(W^*+V) + (W^*+V)^T R(W^*+V).$$
+        <p>Expanding the quadratic:</p>
+        $$(W^*+V)^T R(W^*+V) = W^{*T}RW^* + 2V^T RW^* + V^T RV.$$
+        <p>
+          Because $RW^* = P$, the cross-terms cancel exactly:
+          $-2P^TV + 2V^T RW^* = -2P^TV + 2V^T P = 0$.
+        </p>
+        <p>What remains is:</p>
+        $$J = \underbrace{\sigma_d^2 - 2P^T W^* + W^{*T}RW^*}_{J_{\min}} + V^T RV.$$
+        <p>
+          Since $RW^* = P$ implies $W^{*T}RW^* = W^{*T}P = P^T W^*$, we confirm
+          $J_{\min} = \sigma_d^2 - P^T W^*$.  Hence:
+        </p>
+        $$\boxed{J(W) = J_{\min} + (W-W^*)^T R\,(W-W^*).}$$
+        <div class="qed">□</div>
+
+        <!-- Part 4 -->
+        <div class="proof-badge">Proof — Orthogonality $E[e^*(n)X_n] = 0$</div>
+        <p>At the optimum, $e^*(n) = d(n) - W^{*T}X_n$, so:</p>
+        $$E[e^*(n)X_n] = E[d(n)X_n] - E[X_n X_n^T W^*] = P - RW^*.$$
+        <p>Since $RW^* = P$:</p>
+        $$\boxed{E[e^*(n)X_n] = 0.}$$
+        <p>
+          This is the <strong>Wiener–Hopf orthogonality principle</strong>: at the Wiener
+          optimum the error is orthogonal to every component of the input vector.
+        </p>
+        <div class="qed">□</div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 2
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 2</div>
+        <h2 id="prob2">Steepest Descent: Principal-Coordinate Recursion, Stability &amp; Learning Curve</h2>
+
+        <h3>Setup</h3>
+        <p>
+          Performance surface $J(W) = J_{\min} + (W-W^*)^T R(W-W^*)$,
+          $R = Q\Lambda Q^T$ (eigen-decomposition, $Q$ orthogonal,
+          $\Lambda = \operatorname{diag}(\lambda_0,\ldots,\lambda_L)$).
+          Steepest descent: $W_{k+1} = W_k - \mu\nabla J(W_k)$.
+          Define $V_k = W_k - W^*$ and $V_k = Q V_k'$ (principal coordinates).
+        </p>
+
+        <!-- Part 1 -->
+        <div class="proof-badge">Proof — Principal-coordinate recursion $V'_{k+1} = (I-2\mu\Lambda)V'_k$</div>
+        <p>From the shifted form, $\nabla J(W) = 2R(W-W^*) = 2RV_k$. The update becomes:</p>
+        $$W_{k+1} - W^* = W_k - W^* - 2\mu R(W_k - W^*) \implies V_{k+1} = (I-2\mu R)V_k.$$
+        <p>Substitute $V_k = QV_k'$:</p>
+        $$QV'_{k+1} = (I-2\mu R)QV'_k.$$
+        <p>Left-multiply by $Q^T$ and use $Q^T Q = I$, $Q^T R Q = \Lambda$:</p>
+        $$\boxed{V'_{k+1} = (I - 2\mu\Lambda)V'_k,}$$
+        <p>so $v_i'(k) = (1-2\mu\lambda_i)^k\,v_i'(0)$ for each mode $i$ independently.</p>
+        <div class="qed">□</div>
+
+        <!-- Part 2 -->
+        <div class="proof-badge">Proof — Stability condition $0 &lt; \mu &lt; 1/\lambda_{\max}$</div>
+        <p>
+          Mode $i$ converges if and only if $|1-2\mu\lambda_i|&lt;1$, i.e.
+          $-1 &lt; 1-2\mu\lambda_i &lt; 1$.
+          The right inequality gives $\mu &gt; 0$; the left gives $\mu &lt; 1/\lambda_i$.
+          For all modes to converge simultaneously:
+        </p>
+        $$\boxed{0 < \mu < \frac{1}{\lambda_{\max}}.}$$
+        <div class="qed">□</div>
+
+        <!-- Part 3 -->
+        <div class="proof-badge">Proof — Learning curve $J(k) = J_{\min} + \sum_i \lambda_i [v_i'(0)]^2 (1-2\mu\lambda_i)^{2k}$</div>
+        <p>In principal coordinates $V_k = QV_k'$, so:</p>
+        $$V_k^T R V_k = V_k^{\prime T} Q^T R Q\, V_k' = V_k^{\prime T}\Lambda V_k' = \sum_{i=0}^{L}\lambda_i[v_i'(k)]^2.$$
+        <p>Substituting $v_i'(k) = (1-2\mu\lambda_i)^k v_i'(0)$:</p>
+        $$\boxed{J(k) = J_{\min} + \sum_{i=0}^{L}\lambda_i\,[v_i'(0)]^2\,(1-2\mu\lambda_i)^{2k}.}$$
+        <p>
+          Each term decays with its own time constant
+          $\tau_{\mathrm{MSE},i} = -1/\ln(1-2\mu\lambda_i)^2 \approx 1/(4\mu\lambda_i)$
+          for small $\mu\lambda_i$.
+          The overall learning curve is a sum of decaying exponentials,
+          with the slowest mode ($\lambda_{\min}$) dominating at large $k$.
+        </p>
+        <div class="qed">□</div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 3
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 3</div>
+        <h2 id="prob3">Finite-Difference Gradient Estimation: Perturbation &amp; Variance</h2>
+
+        <h3>Setup</h3>
+        <p>
+          In principal coordinates, $J(V') = J_{\min}+\sum_i\lambda_i(v_i')^2$.
+          Central-difference gradient estimator for direction $i$:
+          $\hat{g}_i = [\hat J(V'+se_i)-\hat J(V'-se_i)]/(2s)$,
+          with $\operatorname{var}[\hat J]=\sigma_J^2$ at both perturbed points (independent).
+        </p>
+
+        <!-- Part 1 -->
+        <div class="proof-badge">Proof — Exact gradient $g_i = 2\lambda_i v_i'$</div>
+        <p>Only the $i$-th term changes under perturbation $\pm s e_i$:</p>
+        $$J(V'\!+\!se_i)-J(V'\!-\!se_i)
+          = \lambda_i\bigl[(v_i'\!+\!s)^2-(v_i'\!-\!s)^2\bigr]
+          = \lambda_i\cdot 4v_i' s.$$
+        $$\boxed{g_i = \frac{4\lambda_i v_i' s}{2s} = 2\lambda_i v_i'.}$$
+        <div class="qed">□</div>
+
+        <!-- Part 2 -->
+        <div class="proof-badge">Proof — Performance perturbation $\gamma_i = \lambda_i s^2$</div>
+        <p>
+          The two-point average approximates the true performance at $V'$ but
+          evaluates at $\pm s$:
+        </p>
+        $$\tilde J(V') = \tfrac{1}{2}[J(V'\!+\!se_i)+J(V'\!-\!se_i)]
+          = J(V') + \lambda_i s^2.$$
+        $$\boxed{\gamma_i = \tilde J(V') - J(V') = \lambda_i s^2.}$$
+        <p>
+          Normalised perturbation: $P_i = \lambda_i s^2/J_{\min}$.
+          Averaged over all $L+1$ directions:
+        </p>
+        $$\boxed{P = \frac{1}{L+1}\sum_{i=0}^{L}P_i
+                   = \frac{s^2}{(L+1)J_{\min}}\operatorname{tr}(R)
+                   = \frac{s^2\,\lambda_{\mathrm{ave}}}{J_{\min}}.}$$
+        <div class="qed">□</div>
+
+        <!-- Part 3 -->
+        <div class="proof-badge">Proof — Gradient estimate variance $\operatorname{var}[\hat{g}_i] = \sigma_J^2/(2s^2)$</div>
+        <p>Since the two measurements are independent:</p>
+        $$\operatorname{var}[\hat{g}_i]
+          = \operatorname{var}\!\left[\frac{\hat J_+ - \hat J_-}{2s}\right]
+          = \frac{\operatorname{var}[\hat J_+]+\operatorname{var}[\hat J_-]}{4s^2}
+          = \frac{2\sigma_J^2}{4s^2}.$$
+        $$\boxed{\operatorname{var}[\hat{g}_i] = \frac{\sigma_J^2}{2s^2}.}$$
+
+        <div class="highlight-box">
+          <strong>Fundamental trade-off:</strong>
+          Performance penalty $\gamma_i = \lambda_i s^2$ grows with $s$;
+          gradient variance $\sigma_J^2/(2s^2)$ grows as $s\to 0$.
+          The perturbation tolerance $P$ is therefore the primary design constraint for $s$.
+        </div>
+        <div class="qed">□</div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 4
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 4</div>
+        <h2 id="prob4">Regularized LMS with Reference Vector — Generalised Leaky LMS</h2>
+
+        <h3>Setup</h3>
+        <p>
+          Adaptive linear combiner with regularized cost
+          $J(W_n) = E[e^2(n)] + \alpha\|W_n - W_0\|^2$,
+          where $\alpha>0$ and $W_0$ is a given reference vector.
+        </p>
+
+        <!-- Part 1 -->
+        <div class="proof-badge">Proof — Steepest-descent update</div>
+        <p>From Problem 1, $E[e^2(n)] = \sigma_d^2 - 2P^TW + W^TRW$. The regularisation term expands as</p>
+        $$\alpha\|W-W_0\|^2 = \alpha(W-W_0)^T(W-W_0).$$
+        <p>Differentiate the full cost:</p>
+        $$\nabla J(W) = -2P + 2RW + 2\alpha(W-W_0) = 2(R+\alpha I)W - 2(P+\alpha W_0).$$
+        <p>Steepest descent $W_{n+1} = W_n - \mu\nabla J(W_n)$ gives:</p>
+        $$\boxed{W_{n+1} = [I - 2\mu(R+\alpha I)]\,W_n + 2\mu(P+\alpha W_0).}$$
+        <div class="qed">□</div>
+
+        <!-- Part 2 -->
+        <div class="proof-badge">Proof — LMS form</div>
+        <p>Replace $E[\cdot]$ by the instantaneous sample. The instantaneous gradient of $\hat J(n) = e^2(n)+\alpha\|W_n-W_0\|^2$ is</p>
+        $$\nabla\hat J(n) = -2e(n)X_n + 2\alpha(W_n-W_0).$$
+        <p>LMS update $W_{n+1} = W_n - \mu\nabla\hat J(n)$:</p>
+        $$\boxed{W_{n+1} = (1-2\mu\alpha)W_n + 2\mu e(n)X_n + 2\mu\alpha W_0.}$$
+        <p>
+          When $W_0 = 0$ this reduces to standard leaky LMS
+          $W_{n+1} = (1-2\mu\alpha)W_n + 2\mu e(n)X_n$.
+        </p>
+        <div class="qed">□</div>
+
+        <!-- Part 3 -->
+        <div class="proof-badge">Proof — Stability range $0 &lt; \mu &lt; 1/(\lambda_{\max}+\alpha)$</div>
+        <p>
+          The steepest-descent propagation matrix is $A = I - 2\mu(R+\alpha I)$.
+          Its eigenvalues are $1-2\mu(\lambda_i+\alpha)$.
+          Convergence requires $|1-2\mu(\lambda_i+\alpha)|&lt;1$ for all $i$, giving
+          $\mu &lt; 1/(\lambda_i+\alpha)$.
+          The tightest constraint is the largest eigenvalue:
+        </p>
+        $$\boxed{0 < \mu < \frac{1}{\lambda_{\max}+\alpha}.}$$
+        <p>
+          Note: regularisation <em>reduces</em> the allowable step size relative to
+          standard LMS, but it also makes the Hessian $R+\alpha I$ better conditioned.
+        </p>
+        <div class="qed">□</div>
+
+        <!-- Part 4 -->
+        <div class="proof-badge">Proof — Steady-state mean $\lim_{n\to\infty}E[W_n] = (R+\alpha I)^{-1}(P+\alpha W_0)$</div>
+        <p>Let $m_n = E[W_n]$. Under the standard independence assumption, $E[e(n)X_n] = P - Rm_n$. Taking the expectation of the LMS update:</p>
+        $$m_{n+1} = (1-2\mu\alpha)m_n + 2\mu(P - Rm_n) + 2\mu\alpha W_0
+                  = [I-2\mu(R+\alpha I)]\,m_n + 2\mu(P+\alpha W_0).$$
+        <p>At steady state $m_\infty = [I-2\mu(R+\alpha I)]\,m_\infty + 2\mu(P+\alpha W_0)$, so</p>
+        $$2\mu(R+\alpha I)\,m_\infty = 2\mu(P+\alpha W_0).$$
+        $$\boxed{\lim_{n\to\infty}E[W_n] = (R+\alpha I)^{-1}(P+\alpha W_0).}$$
+        <p>
+          When $W_0=0$: $m_\infty = (R+\alpha I)^{-1}P$ — the standard leaky-LMS biased solution.
+          As $\alpha\to 0$: $m_\infty\to R^{-1}P = W^*$ — the unregularized Wiener solution.
+          As $\alpha\to\infty$: $m_\infty\to W_0$ — the weight vector is pulled entirely to the prior.
+        </p>
+        <div class="qed">□</div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             PROBLEM 5
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <div class="prob-badge">Problem 5</div>
+        <h2 id="prob5">$z$-Domain Performance Function &amp; SER Inverse-Matrix Recursion</h2>
+
+        <h3>Setup</h3>
+        <p>
+          Adaptive filter with transfer function $H(z)$,
+          stationary input $x(n)$ with auto-PSD $\Phi_{xx}(z)$,
+          desired signal $d(n)$ with cross-PSD $\Phi_{dx}(z)$ relative to $x(n)$,
+          error $e(n) = d(n)-y(n)$.
+        </p>
+
+        <!-- Part 1 -->
+        <div class="proof-badge">Proof — General $z$-domain MSE formula</div>
+        <p>Expand $J = E[e^2(n)] = E[d^2]-2E[dy]+E[y^2]$.</p>
+        <ul>
+          <li>$E[d^2(n)] = \phi_{dd}(0)$.</li>
+          <li>
+            For LTI filter $y(n)=h(n)*x(n)$, the output PSD is
+            $\Phi_{yy}(z)=H(z)H(z^{-1})\Phi_{xx}(z)$, so
+            $E[y^2(n)] = \phi_{yy}(0) = \mathcal{Z}^{-1}\{H(z)H(z^{-1})\Phi_{xx}(z)\}_{n=0}$.
+          </li>
+          <li>
+            The cross-correlation $\phi_{dy}(0) = E[d(n)y(n)]$.
+            Since $y(n)=h(n)*x(n)$ and $\phi_{dx}(\ell)=E[d(n)x(n-\ell)]$,
+            $\phi_{dy}(\tau) = \sum_k h(k)\phi_{dx}(\tau-k)$, i.e.
+            $\Phi_{dy}(z)=H(z)\Phi_{dx}(z)$.
+            Hence $E[d(n)y(n)] = \mathcal{Z}^{-1}\{H(z)\Phi_{dx}(z)\}_{n=0}$.
+          </li>
+        </ul>
+        <p>Combining:</p>
+        $$\boxed{J = \phi_{dd}(0)
+            + \mathcal{Z}^{-1}\!\left\{H(z)H(z^{-1})\Phi_{xx}(z)
+              - 2H(z)\Phi_{dx}(z)\right\}_{n=0}.}$$
+        <div class="qed">□</div>
+
+        <!-- Part 2 -->
+        <div class="proof-badge">Proof — Reduction to FIR quadratic form</div>
+        <p>For $H(z)=\sum_{\ell=0}^L w_\ell z^{-\ell}$, the time-domain output is $y(n)=W^T X_n$.</p>
+        <p><strong>Cross-term:</strong></p>
+        $$E[d(n)y(n)] = \sum_{\ell=0}^L w_\ell E[d(n)x(n-\ell)]
+                      = \sum_{\ell=0}^L w_\ell \phi_{dx}(\ell) = P^T W,$$
+        <p>where $P_\ell = \phi_{dx}(\ell)$.</p>
+        <p><strong>Output power:</strong></p>
+        $$E[y^2(n)] = \sum_{i,j} w_i w_j E[x(n-i)x(n-j)]
+                    = \sum_{i,j} w_i R_{ij} w_j = W^T R W,$$
+        <p>where $R_{ij} = \phi_{xx}(i-j)$ (Toeplitz).</p>
+        <p>Therefore:</p>
+        $$\boxed{J(W) = \phi_{dd}(0) - 2P^T W + W^T R W,}$$
+        <p>consistent with the time-domain derivation in Problem 1. The $z$-domain framework is thus a strict generalisation valid for both FIR and IIR filters.</p>
+        <div class="qed">□</div>
+
+        <!-- Part 3 -->
+        <div class="proof-badge">Proof — SER inverse-matrix recursion via Matrix Inversion Lemma</div>
+        <p>The exponentially-weighted correlation matrix satisfies</p>
+        $$C_n = \alpha C_{n-1} + X_n X_n^T.$$
+        <p>Apply the <strong>Sherman–Morrison–Woodbury identity</strong>
+          $(A+uv^T)^{-1} = A^{-1} - A^{-1}u(1+v^T A^{-1}u)^{-1}v^T A^{-1}$
+          with $A = \alpha C_{n-1}$, $u = v = X_n$:
+        </p>
+        $$A^{-1} = \frac{1}{\alpha}C_{n-1}^{-1}, \qquad
+          A^{-1}u = \frac{1}{\alpha}C_{n-1}^{-1}X_n.$$
+        <p>Define $S_n = C_{n-1}^{-1}X_n$. Then:</p>
+        $$1 + v^T A^{-1}u = 1 + \frac{1}{\alpha}X_n^T C_{n-1}^{-1}X_n
+                          = \frac{\alpha + X_n^T S_n}{\alpha}.$$
+        <p>Its reciprocal is $\alpha/(\alpha + X_n^T S_n)$. Substituting:</p>
+        $$C_n^{-1} = \frac{1}{\alpha}C_{n-1}^{-1}
+                   - \frac{1}{\alpha}S_n\cdot\frac{\alpha}{\alpha+X_n^T S_n}
+                     \cdot\frac{1}{\alpha}S_n^T.$$
+        <p>Collecting terms:</p>
+        $$\boxed{C_n^{-1} = \frac{1}{\alpha}\!\left[C_{n-1}^{-1}
+            - \frac{S_n S_n^T}{\alpha + X_n^T S_n}\right], \qquad
+          S_n = C_{n-1}^{-1}X_n.}$$
+        <p>
+          This requires only one matrix–vector product $S_n = C_{n-1}^{-1}X_n$
+          and one scalar division per time step — $O(L^2)$ instead of $O(L^3)$ for
+          direct inversion.
+          The SER/LMS-Newton update then follows as
+          $W_{n+1} = W_n + 2\mu/(1-\alpha)\cdot C_n^{-1}e(n)X_n$.
+        </p>
+        <div class="qed">□</div>
+
+        <!-- ═══════════════════════════════════════════════════════════════
+             SUMMARY
+        ════════════════════════════════════════════════════════════════ -->
+        <hr class="divider">
+        <h2>Summary of Boxed Results</h2>
+
+        <table class="result-table">
+          <thead>
+            <tr><th>Problem</th><th>Key boxed result</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1a — MSE surface</td>
+              <td>$J(W)=\sigma_d^2-2P^TW+W^TRW$</td>
+            </tr>
+            <tr>
+              <td>1b — Wiener solution</td>
+              <td>$W^*=R^{-1}P$</td>
+            </tr>
+            <tr>
+              <td>1c — Shifted form</td>
+              <td>$J(W)=J_{\min}+(W-W^*)^TR(W-W^*)$</td>
+            </tr>
+            <tr>
+              <td>1d — Orthogonality</td>
+              <td>$E[e^*(n)X_n]=0$</td>
+            </tr>
+            <tr>
+              <td>2a — SD recursion</td>
+              <td>$V'_{k+1}=(I-2\mu\Lambda)V'_k$</td>
+            </tr>
+            <tr>
+              <td>2b — Stability</td>
+              <td>$0&lt;\mu&lt;1/\lambda_{\max}$</td>
+            </tr>
+            <tr>
+              <td>2c — Learning curve</td>
+              <td>$J(k)=J_{\min}+\sum_i\lambda_i[v_i'(0)]^2(1-2\mu\lambda_i)^{2k}$</td>
+            </tr>
+            <tr>
+              <td>3a — Exact gradient</td>
+              <td>$g_i=2\lambda_i v_i'$</td>
+            </tr>
+            <tr>
+              <td>3b — Perturbation</td>
+              <td>$P=s^2\lambda_{\mathrm{ave}}/J_{\min}$</td>
+            </tr>
+            <tr>
+              <td>3c — Gradient variance</td>
+              <td>$\operatorname{var}[\hat g_i]=\sigma_J^2/(2s^2)$</td>
+            </tr>
+            <tr>
+              <td>4a — SD update</td>
+              <td>$W_{n+1}=[I-2\mu(R+\alpha I)]W_n+2\mu(P+\alpha W_0)$</td>
+            </tr>
+            <tr>
+              <td>4b — LMS update</td>
+              <td>$W_{n+1}=(1-2\mu\alpha)W_n+2\mu e(n)X_n+2\mu\alpha W_0$</td>
+            </tr>
+            <tr>
+              <td>4c — Stability</td>
+              <td>$0&lt;\mu&lt;1/(\lambda_{\max}+\alpha)$</td>
+            </tr>
+            <tr>
+              <td>4d — Steady-state mean</td>
+              <td>$m_\infty=(R+\alpha I)^{-1}(P+\alpha W_0)$</td>
+            </tr>
+            <tr>
+              <td>5a — $z$-domain MSE</td>
+              <td>$J=\phi_{dd}(0)+\mathcal{Z}^{-1}\{H(z)H(z^{-1})\Phi_{xx}-2H(z)\Phi_{dx}\}_{n=0}$</td>
+            </tr>
+            <tr>
+              <td>5b — FIR reduction</td>
+              <td>$J(W)=\phi_{dd}(0)-2P^TW+W^TRW$</td>
+            </tr>
+            <tr>
+              <td>5c — SER recursion</td>
+              <td>$C_n^{-1}=\frac{1}{\alpha}[C_{n-1}^{-1}-S_nS_n^T/(\alpha+X_n^TS_n)]$</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div><!-- .post-body -->
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

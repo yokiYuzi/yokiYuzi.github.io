@@ -1,5 +1,12 @@
 [
   {
+    "title": "ECG 783 Final Exam Review — Five Proof Problems: Wiener, Steepest Descent, Gradient Estimation, Leaky LMS & SER",
+    "date": "2026-05-13",
+    "summary": "Five derivation-and-proof problems: (1) Wiener–Hopf equation W*=R⁻¹P, shifted surface J=J_min+(W−W*)ᵀR(W−W*), orthogonality E[e*Xₙ]=0; (2) steepest-descent principal-coordinate recursion V'_{k+1}=(I−2μΛ)V'_k, stability 0<μ<1/λ_max, learning curve; (3) central-difference gradient variance σ_J²/(2s²) and normalised perturbation P=s²λ_ave/J_min; (4) regularized LMS with reference vector W₀ — update, stability 0<μ<1/(λ_max+α), steady-state mean (R+αI)⁻¹(P+αW₀); (5) z-domain MSE proof, FIR reduction, SER C_n⁻¹ via matrix-inversion lemma.",
+    "path": "/blog/posts/ecg783-final-proofs/",
+    "category": "ECE · Adaptive Signal Processing"
+  },
+  {
     "title": "ECG 783 Final Exam Review — Interference Canceller, Performance Surface, Gradient Estimation, LMS/Newton & IIR",
     "date": "2026-05-13",
     "summary": "Five comprehensive derivation problems: (1) optimal interference canceller w*=σ_v²/(σ_v²+σ_q²), J_min, orthogonality; (2) 2-weight Wiener solution W*=[9/7,−1/7]^T, eigen-decomposition λ=3±√2, steepest-descent stability; (3) central-difference gradient variance kJ_min²/(2Ns²) vs. perturbation P=λs²/J_min trade-off; (4) LMS M≈0.19, τ_slow=25 vs. LMS/Newton M≈0.08, τ=12.5; (5) z-domain MSE, IIR sensitivity recursion, SER C_n^{-1} update, and stability triangle for 2nd-order IIR.",
