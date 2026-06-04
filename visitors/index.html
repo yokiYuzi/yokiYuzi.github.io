@@ -361,8 +361,7 @@
     <div class="map-wrap section" id="map-container">
       <div class="loading-text" id="map-loading">LOADING MAP DATA...</div>
       <svg id="world-map"></svg>
-      <span class="map-status">Natural Earth · ipapi.co · Firebase</span>
-      <span id="record-status"></span>
+      <span class="map-status">Natural Earth · ipapi.co / ip-api.com · Firebase</span>
       <span id="demo-badge" class="demo-badge" style="display:none">DEMO DATA</span>
       <div class="map-legend">
         <span class="legend-circle" style="width:8px;height:8px;"></span><span>1</span>
@@ -450,50 +449,6 @@ async function fbPost(path, data) {
     body: JSON.stringify(data)
   });
   return r.ok ? r.json() : null;
-}
-
-/* ── Geo detection ── */
-async function getGeo() {
-  try {
-    const r = await fetch('https://ipapi.co/json/');
-    const d = await r.json();
-    if (d && d.latitude) return d;
-  } catch (_) {}
-  try {
-    const r = await fetch('https://ipwhois.app/json/');
-    const d = await r.json();
-    if (d && d.latitude) return {
-      latitude: d.latitude, longitude: d.longitude,
-      country_code: d.country_code, country_name: d.country, city: d.city
-    };
-  } catch (_) {}
-  return null;
-}
-
-/* ── Record visit ── */
-async function recordVisit(geo) {
-  const key = locKey(geo);
-  const existing = await fbGet('/locations/' + key);
-  const now = Date.now();
-  if (existing) {
-    await fbPut('/locations/' + key + '/count', (existing.count || 0) + 1);
-    await fbPut('/locations/' + key + '/last_visit', now);
-  } else {
-    await fbPut('/locations/' + key, {
-      lat: parseFloat(geo.latitude.toFixed(2)),
-      lon: parseFloat(geo.longitude.toFixed(2)),
-      country: geo.country_name || 'Unknown',
-      country_code: geo.country_code || 'XX',
-      city: geo.city || 'Unknown',
-      count: 1, last_visit: now
-    });
-  }
-  const total = (await fbGet('/total')) || 0;
-  await fbPut('/total', total + 1);
-  await fbPost('/recents', {
-    city: geo.city || 'Unknown', country: geo.country_name || 'Unknown',
-    country_code: geo.country_code || 'XX', ts: now
-  });
 }
 
 /* ── Draw world map ── */
@@ -672,25 +627,9 @@ function renderRecents(recents) {
 
 /* ── Main ── */
 (async function main() {
-  const recordEl = document.getElementById('record-status');
-
   if (!fbEnabled) {
     document.getElementById('setup-notice').style.display = 'block';
     document.getElementById('demo-badge').style.display = 'block';
-  }
-
-  /* record this visit */
-  let geo = null;
-  if (fbEnabled) {
-    try {
-      geo = await getGeo();
-      if (geo) {
-        recordEl.textContent = '● RECORDING…';
-        await recordVisit(geo);
-        recordEl.textContent = '● RECORDED';
-        setTimeout(() => { recordEl.textContent = ''; }, 4000);
-      }
-    } catch(e) { recordEl.textContent = '⚠ RECORD FAILED'; }
   }
 
   /* load data */
@@ -749,5 +688,6 @@ function renderRecents(recents) {
 })();
 </script>
   <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>
