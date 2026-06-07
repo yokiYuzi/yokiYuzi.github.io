@@ -248,9 +248,10 @@
   function init() {
     renderQuote(pickQuote());
 
-    var canvas = document.getElementById('iso-canvas');
-    if (canvas) {
-      canvas.addEventListener('click', function () {
+    var quoteTarget = document.querySelector('[data-quote-refresh]');
+    if (quoteTarget) {
+      quoteTarget.addEventListener('click', function (event) {
+        if (event.target.closest && event.target.closest('a, button')) return;
         renderQuote(pickQuote());
       });
     }

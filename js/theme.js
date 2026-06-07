@@ -3,7 +3,7 @@
 
   /* ── Apply saved theme before first paint (called from inline <head> script) ── */
   var html  = document.documentElement;
-  var saved = localStorage.getItem('theme') || 'dark';
+  var saved = localStorage.getItem('theme') || 'light';
   html.setAttribute('data-theme', saved);
 
   /* ── Page-scan animation on toggle ── */
@@ -30,7 +30,7 @@
 
   /* ── Core toggle ── */
   function toggle() {
-    var curr = html.getAttribute('data-theme') || 'dark';
+    var curr = html.getAttribute('data-theme') || 'light';
     var next = curr === 'light' ? 'dark' : 'light';
     var btn  = document.getElementById('theme-toggle');
 

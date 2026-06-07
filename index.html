@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script>(function(){var t=localStorage.getItem("theme")||"dark";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chang Wang | Personal Website</title>
   <meta name="description" content="Chang Wang — PhD student in Electrical and Computer Engineering at UNLV. Research in adaptive signal processing, machine learning, and federated systems.">
@@ -11,11 +11,18 @@
 </head>
 <body>
 
-  <!-- Möbius loading overlay -->
-  <div id="loading-overlay" aria-hidden="true">
-    <canvas id="mobius-canvas"></canvas>
-    <span class="loading-label">initializing</span>
+  <div class="arcane-loader" id="arcane-loader" aria-hidden="true">
+    <div class="arcane-loader__glyph" aria-hidden="true">
+      <svg viewBox="0 0 160 160" focusable="false">
+        <circle class="loader-ring loader-ring--outer" cx="80" cy="80" r="55"></circle>
+        <circle class="loader-ring loader-ring--inner" cx="80" cy="80" r="39"></circle>
+        <path class="loader-orbit" d="M30 80C48 45 112 45 130 80C112 115 48 115 30 80Z"></path>
+        <path class="loader-crescent" d="M90 45a35 35 0 1 0 0 70a28 28 0 1 1 0-70Z"></path>
+      </svg>
+    </div>
+    <p class="arcane-loader__label">Entering the Archive</p>
   </div>
+  <canvas id="ambient-stars" class="ambient-stars" aria-hidden="true"></canvas>
 
   <header>
     <div class="container nav">
@@ -31,31 +38,51 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="iso-hero-section">
-      <canvas id="iso-canvas"></canvas>
-      <div class="iso-text-overlay">
-        <p class="iso-sys-label">// STRUCT.GEN — <span id="iso-struct-label">LOADING</span></p>
-        <p class="tractatus-num" id="tractatus-num">§ 1</p>
-        <h1 class="iso-poem tractatus-de" id="tractatus-de">Die Welt ist alles, was der Fall ist.</h1>
-        <p class="tractatus-zh" id="tractatus-zh">世界是一切发生的事情。</p>
-        <p class="iso-sub">Chang Wang · PhD · UNLV ECE</p>
+  <main class="home-main">
+    <section class="marble-hero" aria-labelledby="hero-title">
+      <div class="hero-orbit hero-orbit--left" aria-hidden="true"></div>
+      <div class="hero-orbit hero-orbit--right" aria-hidden="true"></div>
+
+      <div class="hero-shell" data-reveal data-quote-refresh>
+        <div class="hero-copy">
+          <p class="eyebrow"><span id="tractatus-num">§ 3</span><span>Minimal Arcane Archive</span></p>
+          <h1 id="hero-title" class="tractatus-de">
+            <span id="tractatus-de">Das logische Bild der Tatsachen ist der Gedanke.</span>
+          </h1>
+          <p class="hero-subtitle">
+            <span id="tractatus-zh">事实的逻辑图像就是思想。</span>
+            A quiet personal archive shaped by signal processing, machine learning, and restrained arcane order.
+          </p>
+          <p class="hero-kicker">Chang Wang · PhD · UNLV ECE</p>
+          <div class="hero-actions">
+            <a href="/archives/" class="sigil-button sigil-button--primary" data-ripple><span>View Archives</span></a>
+            <a href="/resume/" class="sigil-button sigil-button--ghost" data-ripple><span>Resume</span></a>
+          </div>
+        </div>
+
+        <figure class="statue-card" data-tilt>
+          <div class="statue-card__halo" aria-hidden="true"></div>
+          <img src="/assets/img/marble-statue-placeholder.svg" alt="Marble statue detail" loading="eager" decoding="async">
+          <figcaption>
+            <span>Marble Study</span>
+            <span>Arcana Index</span>
+          </figcaption>
+        </figure>
       </div>
-      <span class="iso-regen-hint">[ click to regenerate ]</span>
     </section>
 
-    <section class="grid">
-      <article class="card">
+    <section class="container grid marble-card-grid">
+      <article class="card arcane-card" data-reveal data-tilt>
         <h2>About</h2>
         <p>I am Chang Wang, currently pursuing a PhD in Electrical and Computer Engineering at UNLV.</p>
       </article>
 
-      <article class="card">
+      <article class="card arcane-card" data-reveal data-tilt>
         <h2>Current Focus</h2>
         <p>Neural signal modeling, interpretable learning, and privacy-preserving optimization in federated systems.</p>
       </article>
 
-      <article class="card">
+      <article class="card arcane-card" data-reveal data-tilt>
         <h2>Quick Links</h2>
         <p><a href="/resume/">View full resume</a></p>
         <p><a href="/archives/">View archives</a></p>
@@ -63,7 +90,9 @@
       </article>
     </section>
 
-    <section class="section">
+    <div class="mystic-divider" aria-hidden="true"><span></span></div>
+
+    <section class="container section featured-panel" data-reveal>
       <h2>Featured Posts</h2>
       <ul id="home-blog-list" class="blog-list"></ul>
     </section>
@@ -72,8 +101,7 @@
   <footer>
     <div class="container">© 2026 Chang Wang</div>
   </footer>
-  <script src="/js/mobius.js"></script>
-  <script src="/js/iso-hero.js"></script>
+  <script src="/js/arcane-marble.js"></script>
   <script>
     (function loadHomeBlog() {
       var list = document.getElementById('home-blog-list');
