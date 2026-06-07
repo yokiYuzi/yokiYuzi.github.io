@@ -3,7 +3,7 @@
 
   /* ── Apply saved theme before first paint (called from inline <head> script) ── */
   var html  = document.documentElement;
-  var saved = localStorage.getItem('theme') || 'light';
+  var saved = localStorage.getItem('theme') || 'dark';
   html.setAttribute('data-theme', saved);
 
   /* ── Page-scan animation on toggle ── */
@@ -24,13 +24,13 @@
   function updateBtn(theme) {
     var icon = document.getElementById('theme-toggle-icon');
     var lbl  = document.getElementById('theme-toggle-lbl');
-    if (icon) icon.textContent = theme === 'dark' ? '◎' : '◑';
-    if (lbl)  lbl.textContent  = theme === 'dark' ? 'LIGHT' : 'DARK';
+    if (icon) icon.textContent = theme === 'dark' ? '☼' : '☾';
+    if (lbl)  lbl.textContent  = theme === 'dark' ? 'SUN' : 'MOON';
   }
 
   /* ── Core toggle ── */
   function toggle() {
-    var curr = html.getAttribute('data-theme') || 'light';
+    var curr = html.getAttribute('data-theme') || 'dark';
     var next = curr === 'light' ? 'dark' : 'light';
     var btn  = document.getElementById('theme-toggle');
 
@@ -96,11 +96,11 @@
 
     var icon = document.createElement('span');
     icon.id = 'theme-toggle-icon';
-    icon.textContent = saved === 'dark' ? '◎' : '◑';
+    icon.textContent = saved === 'dark' ? '☼' : '☾';
 
     var lbl = document.createElement('span');
     lbl.id = 'theme-toggle-lbl';
-    lbl.textContent = saved === 'dark' ? 'LIGHT' : 'DARK';
+    lbl.textContent = saved === 'dark' ? 'SUN' : 'MOON';
 
     btn.appendChild(icon);
     btn.appendChild(lbl);

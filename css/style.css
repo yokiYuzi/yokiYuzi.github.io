@@ -706,3 +706,709 @@ html.theme-switching *::after {
   color: var(--accent2);
   border-color: var(--accent2);
 }
+
+/* ======================================================
+   ARCANA / TAROT DECORATIVE SKIN
+   Obsidian Tarot Archive: black-gold scholarly archive
+   ====================================================== */
+
+:root,
+[data-theme="dark"] {
+  --bg: #0b0b09;
+  --surface: rgba(24, 22, 19, 0.88);
+  --surface-alt: rgba(35, 29, 22, 0.86);
+  --text: #f4ead6;
+  --muted: #b7a98b;
+  --accent: #c9943a;
+  --accent2: #e2762d;
+  --line: rgba(201, 148, 58, 0.42);
+  --glow: rgba(201, 148, 58, 0.16);
+  --glow-strong: rgba(226, 118, 45, 0.32);
+  --scrollbar-thumb: rgba(201, 148, 58, 0.55);
+  --scrollbar-track: #12100d;
+  --blood: #7c0d0d;
+  --blood-soft: rgba(124, 13, 13, 0.42);
+  --ivory: #fff3dc;
+  --ink: #0b0b09;
+  --bg-depth: #15110d;
+  --bg-bottom: #090807;
+  --font-title: Georgia, "Times New Roman", "Noto Serif SC", "Songti SC", serif;
+  --font-body: Georgia, "Times New Roman", "Noto Serif SC", "Songti SC", serif;
+}
+
+[data-theme="light"] {
+  --bg: #eee2c8;
+  --surface: rgba(255, 248, 232, 0.92);
+  --surface-alt: #e2d0aa;
+  --text: #24180e;
+  --muted: #735f3e;
+  --accent: #9a6725;
+  --accent2: #8b1b10;
+  --line: rgba(154, 103, 37, 0.42);
+  --glow: rgba(154, 103, 37, 0.16);
+  --glow-strong: rgba(139, 27, 16, 0.26);
+  --scrollbar-thumb: rgba(154, 103, 37, 0.52);
+  --scrollbar-track: #e8d9b9;
+  --blood: #8b1b10;
+  --blood-soft: rgba(139, 27, 16, 0.24);
+  --ivory: #fff7e8;
+  --ink: #1a120b;
+  --bg-depth: #ead8b5;
+  --bg-bottom: #e3cfaa;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(201, 148, 58, 0.18), transparent 22rem),
+    radial-gradient(circle at 86% 6%, var(--blood-soft), transparent 24rem),
+    radial-gradient(circle at 50% 100%, rgba(201, 148, 58, 0.08), transparent 30rem),
+    linear-gradient(180deg, var(--bg), var(--bg-depth) 58%, var(--bg-bottom));
+  color: var(--text);
+  font-family: var(--font-body);
+  letter-spacing: 0.015em;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.26;
+  background-image:
+    radial-gradient(circle, rgba(255, 245, 210, 0.85) 0 1px, transparent 1.4px),
+    radial-gradient(circle, rgba(201, 148, 58, 0.55) 0 1px, transparent 1.8px);
+  background-size: 130px 130px, 210px 210px;
+  background-position: 0 0, 44px 70px;
+  animation: arcana-star-drift 90s linear infinite;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(201, 148, 58, 0.06) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(201, 148, 58, 0.045) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: radial-gradient(circle at 50% 18%, black, transparent 72%);
+}
+
+header,
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes arcana-star-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-90px, -130px, 0); }
+}
+
+/* Header: black-gold altar bar */
+header {
+  background:
+    linear-gradient(180deg, rgba(24, 22, 19, 0.94), rgba(15, 14, 12, 0.88));
+  border-bottom: 1px solid var(--line);
+  box-shadow:
+    0 1px 0 rgba(255, 230, 170, 0.08),
+    0 18px 50px rgba(0, 0, 0, 0.34);
+}
+
+header::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: min(520px, 60vw);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.75;
+}
+
+.brand {
+  font-family: var(--font-title);
+  color: var(--accent);
+  text-shadow: 0 0 18px rgba(201, 148, 58, 0.18);
+}
+
+.brand::before {
+  content: "✦ ";
+  color: var(--accent2);
+  font-size: 0.78em;
+}
+
+.nav-links a {
+  color: var(--muted);
+  font-family: var(--font-title);
+}
+
+.nav-links a:hover,
+.nav-links a.nav-active {
+  color: var(--accent);
+}
+
+.nav-links a::after,
+.nav-links a.nav-active::after {
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+/* Hero: arcane observatory */
+.iso-hero-section {
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 78% 28%, rgba(201, 148, 58, 0.14), transparent 20rem),
+    radial-gradient(circle at 58% 50%, var(--blood-soft), transparent 28rem),
+    linear-gradient(135deg, #0d0c0a, #18140f);
+  box-shadow:
+    0 0 0 1px rgba(255, 235, 180, 0.04),
+    0 28px 90px rgba(0, 0, 0, 0.54),
+    inset 0 0 90px rgba(201, 148, 58, 0.04);
+}
+
+.iso-hero-section::before {
+  content: "✦ ARCANA INDEX ✦";
+  color: var(--accent);
+  opacity: 0.46;
+  font-family: var(--font-title);
+  letter-spacing: 0.24em;
+}
+
+.iso-hero-section::after {
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), var(--accent), transparent);
+  opacity: 0.36;
+  box-shadow: 0 0 18px rgba(201, 148, 58, 0.38);
+}
+
+.iso-text-overlay {
+  width: min(52%, 560px);
+  background:
+    linear-gradient(
+      to right,
+      rgba(11, 11, 9, 0.96) 42%,
+      rgba(11, 11, 9, 0.80) 68%,
+      rgba(11, 11, 9, 0.30) 88%,
+      transparent 100%
+    );
+  border-right: 1px solid rgba(201, 148, 58, 0.18);
+}
+
+[data-theme="light"] .iso-text-overlay {
+  background:
+    linear-gradient(
+      to right,
+      rgba(238, 226, 200, 0.94) 42%,
+      rgba(238, 226, 200, 0.78) 68%,
+      rgba(238, 226, 200, 0.28) 88%,
+      transparent 100%
+    );
+}
+
+.iso-sys-label,
+.tractatus-num {
+  color: var(--accent2);
+}
+
+.iso-poem,
+.iso-poem.tractatus-de {
+  font-family: var(--font-title);
+  color: var(--ivory);
+  text-shadow:
+    0 0 18px rgba(201, 148, 58, 0.26),
+    0 0 40px rgba(124, 13, 13, 0.18);
+}
+
+[data-theme="light"] .iso-poem,
+[data-theme="light"] .iso-poem.tractatus-de {
+  color: var(--ink);
+  text-shadow: 0 0 18px rgba(154, 103, 37, 0.18);
+}
+
+.iso-sub,
+.tractatus-zh {
+  color: var(--muted);
+}
+
+.iso-regen-hint {
+  color: var(--accent);
+}
+
+/* Universal tarot card surfaces */
+.section,
+.card,
+.blog-list li,
+.category-block,
+.arc-year-block,
+.gb-form-wrap,
+.gb-messages-wrap,
+.map-wrap,
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(201, 148, 58, 0.13), transparent 34%),
+    linear-gradient(180deg, rgba(255, 244, 210, 0.055), rgba(255, 244, 210, 0.018)),
+    var(--surface);
+  box-shadow:
+    0 16px 52px rgba(0, 0, 0, 0.34),
+    inset 0 0 0 1px rgba(255, 238, 190, 0.035);
+}
+
+.section::before,
+.card::before,
+.blog-list li::before,
+.category-block::before,
+.arc-year-block::before,
+.gb-form-wrap::before,
+.gb-messages-wrap::before,
+.map-wrap::before,
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(201, 148, 58, 0.20);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section::after,
+.card::after,
+.blog-list li::after,
+.category-block::after,
+.arc-year-block::after,
+.gb-form-wrap::after,
+.gb-messages-wrap::after,
+.map-wrap::after,
+.stat-card::after {
+  content: "✦";
+  position: absolute;
+  right: 1rem;
+  top: 0.82rem;
+  color: var(--accent);
+  opacity: 0.34;
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section > *,
+.card > *,
+.blog-list li > *,
+.category-block > *,
+.arc-year-block > *,
+.gb-form-wrap > *,
+.gb-messages-wrap > *,
+.map-wrap > *,
+.stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.section:hover,
+.card:hover,
+.blog-list li:hover,
+.category-block:hover,
+.arc-year-block:hover,
+.gb-form-wrap:hover,
+.gb-messages-wrap:hover,
+.map-wrap:hover,
+.stat-card:hover {
+  border-color: var(--accent);
+  box-shadow:
+    0 20px 64px rgba(0, 0, 0, 0.42),
+    0 0 32px var(--glow);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.blog-list li:hover {
+  transform: translateX(6px);
+}
+
+.card h2,
+.card h3,
+.section h2 {
+  font-family: var(--font-title);
+  color: var(--accent);
+  letter-spacing: 0.16em;
+}
+
+.card h2::before,
+.card h3::before,
+.section h2::before {
+  content: "☾ ";
+  color: var(--accent2);
+}
+
+.section h3 {
+  color: var(--ivory);
+  font-family: var(--font-title);
+}
+
+[data-theme="light"] .section h3 {
+  color: var(--ink);
+}
+
+.blog-date {
+  color: var(--muted);
+  font-family: var(--font-title);
+}
+
+.blog-date::before {
+  content: "☽ ";
+  color: var(--accent);
+}
+
+.blog-cat,
+.arc-post-cat,
+.cat-count,
+.badge-soon {
+  display: inline-block;
+  color: var(--accent2);
+  border: 1px solid rgba(226, 118, 45, 0.34);
+  border-radius: 999px;
+  padding: 0.08rem 0.45rem;
+  background: rgba(124, 13, 13, 0.16);
+}
+
+.blog-list p,
+.meta,
+.post-row-summary,
+.arc-hero .sub,
+.blog-hero .sub,
+.gb-hero .sub,
+.visitor-hero .sub {
+  color: var(--muted);
+}
+
+.section li::marker {
+  color: var(--accent);
+}
+
+/* Blog index and archives: archive-card rows */
+.cat-header,
+.arc-year-header,
+.messages-header {
+  background:
+    linear-gradient(90deg, rgba(124, 13, 13, 0.24), transparent 74%),
+    rgba(15, 14, 12, 0.62);
+  border-bottom-color: var(--line);
+}
+
+.cat-icon,
+.cat-name,
+.post-row-title,
+.arc-post-title,
+.arc-year-label,
+.messages-header-title,
+.form-header-title {
+  color: var(--accent);
+  font-family: var(--font-title);
+}
+
+.post-row,
+.arc-post-row,
+.msg-card {
+  border-bottom-color: rgba(201, 148, 58, 0.16);
+  border-left-color: transparent;
+}
+
+.post-row:hover,
+.arc-post-row:hover,
+.msg-card:hover {
+  background: linear-gradient(90deg, rgba(201, 148, 58, 0.075), transparent 70%);
+  border-left-color: var(--accent);
+}
+
+.post-row-date,
+.arc-post-date,
+.msg-meta,
+.recent-time {
+  color: var(--muted);
+  font-family: var(--font-title);
+}
+
+.post-count-badge,
+.arc-count-badge,
+.msg-count-badge,
+.total-badge {
+  border-color: var(--accent);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(201, 148, 58, 0.18), transparent 62%),
+    var(--surface);
+  box-shadow: 0 0 24px var(--glow);
+  border-radius: 16px;
+}
+
+.post-count-badge .num,
+.arc-count-badge .num,
+.msg-count-badge .num,
+.total-badge .num {
+  color: var(--accent);
+  font-family: var(--font-title);
+}
+
+.post-count-badge .lbl,
+.arc-count-badge .lbl,
+.msg-count-badge .lbl,
+.total-badge .lbl {
+  color: var(--muted);
+}
+
+/* Forms, buttons, maps, and guestbook controls */
+.field input,
+.field textarea,
+.sort-btn,
+.load-more-btn,
+.submit-btn,
+.like-btn,
+.btn-print {
+  border-color: var(--line);
+  color: var(--text);
+  background:
+    linear-gradient(180deg, rgba(255, 244, 210, 0.05), rgba(255, 244, 210, 0.015)),
+    rgba(15, 14, 12, 0.72);
+  border-radius: 999px;
+}
+
+.field textarea {
+  border-radius: 16px;
+}
+
+.field input:focus,
+.field textarea:focus,
+.sort-btn:hover,
+.sort-btn.active,
+.load-more-btn:hover,
+.like-btn:hover,
+.like-btn.liked,
+.btn-print:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 18px var(--glow);
+}
+
+.submit-btn,
+.form-header {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 240, 200, 0.32), transparent 58%),
+    linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #1b1205;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 240, 200, 0.42), transparent 58%),
+    linear-gradient(135deg, var(--accent2), var(--accent));
+}
+
+.map-status,
+#record-status,
+.map-legend,
+.country-rank,
+.country-count {
+  color: var(--accent);
+}
+
+/* Article figures stay technical and readable */
+.post-figure {
+  margin: 1.8rem 0;
+}
+
+.post-figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  padding: 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 244, 210, 0.06), rgba(255, 244, 210, 0.02)),
+    var(--surface);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 238, 190, 0.03);
+  filter: none;
+}
+
+/* Theme toggle and page scan as a small talisman */
+#theme-toggle {
+  z-index: 9990;
+  width: 52px;
+  min-height: 58px;
+  border-radius: 999px 999px 18px 18px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(201, 148, 58, 0.18), transparent 42%),
+    rgba(18, 16, 13, 0.92);
+  border-color: var(--line);
+  color: var(--accent);
+  font-family: var(--font-title);
+  box-shadow:
+    0 0 24px rgba(201, 148, 58, 0.18),
+    0 16px 36px rgba(0, 0, 0, 0.32);
+}
+
+#theme-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(201, 148, 58, 0.25);
+  border-radius: 999px 999px 13px 13px;
+  pointer-events: none;
+}
+
+#theme-toggle::after {
+  border-color: var(--accent);
+}
+
+#theme-toggle:hover {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 32px rgba(201, 148, 58, 0.34),
+    0 18px 42px rgba(0, 0, 0, 0.38);
+}
+
+#theme-toggle-icon {
+  color: var(--accent);
+}
+
+#theme-toggle-lbl {
+  color: var(--muted);
+}
+
+#theme-scan {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent) 12%,
+    rgba(255, 236, 178, 0.95) 50%,
+    var(--accent2) 88%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 8px var(--accent),
+    0 0 24px rgba(201, 148, 58, 0.62),
+    0 6px 34px rgba(124, 13, 13, 0.28);
+}
+
+#theme-scan::after {
+  background: linear-gradient(180deg, rgba(201, 148, 58, 0.16) 0%, transparent 100%);
+}
+
+#translate-btn {
+  font-family: var(--font-title);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  background: rgba(20, 18, 15, 0.58);
+  border-radius: 999px;
+}
+
+#translate-btn:hover:not(:disabled),
+#translate-btn.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 18px var(--glow);
+}
+
+/* Footer: star map feeling */
+footer {
+  background:
+    radial-gradient(circle at 15% 30%, rgba(201, 148, 58, 0.12), transparent 12rem),
+    linear-gradient(180deg, rgba(15, 14, 12, 0.88), rgba(8, 7, 6, 0.96));
+  border-top: 1px solid var(--line);
+}
+
+footer::before {
+  content: "☾  ✦  ☽";
+  display: block;
+  text-align: center;
+  color: var(--accent);
+  letter-spacing: 1.2em;
+  opacity: 0.55;
+  margin-bottom: 0.9rem;
+}
+
+/* Loading overlay becomes a gold ritual prelude */
+#loading-overlay {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(201, 148, 58, 0.18), transparent 16rem),
+    radial-gradient(circle at 50% 58%, rgba(124, 13, 13, 0.14), transparent 20rem),
+    var(--bg);
+}
+
+#loading-overlay::before {
+  content: "☾";
+  color: var(--accent);
+  font-size: 2.4rem;
+  line-height: 1;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 0 24px rgba(201, 148, 58, 0.42);
+}
+
+#loading-overlay .loading-label {
+  color: var(--accent);
+  font-family: var(--font-title);
+}
+
+@media (max-width: 640px) {
+  body::after {
+    opacity: 0.45;
+    background-size: 120px 120px;
+  }
+
+  .iso-text-overlay {
+    width: 100%;
+    border-right: none;
+  }
+
+  .section,
+  .card,
+  .blog-list li,
+  .category-block,
+  .arc-year-block {
+    border-radius: 14px;
+  }
+
+  .section::before,
+  .card::before,
+  .blog-list li::before,
+  .category-block::before,
+  .arc-year-block::before {
+    inset: 7px;
+  }
+
+  footer::before {
+    letter-spacing: 0.6em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  .iso-hero-section::after,
+  #theme-toggle::after,
+  #theme-toggle.spinning #theme-toggle-icon {
+    animation: none !important;
+  }
+
+  .section,
+  .card,
+  .blog-list li,
+  #theme-toggle {
+    transition-duration: 0.01ms !important;
+  }
+}

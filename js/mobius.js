@@ -74,13 +74,13 @@
     quads.sort(function (a, b) { return a.avgZ - b.avgZ; });
 
     /* draw */
-    ctx.shadowColor = 'rgba(0, 87, 231, 0.45)';
+    ctx.shadowColor = 'rgba(201, 148, 58, 0.48)';
     ctx.shadowBlur  = 10;
 
     for (var k = 0; k < quads.length; k++) {
       var q = quads[k];
-      /* hue sweeps 205→240 (cyan-blue → electric blue) around the loop */
-      var hue   = 205 + q.t * 35;
+      /* hue sweeps gold→copper around the loop */
+      var hue   = 34 + q.t * 16;
       /* depth normalised 0..1 for the visible z range */
       var depth = Math.max(0, Math.min(1, (q.avgZ + R + hw) / (2 * (R + hw))));
       var light = 38 + depth * 28;   /* darker far, lighter near */
@@ -93,9 +93,9 @@
       ctx.lineTo(q.q01.sx, q.q01.sy);
       ctx.closePath();
 
-      ctx.fillStyle   = 'hsla(' + hue + ', 82%, ' + light + '%, ' + alpha + ')';
+      ctx.fillStyle   = 'hsla(' + hue + ', 66%, ' + light + '%, ' + alpha + ')';
       ctx.fill();
-      ctx.strokeStyle = 'hsla(' + hue + ', 60%, ' + (light + 18) + '%, 0.35)';
+      ctx.strokeStyle = 'hsla(' + hue + ', 72%, ' + (light + 18) + '%, 0.42)';
       ctx.lineWidth   = 0.4;
       ctx.stroke();
     }
