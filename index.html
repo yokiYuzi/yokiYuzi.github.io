@@ -44,8 +44,15 @@
       <div class="hero-orbit hero-orbit--right" aria-hidden="true"></div>
 
       <div class="hero-shell" data-reveal data-quote-refresh>
+        <div class="hero-sigil" aria-hidden="true">
+          <span class="hero-sigil__moon"></span>
+          <span class="hero-sigil__star hero-sigil__star--a">✦</span>
+          <span class="hero-sigil__star hero-sigil__star--b">✧</span>
+          <span class="hero-sigil__star hero-sigil__star--c">✦</span>
+        </div>
+
         <div class="hero-copy">
-          <p class="eyebrow"><span id="tractatus-num">§ 3</span><span>Minimal Arcane Archive</span></p>
+          <p class="eyebrow"><span id="tractatus-num">§ 3</span><span>Marble Arcane Archive</span></p>
           <h1 id="hero-title" class="tractatus-de">
             <span id="tractatus-de">Das logische Bild der Tatsachen ist der Gedanke.</span>
           </h1>
@@ -60,9 +67,12 @@
           </div>
         </div>
 
-        <figure class="statue-card" data-tilt>
+        <figure class="statue-card" data-tilt style="--statue-position: 52% 48%;">
           <div class="statue-card__halo" aria-hidden="true"></div>
-          <img src="/assets/img/marble-statue-placeholder.svg" alt="Marble statue detail" loading="eager" decoding="async">
+          <picture>
+            <source srcset="/assets/img/marble-statue-detail.webp" type="image/webp">
+            <img src="/assets/img/marble-statue-detail.png" alt="Marble statue detail" loading="eager" decoding="async">
+          </picture>
           <figcaption>
             <span>Marble Study</span>
             <span>Arcana Index</span>

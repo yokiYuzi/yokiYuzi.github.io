@@ -16,7 +16,7 @@
       loader.classList.add('is-exiting');
       window.setTimeout(function () {
         if (loader.parentNode) loader.parentNode.removeChild(loader);
-      }, reduceMotion ? 20 : 760);
+      }, reduceMotion ? 20 : 860);
     }
 
     if (reduceMotion) {
@@ -25,10 +25,11 @@
     }
 
     window.addEventListener('load', function () {
-      window.setTimeout(exit, 820);
+      /* Give the stronger V2 glyph enough time to read, but keep it quick. */
+      window.setTimeout(exit, 1180);
     }, { once: true });
 
-    window.setTimeout(exit, 2200);
+    window.setTimeout(exit, 2600);
   }
 
   function initReveal() {
@@ -47,8 +48,8 @@
         observer.unobserve(entry.target);
       });
     }, {
-      threshold: 0.18,
-      rootMargin: '0px 0px -8% 0px'
+      threshold: 0.16,
+      rootMargin: '0px 0px -7% 0px'
     });
 
     items.forEach(function (item) { observer.observe(item); });
@@ -58,7 +59,7 @@
     if (reduceMotion) return;
 
     var cards = Array.prototype.slice.call(document.querySelectorAll('[data-tilt]'));
-    var maxTilt = 4.2;
+    var maxTilt = 2.2; /* quieter than the first version */
 
     cards.forEach(function (card) {
       card.addEventListener('pointermove', function (event) {
@@ -102,6 +103,38 @@
     });
   }
 
+  function initQuoteSizing() {
+    var title = document.getElementById('hero-title');
+    var quote = document.getElementById('tractatus-de');
+    if (!title || !quote) return;
+
+    function apply() {
+      var len = (quote.textContent || '').trim().length;
+      var narrow = window.innerWidth < 640;
+      var xlAt = narrow ? 72 : 108;
+      var longAt = narrow ? 48 : 76;
+
+      if (len > xlAt) {
+        title.setAttribute('data-quote-size', 'xl');
+      } else if (len > longAt) {
+        title.setAttribute('data-quote-size', 'long');
+      } else {
+        title.setAttribute('data-quote-size', 'normal');
+      }
+    }
+
+    apply();
+    window.addEventListener('resize', apply, { passive: true });
+
+    if ('MutationObserver' in window) {
+      new MutationObserver(apply).observe(quote, {
+        characterData: true,
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
   function initAmbientStars() {
     var canvas = document.getElementById('ambient-stars');
     if (!canvas || reduceMotion) return;
@@ -117,18 +150,18 @@
     var running = true;
 
     function countForWidth() {
-      if (window.innerWidth < 640) return 28;
-      if (window.innerWidth < 1100) return 42;
-      return 58;
+      if (window.innerWidth < 640) return 20;
+      if (window.innerWidth < 1100) return 32;
+      return 44;
     }
 
     function makeStar() {
       return {
         x: Math.random() * width,
         y: Math.random() * height,
-        r: Math.random() * 1.15 + 0.25,
-        a: Math.random() * 0.45 + 0.12,
-        speed: Math.random() * 0.055 + 0.015,
+        r: Math.random() * 1.0 + 0.22,
+        a: Math.random() * 0.26 + 0.08,
+        speed: Math.random() * 0.030 + 0.010,
         phase: Math.random() * Math.PI * 2
       };
     }
@@ -149,6 +182,9 @@
       if (!running) return;
       ctx.clearRect(0, 0, width, height);
 
+      var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      var rgb = dark ? '235, 205, 140' : '145, 96, 36';
+
       stars.forEach(function (star) {
         star.y += star.speed;
         if (star.y > height + 4) {
@@ -156,10 +192,10 @@
           star.x = Math.random() * width;
         }
 
-        var twinkle = Math.sin(time * 0.001 + star.phase) * 0.16;
+        var twinkle = Math.sin(time * 0.001 + star.phase) * 0.10;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(147, 94, 34, ' + Math.max(0, star.a + twinkle) + ')';
+        ctx.fillStyle = 'rgba(' + rgb + ', ' + Math.max(0, star.a + twinkle) + ')';
         ctx.fill();
       });
 
@@ -185,5 +221,6 @@
   initReveal();
   initTilt();
   initRipple();
+  initQuoteSizing();
   initAmbientStars();
 })();

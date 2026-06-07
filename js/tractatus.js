@@ -220,11 +220,32 @@
 
   var lastIdx = -1;
 
+  function getQuotePool() {
+    /*
+      On the home hero, very long German propositions create tall, broken columns.
+      Keep the archive pages complete, but keep the first impression compact.
+    */
+    var isHomeHero = !!document.querySelector('.marble-hero');
+    if (!isHomeHero) return QUOTES;
+
+    var narrow = window.innerWidth < 640;
+    var maxLen = narrow ? 48 : 88;
+    var pool = QUOTES.filter(function (q) {
+      if (!q.de || q.de.length > maxLen) return false;
+      if (!narrow) return true;
+      return q.de.split(/\s+/).every(function (word) {
+        return word.replace(/[^\wÄÖÜäöüß]/g, '').length <= 18;
+      });
+    });
+    return pool.length ? pool : QUOTES;
+  }
+
   function pickQuote() {
+    var pool = getQuotePool();
     var idx;
-    do { idx = Math.floor(Math.random() * QUOTES.length); } while (idx === lastIdx);
+    do { idx = Math.floor(Math.random() * pool.length); } while (idx === lastIdx && pool.length > 1);
     lastIdx = idx;
-    return QUOTES[idx];
+    return pool[idx];
   }
 
   function renderQuote(q) {
