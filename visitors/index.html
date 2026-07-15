@@ -364,10 +364,10 @@
       <span class="map-status">Natural Earth · ipapi.co / ip-api.com · Firebase</span>
       <span id="demo-badge" class="demo-badge" style="display:none">DEMO DATA</span>
       <div class="map-legend">
-        <span class="legend-circle" style="width:8px;height:8px;"></span><span>1</span>
-        <span class="legend-circle" style="width:14px;height:14px;"></span><span>10</span>
-        <span class="legend-circle" style="width:20px;height:20px;"></span><span>50+</span>
-        <span style="margin-left:.4rem">visits</span>
+        <span class="legend-circle" style="width:8px;height:8px;"></span>
+        <span class="legend-circle" style="width:14px;height:14px;"></span>
+        <span class="legend-circle" style="width:20px;height:20px;"></span>
+        <span style="margin-left:.4rem">marker scale · labels show visits</span>
       </div>
     </div>
 
@@ -511,8 +511,12 @@ async function drawMap(locations) {
     const [x, y] = proj([l.lon, l.lat]);
     return x > 0 && x < W && y > 0 && y < H;
   });
-  const maxCount = Math.max(1, ...locs.map(l => l.count));
-  const rScale = d3.scaleSqrt().domain([1, maxCount]).range([5, 26]);
+  const isVegasLocation = (loc) =>
+    (loc.country_code || '').toUpperCase() === 'US' &&
+    /las\s+vegas|vegas/i.test(loc.city || '');
+  const visualCount = (loc) => isVegasLocation(loc) ? 1 : loc.count;
+  const maxVisualCount = Math.max(2, ...locs.map(visualCount));
+  const rScale = d3.scaleSqrt().domain([1, maxVisualCount]).range([5, 22]);
 
   const tooltip = document.getElementById('map-tooltip');
   const tipCity  = document.getElementById('tip-city');
@@ -523,9 +527,11 @@ async function drawMap(locations) {
 
   locs.sort((a,b) => a.count - b.count).forEach(loc => {
     const [cx, cy] = proj([loc.lon, loc.lat]);
-    const r = rScale(loc.count);
+    const shownCount = loc.count;
+    const displayCount = visualCount(loc);
+    const r = rScale(displayCount);
     const fresh = now - loc.last_visit < 7200000;
-    const t = loc.count / maxCount;
+    const t = displayCount / maxVisualCount;
     const fill = d3.interpolateRgb('#5ba3ff','#0033cc')(t);
 
     const grp = g.append('g')
@@ -553,9 +559,9 @@ async function drawMap(locations) {
       .attr('filter','url(#dot-glow)');
 
     /* count label */
-    if (loc.count >= 1) {
+    if (shownCount >= 1) {
       grp.append('text')
-        .text(loc.count > 999 ? Math.round(loc.count/1000)+'k' : loc.count)
+        .text(shownCount > 999 ? Math.round(shownCount/1000)+'k' : shownCount)
         .attr('text-anchor','middle').attr('dy','0.36em')
         .attr('fill','#fff').attr('font-size', Math.min(r * 0.82, 12))
         .attr('font-family','"Courier New", monospace')
@@ -568,7 +574,7 @@ async function drawMap(locations) {
         style="width:18px;height:13px;object-fit:cover;border:1px solid var(--line);vertical-align:middle"
         onerror="this.style.display='none'">
         &nbsp;${loc.city}, ${loc.country}`;
-      tipCount.innerHTML = `${loc.count} visit${loc.count>1?'s':''}` +
+      tipCount.innerHTML = `${shownCount} visit${shownCount>1?'s':''}` +
         (fresh ? '&nbsp;<span class="tip-fresh">RECENT</span>' : '');
       tooltip.style.display = 'block';
       tooltip.style.left = (ev.clientX + 14) + 'px';
