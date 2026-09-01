@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>宏观经济学复习：第九～十二章 | Chang Wang</title>
+  <meta name="description" content="宏观经济学复习笔记：第九章宏观经济基本指标、第十章收入支出模型、第十一章 IS-LM 模型、第十二章 AD-AS 模型，含公式推导与例题详解。">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/macroecon-review-ch9-12/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+      scroll-margin-top: 1rem;
+    }
+    .post-body h3 {
+      color: var(--text);
+      font-size: 0.88rem;
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.06em;
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 34%; }
+
+    .result-table {
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      margin: 1rem 0;
+    }
+    .result-table th, .result-table td {
+      border: 1px solid var(--line);
+      padding: 0.4rem 0.75rem;
+      white-space: nowrap;
+    }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+
+    .case-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      padding: 0.15rem 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .note-flag {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      margin: -0.4rem 0 1rem;
+      padding-left: 0.9rem;
+      border-left: 2px dashed var(--line);
+    }
+
+    .toc-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 1rem 1.3rem;
+      margin: 1.4rem 0 2rem;
+      font-size: 0.85rem;
+    }
+    .toc-box .toc-title {
+      color: var(--accent);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .toc-box ol { margin: 0; padding-left: 1.3rem; }
+    .toc-box li { margin: 0.3rem 0; }
+    .toc-box a { color: var(--text); }
+    .toc-box a:hover { color: var(--accent); }
+
+    .fig-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1.6rem 0; }
+    .fig-grid.two { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 640px) { .fig-grid.two { grid-template-columns: 1fr; } }
+
+    .svg-figure {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      padding: 0.8rem;
+      text-align: center;
+    }
+    .svg-figure svg { width: 100%; height: auto; max-width: 340px; }
+    .svg-figure figcaption {
+      margin-top: 0.5rem;
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>宏观经济学复习：第九～十二章——基本指标、收入支出模型、IS-LM 与 AD-AS 模型</h1>
+        <span class="meta">
+          科目：宏观经济学 (Macroeconomics) &nbsp;·&nbsp;
+          整理：Chang Wang &nbsp;·&nbsp;
+          09-01-2026
+        </span>
+        <div class="pdf-download">
+          <a href="/blog/files/macroecon-review-ch9-12.pdf" download>
+            ⬇ 下载原始 PDF 复习笔记（含手写排版与公式截图，1.1&nbsp;MB）
+          </a>
+        </div>
+      </div>
+
+      <p>
+        本文是宏观经济学期末复习整理，覆盖第九章至第十二章：宏观经济的基本衡量指标、
+        收入支出模型（凯恩斯交叉图）、IS-LM 模型，以及 AD-AS 模型。内容包括核心定义、
+        公式推导、图形逻辑，以及若干配套例题与详细解答，便于考前快速检索与自查。
+      </p>
+
+      <div class="toc-box">
+        <div class="toc-title">目录</div>
+        <ol>
+          <li><a href="#ch9">第九章 · 宏观经济的基本指标及其衡量</a></li>
+          <li><a href="#ch10">第十章 · 国民收入的决定：收入支出模型</a></li>
+          <li><a href="#ch11">第十一章 · 国民收入的决定：IS-LM 模型</a></li>
+          <li><a href="#ch12">第十二章 · 国民收入的决定：AD-AS 模型</a></li>
+          <li><a href="#quickref">速查表 · 核心公式汇总</a></li>
+        </ol>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════ CH9 ══════════════════════════════════════════ -->
+      <h2 id="ch9">第九章 · 宏观经济的基本指标及其衡量</h2>
+
+      <h3>1. GDP（国内生产总值）</h3>
+      <p>
+        GDP 是指一定时期内在<strong>一国境内</strong>生产的所有<strong>最终产品与服务</strong>的市场价值总和。
+        一国经济从对产品和服务需求的角度可划分为四个部门：家庭部门的消费（$C$）、企业部门的投资（$I$）、
+        政府部门的购买（$G$）和国外部门的净出口（出口 $X$ 减进口 $M$，$NX = X-M$）。
+      </p>
+      $$\text{GDP} = C + I + G + NX$$
+
+      <h3>2. NNP、NI、GNP</h3>
+      <p>NNP（国民生产净值）是从 GNP 中减去资本折旧；NI（国民收入）是与国民净产值近似相等的收入衡量指标：</p>
+      $$\text{NNP} = \text{GNP} - \text{折旧}, \qquad \text{NI} = \text{NNP} - \text{统计误差}$$
+      <p>GNP（国民生产总值）：一个特定经济体的<strong>公民</strong>拥有的生产要素所生产的产出的市场价值：</p>
+      $$\text{GNP} = \text{GDP} + \text{来自国外的要素报酬} - \text{支付给国外的要素报酬}$$
+
+      <h3>3. 物价水平：CPI 与 GDP 平减指数</h3>
+      <p>CPI（消费价格指数）：对商品篮子中的价格变动和消费者支出进行调查和记录：</p>
+      $$\text{CPI} = \frac{\text{现期价格下"商品篮子"的费用额}}{\text{基期价格下"商品篮子"的费用额}} \times 100$$
+      <p>GDP 平减指数反映名义 GDP 与实际 GDP 之间因价格水平变化而产生的差异：</p>
+      $$\text{GDP 平减指数} = \frac{\text{名义 GDP}}{\text{实际 GDP}} \times 100$$
+
+      <h3>4. 通货膨胀</h3>
+      <p>通货膨胀是指一个经济体在一定时期内价格水平普遍、持续上升的情况，其程度用通货膨胀率反映：</p>
+      $$\pi_t = \frac{P_t - P_{t-1}}{P_{t-1}} \times 100\%$$
+
+      <h3>5. 就业与失业指标</h3>
+      <p>家庭调查中，每个家庭的每个成年人被归为以下三类之一：就业者、失业者、不属于劳动力者。</p>
+      $$\text{劳动人数} = \text{就业人数} + \text{失业人数}$$
+      $$\text{失业率} = \frac{\text{失业人数}}{\text{劳动人数}} \times 100\%, \qquad
+        \text{就业率} = \frac{\text{就业人数}}{\text{劳动人数}} \times 100\%$$
+      $$\text{劳动参与率} = \frac{\text{劳动力人数}}{\text{劳动年龄人口数}} \times 100\%$$
+      <p>失业主要分为三种类型：<strong>摩擦性失业</strong>、<strong>结构性失业</strong>和<strong>周期性失业</strong>。</p>
+
+      <div class="highlight-box">
+        <strong>滞涨（Stagflation）：</strong> 经济体出现高失业率（停滞）与高通货膨胀率并存的现象
+        （美国 1974–75 年 / 1980–81 年为典型案例）。
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════ CH10 ══════════════════════════════════════════ -->
+      <h2 id="ch10">第十章 · 国民收入的决定：收入支出模型</h2>
+
+      <h3>1. 封闭经济的循环流程</h3>
+      <p>
+        家庭通过向生产要素市场提供劳动获得收入，再以购买消费产品和服务、以及向政府纳税的形式支出其收入，
+        并通过货币市场进行储蓄；企业通过出售产品与服务获得收入，再以购买生产要素来支出其收入；
+        政府通过向企业和家庭征税获得收入，再以政府购买来支出其收入。同时，出于各自不同的需要，
+        家庭、企业、政府都会通过货币市场进行借贷。
+      </p>
+
+      <h3>2. 消费函数与储蓄函数（两部门·家庭部门）</h3>
+      <p>消费函数 $C=C(Y)$（$Y$ 为可支配收入）：</p>
+      <ul>
+        <li><strong>APC（平均消费倾向）</strong>：消费曲线上任意一点与原点连线的斜率
+          $$\text{APC} = \frac{C}{Y}$$
+        </li>
+        <li><strong>MPC（边际消费倾向）</strong>：增加的消费额与增加的可支配收入额之比，即 $C$ 函数在该点的斜率
+          $$\text{MPC} = \frac{\Delta C}{\Delta Y} = \frac{\mathrm{d}C}{\mathrm{d}Y}$$
+        </li>
+      </ul>
+      <p>储蓄函数 $S=S(Y)$，$S = Y - C$：</p>
+      <ul>
+        <li><strong>APS（平均储蓄倾向）</strong>：$\text{APS} = \dfrac{S}{Y}$</li>
+        <li><strong>MPS（边际储蓄倾向）</strong>：$\text{MPS} = \dfrac{\Delta S}{\Delta Y}$</li>
+      </ul>
+      <p>设消费函数为 $C = \alpha + \beta Y$，则储蓄函数可推导为：</p>
+      $$S = Y - C = Y - (\alpha + \beta Y) = -\alpha + (1-\beta)Y$$
+      <div class="highlight-box">
+        APC 和 MPC 都随收入增加而递减，且 <strong>APC &gt; MPC</strong>；<br>
+        APC + APS ≡ 1，MPC + MPS ≡ 1（恒等关系）。
+      </div>
+      <p>影响消费的其他因素：① 利率（提高利率刺激储蓄，减少消费）；② 价格水平（货币收入与实际购买力的对比）；
+        ③ 收入分配（高收入家庭消费倾向较小，低收入家庭消费倾向较大）；④ 预期。</p>
+
+      <h3>3. 投资（两部门·企业部门）</h3>
+      <p>企业的主要支出是投资。投资需求是总需求中的重要部分，且比消费需求更具变化性，
+        因而对均衡国民收入的影响也更大。</p>
+      <ul>
+        <li><strong>MEC（资本边际效率）</strong>：一种贴现率，恰好使一项资本品在使用期内各预期收益的现值之和
+          等于这项资本的供给价格（或重置成本）：
+          $$R_n = R_0(1+r)^n$$
+        </li>
+        <li><strong>MEI（资本边际效率曲线）</strong>：市场利率越低，投资需求量越大；企业根据不同市场利率
+          选择不同项目，期待不同收益。</li>
+      </ul>
+      <p>影响预期收益的因素：① 对投资项目产品的需求预期；② 产品成本；③ 投资税抵免；④ 投资风险；
+        ⑤ 融资条件对投资需求的影响。</p>
+      <p>
+        利率分为<strong>名义利率</strong>（借贷双方按约定支付的利率）和<strong>实际利率</strong>
+        （约等于名义利率减去通货膨胀率）。企业是否对新的实物资本进行投资，取决于预期利润与借入资金的成本。
+      </p>
+      <p><strong>托宾 q 理论</strong>：</p>
+      $$q = \frac{\text{企业股票的市场价值}}{\text{新建企业的成本（重置成本）}}$$
+      <p>当 $q<1$ 时，买旧企业比新建更便宜，投资需求偏弱；股票价格上升、$q$ 上升时，投资会相应增加。</p>
+
+      <h3>4. 政府部门（三部门经济）</h3>
+      <p>政府需求分为政府消费需求和政府投资需求。政府对社会总需求的影响途径：
+        ① 直接购买支出；② 税收；③ 转移支付；④ 制度和政策。</p>
+
+      <h3>5. 乘数</h3>
+      <p>乘数是凯恩斯主义理论中，强调总需求变化对均衡国民收入产生进一步（放大）影响的重要机制。</p>
+      <p><strong>投资乘数</strong>（国民收入变动量与引起该变化的初始投资支出之比）：</p>
+      $$k = \frac{1}{1-\text{MPC}} = \frac{1}{\text{MPS}}$$
+      <p>三部门经济中，总支出 $Y = C+I+G = \alpha + \beta(Y-T) + I + G$，解得均衡收入：</p>
+      $$Y = \frac{\alpha + I + G - \beta T}{1-\beta}$$
+      <table class="result-table">
+        <thead><tr><th>乘数</th><th>定义</th><th>公式</th></tr></thead>
+        <tbody>
+          <tr><td>政府购买支出乘数</td><td>$K_G = \Delta Y/\Delta G$</td><td>$\dfrac{1}{1-\beta}$</td></tr>
+          <tr><td>税收乘数</td><td>$K_T = \Delta Y/\Delta T$</td><td>$\dfrac{-\beta}{1-\beta}$</td></tr>
+          <tr><td>政府转移支付乘数</td><td>$K_{tr} = \Delta Y/\Delta Tr$</td><td>$\dfrac{\beta}{1-\beta}$</td></tr>
+        </tbody>
+      </table>
+
+      <h3>6. 判断题与要点归纳</h3>
+      <ul>
+        <li>收入很低时，平均消费倾向可能大于 1，且平均消费倾向总为正数；平均消费倾向不一定总是大于边际消费倾向（在收入很低的极端情形下例外）。</li>
+        <li>投资和政府的支出是自发性支出时，属于<strong>外生变量</strong>。</li>
+        <li>影响乘数发挥作用大小的因素：经济体中过剩生产能力的大小、投资与储蓄决定的相对独立程度、
+          货币供给是否适应支出的需要、经济体中部分资源"约束瓶颈"程度的大小。</li>
+        <li>以凯恩斯经济理论为基础的短期经济波动理论涉及的市场包括：货币市场、劳动市场、产品市场、国际市场。</li>
+        <li>边际消费倾向本身不会直接增加或减少 GDP；可支配收入的增加会使边际消费倾向递减。</li>
+      </ul>
+      <p class="note-flag">
+        原始笔记将"自发性支出对应的变量类型"记为"内生变量"，但按标准定义，自发性（autonomous）支出是不随收入
+        $Y$ 变动的外生给定量，属于<strong>外生变量</strong>——此处按标准表述订正，供复习时留意。
+      </p>
+
+      <hr class="divider">
+
+      <div class="problem-badge">例题 10-1 · 三部门经济乘数</div>
+      <p>
+        已知消费函数为 $C = 100+0.9Y_d$（$Y_d$ 为可支配收入），投资 $I=300$，政府购买支出 $G=160$，
+        税收 $T=0.2Y$。
+      </p>
+      <ol>
+        <li>试求均衡的国民收入水平；</li>
+        <li>试求政府购买支出乘数；</li>
+        <li>若政府购买支出增加到 300，新的均衡国民收入是多少？</li>
+      </ol>
+      <div class="answer-box">
+        <span class="ans-label">解答</span>
+        <p>(1) $C = 100+0.9Y_d = 100+0.9(1-0.2)Y = 100+0.72Y$。计划支出
+          $AE=C+I+G=560+0.72Y$，由均衡条件 $AE=Y$ 得 $Y^*=2000$。
+          <br><em>重点：区分可支配收入是否需要先减去税收。</em>
+        </p>
+        <p>(2) $$K_G = \frac{1}{1-\beta(1-t)} = \frac{1}{0.28} = \frac{25}{7}$$
+          <em>重点：重新化简三部门乘数公式，推导出含税率 $t$ 的乘数表达式。</em>
+        </p>
+        <p>(3) $\Delta Y = K_G \times \Delta G = \dfrac{25}{7}\times140 = 500$，故 $\overline{Y}=Y^*+\Delta Y=2500$。
+          <br>验证：$\{AE=700+0.72Y,\ AE=Y\} \Rightarrow \overline{Y}=2500$。 ✓</p>
+      </div>
+
+      <div class="problem-badge">例题 10-2 · 两部门经济：消费函数变动对乘数的影响</div>
+      <p>设某经济中消费函数为 $C=100+0.8Y$，投资 $I=50$。</p>
+      <ol>
+        <li>求均衡收入、消费和储蓄；</li>
+        <li>若当时实际产出为 800，企业非自愿存货积累为多少？</li>
+        <li>若投资增至 100，试求增加的收入；</li>
+        <li>若消费函数变为 $C=100+0.9Y$，投资仍为 50，收入和储蓄各为多少？收入增加了多少？</li>
+        <li>消费函数变动后，乘数有何变化？</li>
+      </ol>
+      <div class="answer-box">
+        <span class="ans-label">解答</span>
+        <p>(1) $AE=C+I=150+0.8Y$，由 $AE=Y$ 得 $Y^*=750$，
+          $C=100+0.8\times750=700$，$S=-100+0.2\times750=50$。</p>
+        <p>(2) 当实际产出为 800 时，$AE=150+0.8\times800=790$，
+          非自愿存货积累 $=$ 实际产出 $-\,AE=800-790=10$。</p>
+        <p>(3) 投资乘数 $k_1=\dfrac{1}{1-0.8}=5$，$\Delta Y=k_1\times\Delta I=5\times50=250$；投资增至 100 时收入增加 250。</p>
+        <p>(4) $AE=150+0.9Y$，由 $AE=Y$ 得 $Y^*=1500$，$S=-100+0.1\times1500=50$，$\Delta Y=1500-750=750$。</p>
+        <p>(5) $k_1=\dfrac{1}{1-0.9}=10$：边际消费倾向由 0.8 上升到 0.9，投资乘数从 5 上升到 10。</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════ CH11 ══════════════════════════════════════════ -->
+      <h2 id="ch11">第十一章 · 国民收入的决定：IS-LM 模型</h2>
+      <p>
+        本章介绍短期总需求分析的核心内容——IS-LM 模型：在既定不变的物价水平上，
+        是什么因素决定了总需求水平及其对均衡国民收入的影响，以及是什么因素引起总需求曲线的移动，
+        从而导致宏观经济的变化。
+      </p>
+
+      <h3>1. IS 曲线：产品市场均衡</h3>
+      <p>IS 曲线代表产品和服务市场达到均衡（投资 $I$ 与储蓄 $S$ 相等）时，利率与收入的组合轨迹。
+        两部门经济中总需求等于总供给：$C+I = C+S \Rightarrow I=S$。</p>
+      <p>设消费函数 $C=\alpha+\beta Y$，两部门均衡收入为：</p>
+      $$Y = \frac{\alpha+I}{1-\beta}$$
+      <p>设投资为利率的线性函数 $I=e-dr$（$e$ 为恒定的外生投资，$d$ 为投资需求对利率的反映程度，$r$ 为利率）：</p>
+      $$Y = \frac{\alpha+e-dr}{1-\beta}$$
+
+      <div class="fig-grid two">
+        <figure class="svg-figure">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="20" x2="40" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="190" x2="280" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="18" y="24" style="fill:var(--muted);font-size:12px">r</text>
+            <text x="272" y="208" style="fill:var(--muted);font-size:12px">Y</text>
+            <path d="M 60,40 C 120,90 180,130 250,170" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>
+            <text x="230" y="150" style="fill:var(--accent);font-size:13px">IS</text>
+          </svg>
+          <figcaption>IS 曲线：利率与收入负相关（斜率为负）</figcaption>
+        </figure>
+        <figure class="svg-figure">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="20" x2="40" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="190" x2="280" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="18" y="24" style="fill:var(--muted);font-size:12px">r</text>
+            <text x="272" y="208" style="fill:var(--muted);font-size:12px">Y</text>
+            <path d="M 60,175 C 120,140 180,90 240,35" style="fill:none;stroke:var(--accent2);stroke-width:2.5"/>
+            <text x="200" y="55" style="fill:var(--accent2);font-size:13px">LM</text>
+          </svg>
+          <figcaption>LM 曲线：利率与收入正相关（斜率为正）</figcaption>
+        </figure>
+      </div>
+
+      <h3>2. IS 曲线的推导逻辑</h3>
+      <p>四象限推导的逻辑链：① 利率上升使投资减少（$r$–$I$ 曲线）；② 引起凯恩斯交叉图中计划支出向下移动；
+        ③ 从而引发实际均衡收入的减少；④ 这与 IS 曲线中"利率上升、收入减少"的对应点相吻合——
+        IS 曲线概括了产品市场均衡的相关变动。</p>
+
+      <h3>3. IS 曲线的斜率及其变动</h3>
+      $$r = \frac{\alpha+e}{d} - \left[\frac{1-\beta}{d}\right]Y$$
+      <p>
+        $d$ 代表投资需求对利率的反映程度：$d$ 越大（投资对利率越敏感），IS 曲线越平缓。
+        $\beta$ 代表边际消费倾向：$\beta$ 越大，$|$斜率$|$ 越小，IS 曲线越平缓
+        （对应支出乘数 $K_G=\frac{1}{1-\beta}$ 越大）。
+      </p>
+      <ul>
+        <li>投资需求增加 → IS 右移；投资需求下降 → IS 左移</li>
+        <li>储蓄意愿增加（即投资意愿下降）→ IS 左移</li>
+        <li>三部门经济中总消费需求变化 → IS 曲线变化</li>
+        <li>政府支出增加 → IS 右移；税收增加 → IS 左移</li>
+      </ul>
+
+      <h3>4. LM 曲线：货币市场均衡</h3>
+      <p>人们持有/需要货币出于三类动机：① 交易动机；② 预防动机（与收入相关，$L_1=L(Y)=kY$，
+        $k$ 为消费和预防动机所需货币量与实际收入的比例）；③ 投机动机（与利率相关，$L_2=L(r)$）。</p>
+      <div class="highlight-box">
+        <strong>凯恩斯陷阱（流动性陷阱）：</strong> 利率极高时，投资需求几乎为 0，
+        人们预期利率不会再升、证券价格不会再跌，因而将货币换为证券；反之，利率极低时，
+        人们预期利率不会再降、证券只会跌不会涨，因而把证券全部换成货币，此时不再投资、货币不再流动。
+      </div>
+      <p>货币需求函数（$h$ 为货币需求关于利率变动的系数）：</p>
+      $$L = L_1+L_2 = kY - hr$$
+      <p>名义货币需求量需按价格指数 $P$ 折算：$L=L_0/P$，即 $L_0=(kY-hr)P$。</p>
+
+      <h3>5. LM 曲线的推导</h3>
+      <p>设 $M$ 为实际货币供给量，货币市场均衡：$M=L=kY-hr$，解出 Y-r 关系即为 LM 曲线：</p>
+      $$Y = \frac{hr}{k}+\frac{M}{k}, \qquad\text{或}\qquad r = \frac{kY}{h}-\frac{M}{h}$$
+      <p>已知固定的实际货币供给 $\bar M/\bar P$，令需求 $=$ 供给：</p>
+      $$\frac{\bar M}{\bar P} = kY-hr \ \Longrightarrow\ r = \frac{1}{h}\left(kY-\frac{\bar M}{\bar P}\right)$$
+
+      <h3>6. LM 曲线上的三个区域</h3>
+      <div class="fig-grid">
+        <figure class="svg-figure">
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="15" x2="40" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="190" x2="300" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="16" y="20" style="fill:var(--muted);font-size:12px">r</text>
+            <text x="290" y="208" style="fill:var(--muted);font-size:12px">Y</text>
+            <path d="M 55,178 C 130,176 190,165 230,120 C 260,85 268,45 272,20"
+                  style="fill:none;stroke:var(--accent);stroke-width:2.5"/>
+            <line x1="130" y1="15" x2="130" y2="190" style="stroke:var(--line);stroke-width:1;stroke-dasharray:3,3"/>
+            <line x1="230" y1="15" x2="230" y2="190" style="stroke:var(--line);stroke-width:1;stroke-dasharray:3,3"/>
+            <text x="58" y="205" style="fill:var(--muted);font-size:10px">凯恩斯区域</text>
+            <text x="145" y="205" style="fill:var(--muted);font-size:10px">中间区域</text>
+            <text x="235" y="205" style="fill:var(--muted);font-size:10px">古典区域</text>
+            <text x="278" y="30" style="fill:var(--accent);font-size:13px">LM</text>
+          </svg>
+          <figcaption>
+            LM 曲线的三个区域：利率极低处（凯恩斯 / 萧条区域）投机需求趋于无限大；
+            中间区域可正常进行政策操作；利率很高处（古典区域）投机需求趋近于 0，LM 近乎垂直。
+          </figcaption>
+        </figure>
+      </div>
+
+      <h3>7. IS-LM 模型：产品市场与货币市场的共同均衡</h3>
+      <div class="highlight-box">
+        在一个封闭经济体中，边际消费倾向短期内相对稳定，有效需求主要取决于投资，
+        投资量取决于资本边际效率（MEC）与利率 $r$；而货币供给量 $M$ 和流动性偏好（货币需求 $L$）
+        又进一步影响利率 $r$。于是商品市场上：收入 $Y$ 依赖于利率 $r$，利率 $r$ 又依赖于收入 $Y$——
+        这是一个循环推论问题，因此需要联立 IS 与 LM 两条曲线，共同求解 $r$ 和 $Y$。
+      </div>
+
+      <div class="fig-grid">
+        <figure class="svg-figure">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="15" x2="40" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="190" x2="280" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="16" y="20" style="fill:var(--muted);font-size:12px">r</text>
+            <text x="272" y="208" style="fill:var(--muted);font-size:12px">Y</text>
+            <path d="M 55,45 C 120,90 180,120 260,175" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>
+            <path d="M 55,175 C 120,120 180,90 260,45" style="fill:none;stroke:var(--accent2);stroke-width:2.5"/>
+            <circle cx="157" cy="110" r="3.5" style="fill:var(--text)"/>
+            <line x1="157" y1="110" x2="157" y2="190" style="stroke:var(--line);stroke-width:1;stroke-dasharray:3,3"/>
+            <line x1="40" y1="110" x2="157" y2="110" style="stroke:var(--line);stroke-width:1;stroke-dasharray:3,3"/>
+            <text x="163" y="105" style="fill:var(--text);font-size:12px">E (r*, Y*)</text>
+            <text x="245" y="60" style="fill:var(--accent2);font-size:13px">LM</text>
+            <text x="245" y="165" style="fill:var(--accent);font-size:13px">IS</text>
+          </svg>
+          <figcaption>IS-LM 均衡：两曲线交点 E 同时满足产品市场与货币市场均衡</figcaption>
+        </figure>
+      </div>
+
+      <div class="problem-badge">例题 11-1 · IS-LM 联立求解</div>
+      <p>投资函数 $I=1250-250r$，消费函数 $C=500+0.5Y$，储蓄函数 $S=Y-C=-500+0.5Y$；
+        货币需求 $L=0.5Y+1000-250r$，货币供给 $M=1250$（亿美元）。</p>
+      <div class="answer-box">
+        <span class="ans-label">解答</span>
+        <p>由 $I=S$ 得 IS 曲线：$Y=3500-500r$；由 $L=M$ 得 LM 曲线：$Y=500+500r$。</p>
+        <p>联立求解：$r=3,\ Y=2000$。</p>
+        <p>一般形式：IS 方程 $I(r)=S(Y)$；LM 方程 $M=L(Y)+L(r)$。由于 $M$ 给定不变，
+          这是关于 $(r,Y)$ 的二元方程组，解出即得 IS-LM 均衡的一般解。</p>
+      </div>
+
+      <h3>8. 判断与要点归纳</h3>
+      <ul>
+        <li>IS 与 LM 交点处：产品供给 = 产品需求；产品市场与货币市场同时均衡；实际货币供给 = 实际货币需求；实际支出 = 意愿支出。</li>
+        <li>IS 曲线斜率取决于：投资需求对利率的反映程度 $d$、边际消费倾向 $\beta$，斜率为 $-\dfrac{1-\beta}{d}$。</li>
+        <li>LM 曲线斜率取决于：货币需求对收入的反应程度 $k$、货币需求对利率的反应程度 $h$，斜率为 $\dfrac{k}{h}$。</li>
+        <li>其他条件不变时，LM 曲线右移的原因：货币供给量增加；货币交易需求曲线右移。</li>
+        <li>货币供给和价格水平不变时，收入增加 → 货币需求增加 → 利率上升（由 $kY-hr$ 需保持 $M$ 不变，$Y\uparrow$ 需 $r\uparrow$）。</li>
+        <li>调整工资不会影响 IS-LM 模型中的 IS 曲线。</li>
+        <li>按旧传统理论，利率下降时投资不会增加。</li>
+        <li>IS 与 LM 两条曲线不一定总能相交于唯一一点。</li>
+      </ul>
+
+      <div class="problem-badge">例题 11-2 · 投资利率敏感性变化对财政 / 货币政策效果的影响</div>
+      <p>消费函数 $C=130+0.6Y$，投资函数 $I=750-2000r$，政府购买 $G=750$。</p>
+      <ol>
+        <li>若投资函数变为 $I=750-3000r$，推导变化前后的 IS 曲线并比较斜率
+          （两部门经济只需 $I=S$；有政府支出后需考虑 $I+G=S+T$）；</li>
+        <li>增加政府购买支出时，比较投资函数变化前后哪种情况收入变化更大；</li>
+        <li>增加货币供给时，比较投资函数变化前后哪种情况对收入的影响更大。</li>
+      </ol>
+      <div class="answer-box">
+        <span class="ans-label">解答</span>
+        <p>(1) 由 $Y=C+I+G=130+0.6Y+750-2000r+750$ 整理，变化前 IS：$r=0.815-0.0002Y$；
+          变化后（$I=750-3000r$）：$r=0.543-0.000133Y$。比较可知，变化后 IS 曲线斜率变小、更加平缓。</p>
+        <p>(2) 政府购买支出增加时，IS 右移导致利率上升；投资的利率敏感性增加后，利率上升挤出更多私人投资，
+          财政政策效果更小，均衡收入增加得较小。</p>
+        <p>(3) 货币供给增加时，LM 右移导致利率下降；投资利率敏感性增加后，利率下降带来更多私人投资增加，
+          货币政策效果更大，均衡收入增加得较大。</p>
+      </div>
+
+      <div class="problem-badge">例题 11-3 · 财政扩张的挤出效应</div>
+      <p>$Y=C+I+G$，$C=800+0.63Y$，$I=7500-20000r$，货币需求 $L=0.1625Y-10000r$，
+        名义货币供给 $M=6000$，价格水平 $P=1$。政府购买支出从 7500 增加到 8500，求挤占的私人投资。</p>
+      <div class="answer-box">
+        <span class="ans-label">解答</span>
+        <p>$G=7500$ 时：$IS_1: 0.37Y+20000r=15800$；$LM: 0.1625Y-10000r=6000$。
+          解得 $r_1=0.05,\ Y_1=40000,\ I_1=6500$。</p>
+        <p>$G=8500$ 时：$IS_2: 0.37Y+20000r=16800$；LM 不变。
+          解得 $r_2=0.0732,\ Y_2=41438.85,\ I_2=6063$。</p>
+        <p>挤占的私人投资：$I_2-I_1=6063-6500=-437$（即挤占约 437）。</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════ CH12 ══════════════════════════════════════════ -->
+      <h2 id="ch12">第十二章 · 国民收入的决定：AD-AS 模型</h2>
+      <p>
+        前述 IS-LM 模型假定一般价格水平不变，这一假设脱离实际。AD-AS 模型进一步引入总需求曲线（AD）
+        和总供给曲线（AS），分析产量 $Y$ 与价格水平 $P$ 的共同决定。
+      </p>
+
+      <h3>1. AD 曲线（总需求曲线）</h3>
+      <p>AD 曲线表示在产品市场和货币市场同时达到均衡时，特定价格水平与产出水平的组合，
+        反映总产量需求与一般价格水平之间的对应关系。</p>
+
+      <h3>2. 价格水平变动效应</h3>
+      <ul>
+        <li><strong>利率效应</strong>：价格水平上升 → 名义货币转化的实际货币供给减少 → 利率上升 →
+          投资和产出反方向变动（收入下降）。</li>
+        <li><strong>实际余额效应（财富效应）</strong>：价格水平变动改变人们所持货币及货币计价资产的实际购买力，
+          人们相对变富或变穷，消费水平随之增减。</li>
+        <li><strong>税负 / 名义收入效应</strong>：价格水平上升使名义收入增加，可能推高纳税档次、
+          增加税负，使可支配收入相对下降，进而降低消费水平。</li>
+      </ul>
+
+      <h3>3. AD 曲线的推导</h3>
+      <p>以两部门经济为例：IS 方程 $S(Y)=I(r)$；LM 方程 $\dfrac{M_0}{P}=L(Y)+L(r)$。
+        将 $Y,r$ 视为未知数、$P$ 视为参数求解，得到的 $Y$-$P$ 关系即为 AD 曲线（只能通过联立方程隐式求解，
+        但可确定其为减函数）。</p>
+      <p>推导逻辑：① 价格水平升高（$P\uparrow$）使 LM 曲线截距 $\bar M/(h\bar P)$ 减小，LM 曲线上移；
+        ② 若 IS 不变，均衡收入 $Y$ 减小、利率 $r$ 上升；③ 对应到 AD 曲线（减函数）：收入减少对应价格水平上升。</p>
+
+      <div class="fig-grid">
+        <figure class="svg-figure">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="15" x2="40" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="190" x2="280" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="16" y="20" style="fill:var(--muted);font-size:12px">P</text>
+            <text x="272" y="208" style="fill:var(--muted);font-size:12px">Y</text>
+            <path d="M 55,35 C 100,60 140,90 175,120 C 210,150 240,168 265,180"
+                  style="fill:none;stroke:var(--accent);stroke-width:2.5"/>
+            <text x="245" y="160" style="fill:var(--accent);font-size:13px">AD</text>
+          </svg>
+          <figcaption>AD 曲线：价格水平与总需求量呈反向关系（减函数）</figcaption>
+        </figure>
+      </div>
+
+      <h3>4. AD 曲线的移动</h3>
+      <ul>
+        <li><strong>扩张性财政政策</strong>（$G\uparrow$）：$Y=C+I+G=\alpha+\beta(Y-T)+e-dr+G$ 使 IS 右移，
+          在给定 $P$ 下均衡收入 $Y$ 上升，AD 曲线右移。</li>
+        <li><strong>扩张性货币政策</strong>（给定 $P$ 下 $M\uparrow$）：LM 曲线 $r=\frac{1}{h}(kY-\bar M/\bar P)$
+          右移（截距下移），均衡收入 $Y$ 上升，AD 曲线右移。</li>
+      </ul>
+      <div class="highlight-box">
+        只要在价格水平 $P$ 不变的情况下，IS-LM 模型中引起总收入水平 $Y$ 变化的因素，
+        就一定会引起 AD 曲线的移动。
+      </div>
+
+      <h3>5. AS 曲线（总供给曲线）及其推导</h3>
+      <p>
+        AS 曲线描述总产量与一般价格水平 $P$ 之间的关系，由劳动市场（$N_s$ 劳动供给曲线、$N_d$ 劳动需求曲线，
+        均衡点 $E$，充分就业实际工资 $W/P_0$、就业量 $N_0$）、生产函数 $Y=F(N)$，
+        以及 45° 线转换共同决定。
+      </p>
+      <div class="highlight-box">
+        负反馈调节机制：若价格偏离 $P_0$（例如实际状态 $P_1>P_0$，使实际工资 $W/P_1<W/P_0$），
+        劳动供给曲线上对应的就业量 $N$ 随之下降 → 产量 $Y=F(N)$ 随 $N$ 下降而减少 → 借助 45° 线映射，
+        最终对应价格水平 $P$ 下降的趋势——这正是 AS 曲线（P-Y 关系）背后的形成逻辑。
+      </div>
+      <p>AS 曲线的移动因素：总供给曲线由生产函数（技术水平、劳动生产率）和劳动市场就业量共同决定。</p>
+      <ul>
+        <li>技术进步 → AS 右移；劳动需求增加 → AS 右移</li>
+        <li>劳动供给取决于劳动者的意愿偏好与人口 / 劳动力数量：劳动供给增加 → AS 右移；劳动供给减少 → AS 左移</li>
+      </ul>
+
+      <h3>6. 两种特殊的 AS 曲线</h3>
+      <div class="fig-grid two">
+        <figure class="svg-figure">
+          <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="15" x2="40" y2="175" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="175" x2="260" y2="175" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="16" y="20" style="fill:var(--muted);font-size:12px">P</text>
+            <text x="250" y="193" style="fill:var(--muted);font-size:12px">Y</text>
+            <line x1="55" y1="90" x2="250" y2="90" style="stroke:var(--accent);stroke-width:2.5"/>
+            <text x="200" y="80" style="fill:var(--accent);font-size:12px">AS</text>
+            <text x="10" y="94" style="fill:var(--muted);font-size:10px">P₀</text>
+          </svg>
+          <figcaption>凯恩斯主义萧条情况：AS 曲线为水平线（$P=P_0$ 不变，产量由需求决定）</figcaption>
+        </figure>
+        <figure class="svg-figure">
+          <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="15" x2="40" y2="175" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="175" x2="260" y2="175" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="16" y="20" style="fill:var(--muted);font-size:12px">P</text>
+            <text x="250" y="193" style="fill:var(--muted);font-size:12px">Y</text>
+            <line x1="150" y1="15" x2="150" y2="175" style="stroke:var(--accent2);stroke-width:2.5"/>
+            <text x="158" y="30" style="fill:var(--accent2);font-size:12px">AS</text>
+            <text x="140" y="193" style="fill:var(--muted);font-size:10px">Yf</text>
+          </svg>
+          <figcaption>古典长期稳定情况：AS 曲线为垂直线（$Y=Y_f$ 充分就业产量固定）</figcaption>
+        </figure>
+      </div>
+
+      <h3>7. 三种 AD-AS 模型情形</h3>
+      <ol>
+        <li><strong>极端短期</strong>：AS 水平（价格不变），总产量 $Y$ 完全由 AD 决定。</li>
+        <li><strong>极端长期（古典情况）</strong>：经济达到充分就业，AS 垂直，AD 移动只影响价格水平 $P$，不影响总产量 $Y$。</li>
+        <li><strong>一般情况</strong>：AS 向右上方倾斜，AD 与 AS 移动都会同时改变总产量 $Y$ 和价格水平 $P$。</li>
+      </ol>
+      <div class="fig-grid">
+        <figure class="svg-figure">
+          <svg viewBox="0 0 300 220" xmlns="http://www.w3.org/2000/svg">
+            <line x1="40" y1="15" x2="40" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <line x1="40" y1="190" x2="280" y2="190" style="stroke:var(--muted);stroke-width:1.5"/>
+            <text x="16" y="20" style="fill:var(--muted);font-size:12px">P</text>
+            <text x="272" y="208" style="fill:var(--muted);font-size:12px">Y</text>
+            <path d="M 55,45 C 120,80 180,110 250,170" style="fill:none;stroke:var(--accent);stroke-width:2.5"/>
+            <path d="M 55,175 C 120,120 180,80 250,40" style="fill:none;stroke:var(--accent2);stroke-width:2.5"/>
+            <circle cx="152" cy="107" r="3.5" style="fill:var(--text)"/>
+            <line x1="152" y1="107" x2="152" y2="190" style="stroke:var(--line);stroke-width:1;stroke-dasharray:3,3"/>
+            <line x1="40" y1="107" x2="152" y2="107" style="stroke:var(--line);stroke-width:1;stroke-dasharray:3,3"/>
+            <text x="158" y="102" style="fill:var(--text);font-size:12px">E (P*, Y*)</text>
+            <text x="255" y="30" style="fill:var(--accent2);font-size:13px">AS</text>
+            <text x="235" y="165" style="fill:var(--accent);font-size:13px">AD</text>
+          </svg>
+          <figcaption>一般情况 AD-AS 模型：两曲线共同决定总产量与一般价格水平</figcaption>
+        </figure>
+      </div>
+
+      <h3>8. 判断与要点归纳</h3>
+      <ul>
+        <li>物价水平上升 → 实际货币供给减少 → LM 曲线左移。</li>
+        <li>货币供给量增加 → AD 曲线右移。</li>
+        <li>经济处于低于充分就业均衡水平时，总需求增加会同时引起物价水平上升和实际国民生产总值增加。</li>
+        <li>当投资支出对利率比较敏感时，总需求曲线更加平滑（对给定的 LM 移动，Y 反应更大）。</li>
+        <li>总供给（AS）的决定因素：生产率的变化、资本存量的变化、劳动供给的变化。</li>
+        <li>总供给曲线：短期斜率为正，长期斜率趋近垂直，萧条区域表现为水平直线（两段式形式）。</li>
+        <li>总需求（AD）的决定因素：消费者预期的变化、政府支出的变化、利率的变化、税率的变化。</li>
+        <li>均衡价格发生变动的原因：货币供给变动、市场需求变动、外部供给冲击。</li>
+        <li>使用扩张性货币政策时，不一定能达到增加国民收入的效果（如处于流动性陷阱或古典区域）。</li>
+        <li>IS-LM 模型说明的总需求对国民收入的作用，与 AD-AS 模型中总需求对国民收入的效果并不相同
+          （IS-LM 固定价格，AD-AS 允许价格内生变动）。</li>
+      </ul>
+
+      <div class="problem-badge">例题 12-1 · 完整 AD-AS 求解与扩张性货币政策</div>
+      <p>消费 $C=600+0.8Y$，投资 $I=400-50r$，政府购买 $G=200$；货币需求 $L=250+0.5Y-125r$，
+        名义货币供给 $M=1250$，价格水平 $P=1$。</p>
+      <ol>
+        <li>求 IS 方程和 LM 方程；</li>
+        <li>求均衡收入和均衡利率；</li>
+        <li>充分就业收入为 5000，若用扩张性货币政策实现充分就业，需增加多少货币供给？</li>
+        <li>价格水平可变动时，推导总需求函数；</li>
+        <li>若总供给函数为 $Y=2375+125P$，求均衡价格水平和均衡收入。</li>
+      </ol>
+      <div class="answer-box">
+        <span class="ans-label">解答</span>
+        <p>(1) 由产品市场均衡 $Y=C+I+G$ 得 IS：$Y=6000-250r$；由货币市场均衡 $L=M$ 得 LM：$Y=2000+250r$。</p>
+        <p>(2) 联立解得均衡收入 $Y^*=4000$，均衡利率 $r^*=8$。</p>
+        <p>(3) 货币政策乘数
+          $$\frac{\mathrm{d}Y}{\mathrm{d}m} = \frac{1}{(1-0.8)\times\frac{125}{50}+0.5} = 1$$
+          充分就业需 $\Delta Y=5000-4000=1000$，因 $P=1$，故 $\Delta M=\Delta m=1000$。</p>
+        <p>(4) 联立 $Y=6000-250r$ 与 $250+0.5Y-125r=1250/P$，得总需求函数：$Y=2750+\dfrac{1250}{P}$。</p>
+        <p>(5) 与 $Y=2375+125P$ 联立，解得均衡价格 $P^*=5$，均衡收入 $Y^*=3000$。</p>
+      </div>
+
+      <div class="problem-badge">例题 12-2 · 财政政策与货币政策实现充分就业的对比</div>
+      <p>消费 $C=800+0.8Y_d$，税收 $T=0.25Y$，投资 $I=200-50r$，政府购买 $G=200$，
+        货币需求 $M_d/P=0.4Y-100r$，货币供给 $M_s=900$（名义货币量），
+        总供给函数 $Y=2350+400P$。</p>
+      <ol>
+        <li>求总需求函数；</li>
+        <li>已知充分就业收入水平为 2850，判断该经济是否实现充分就业，并给出实现充分就业的政策方案。</li>
+      </ol>
+      <div class="answer-box">
+        <span class="ans-label">解答</span>
+        <p>(1) $C=800+0.8(Y-0.25Y)=800+0.6Y$，计划支出 $AE=800+0.6Y+200-50r+200=1200+0.6Y-50r$。
+          由 $AE=Y$ 得 IS：$Y=3000-125r$；由 $L=m$（即 $M_d/P=M_s/P$）得 LM：$Y=\dfrac{2250}{P}+250r$。
+          联立消去 $r$，得 AD 函数：
+          $$Y = 2000+\frac{750}{P}$$
+        </p>
+        <p>(2) 与 AS：$Y=2350+400P$ 联立，得 $P=1,\ Y=2750$。由于 $2750<2850$，
+          经济<strong>未实现</strong>充分就业，政府应采取扩张性财政或货币政策刺激总需求。
+          若要实现 $Y=2850$，由 AS 方程反解所需价格：
+          $$P = \frac{2850-2350}{400} = 1.25$$
+        </p>
+        <p>设政府购买支出为 $G$、货币供应量为 $M$，重新推导一般化 IS/LM/AD：</p>
+        <p>产品市场：$Y=C+I+G=1000+0.6Y-50r+G \Rightarrow Y=2500-125r+2.5G$</p>
+        <p>货币市场：$0.4Y-100r=M/P \Rightarrow Y=\dfrac{2.5M}{P}+250r$</p>
+        <p>联立得一般 AD 函数：$$Y = \frac{5000}{3}+\frac{5}{3}G+\frac{2.5}{3}\cdot\frac{M}{P}$$</p>
+        <p><strong>a) 仅用扩张性财政政策</strong>（$M=900$ 不变），令 $Y=2850,\ P=1.25$：
+          $$G = \frac{3}{5}\left(2850-\frac{5000}{3}-\frac{2.5}{3}\times\frac{900}{1.25}\right)=350,\qquad \Delta G = 350-200=150$$
+          即政府购买增加 150，可实现充分就业。</p>
+        <p><strong>b) 仅用扩张性货币政策</strong>（$G=200$ 不变），令 $Y=2850,\ P=1.25$：
+          $$M = \frac{3}{2.5}\times1.25\times\left(2850-\frac{5000}{3}-\frac{5}{3}\times200\right)=1275,\qquad \Delta M = 1275-900=375$$
+          即货币供给增加 375，可实现充分就业。</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════════════════════ QUICK REFERENCE ══════════════════════════════════════════ -->
+      <h2 id="quickref">速查表 · 核心公式汇总</h2>
+
+      <table class="result-table">
+        <thead><tr><th>概念</th><th>公式</th></tr></thead>
+        <tbody>
+          <tr><td>GDP</td><td>$C+I+G+NX$</td></tr>
+          <tr><td>GNP</td><td>$\text{GDP}+\text{国外要素净报酬}$</td></tr>
+          <tr><td>NNP / NI</td><td>$\text{GNP}-\text{折旧}$ / $\text{NNP}-\text{统计误差}$</td></tr>
+          <tr><td>CPI</td><td>现期费用 / 基期费用 × 100</td></tr>
+          <tr><td>GDP 平减指数</td><td>名义 GDP / 实际 GDP × 100</td></tr>
+          <tr><td>通货膨胀率</td><td>$(P_t-P_{t-1})/P_{t-1}\times100\%$</td></tr>
+          <tr><td>失业率</td><td>失业人数 / 劳动人数 × 100%</td></tr>
+          <tr><td>投资乘数</td><td>$1/(1-\text{MPC}) = 1/\text{MPS}$</td></tr>
+          <tr><td>政府购买乘数 $K_G$</td><td>$1/(1-\beta)$</td></tr>
+          <tr><td>税收乘数 $K_T$</td><td>$-\beta/(1-\beta)$</td></tr>
+          <tr><td>转移支付乘数 $K_{tr}$</td><td>$\beta/(1-\beta)$</td></tr>
+          <tr><td>托宾 q</td><td>股票市场价值 / 重置成本</td></tr>
+          <tr><td>IS 曲线（一般式）</td><td>$I(r)=S(Y)$，斜率 $-(1-\beta)/d$</td></tr>
+          <tr><td>LM 曲线（一般式）</td><td>$M=L(Y)+L(r)$，斜率 $k/h$</td></tr>
+          <tr><td>货币需求函数</td><td>$L=kY-hr$</td></tr>
+          <tr><td>AD 曲线</td><td>联立 IS/LM，以 $P$ 为参数解出 $Y(P)$（减函数）</td></tr>
+          <tr><td>AS 曲线</td><td>劳动市场 + 生产函数 + 45° 转换（增函数）</td></tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>记忆锚点：</strong> IS 曲线是"产品市场"的均衡轨迹（$I=S$），LM 曲线是"货币市场"的均衡轨迹
+        （$M=L$）；AD 曲线本质上是 IS-LM 模型在不同价格水平 $P$ 下解出的 $Y$ 的集合，
+        而 AS 曲线来自劳动市场 + 生产函数的供给侧逻辑。两者联立，才能同时确定价格水平 $P$ 与总产出 $Y$。
+      </div>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+</body>
+</html>

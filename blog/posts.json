@@ -1,5 +1,12 @@
 [
   {
+    "title": "宏观经济学复习：第九～十二章——基本指标、收入支出模型、IS-LM 与 AD-AS 模型",
+    "date": "2026-09-01",
+    "summary": "期末复习整理：第九章 GDP/GNP/CPI/失业率等宏观指标；第十章消费-储蓄函数、投资理论与乘数（K_G, K_T, K_tr）；第十一章 IS-LM 模型推导、货币市场三区域与挤出效应；第十二章 AD-AS 模型、价格水平效应与财政/货币政策实现充分就业。含公式推导、图形逻辑与多道例题详解。",
+    "path": "/blog/posts/macroecon-review-ch9-12/",
+    "category": "Economics · Macroeconomics"
+  },
+  {
     "title": "ECG 783 Final Exam Review — Five Proof Problems: Wiener, Steepest Descent, Gradient Estimation, Leaky LMS & SER",
     "date": "2026-05-13",
     "summary": "Five derivation-and-proof problems: (1) Wiener–Hopf equation W*=R⁻¹P, shifted surface J=J_min+(W−W*)ᵀR(W−W*), orthogonality E[e*Xₙ]=0; (2) steepest-descent principal-coordinate recursion V'_{k+1}=(I−2μΛ)V'_k, stability 0<μ<1/λ_max, learning curve; (3) central-difference gradient variance σ_J²/(2s²) and normalised perturbation P=s²λ_ave/J_min; (4) regularized LMS with reference vector W₀ — update, stability 0<μ<1/(λ_max+α), steady-state mean (R+αI)⁻¹(P+αW₀); (5) z-domain MSE proof, FIR reduction, SER C_n⁻¹ via matrix-inversion lemma.",
