@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 782 HW1 | Chang Wang</title>
+  <meta name="description" content="ECG 782 Homework 1 — Unbiasedness and variance of the sample-variance and sample-mean estimators, PDF of the sample mean, and the minimum-variance linear unbiased estimator via Lagrange multipliers. UNLV ECE 782.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg782-hw1/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      max-width: 480px;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 38%; }
+
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 782 HW1 — Bias, Variance and the Minimum-Variance Linear Unbiased Estimator</h1>
+        <span class="meta">
+          Course: ECG 782 &nbsp;·&nbsp;
+          Student: Chang Wang (2002721058) &nbsp;·&nbsp;
+          Instructor: Ebrahim Saberinia &nbsp;·&nbsp;
+          09-08-2026
+        </span>
+        <div class="pdf-download">
+          <a href="/blog/files/ecg782-hw1.pdf" download>
+            ⬇ Download original PDF report (269 KB)
+          </a>
+        </div>
+      </div>
+
+      <table class="info-table">
+        <tr><td>Course</td><td>ECG 782</td></tr>
+        <tr><td>Student Name</td><td>Chang Wang</td></tr>
+        <tr><td>Student ID</td><td>2002721058</td></tr>
+        <tr><td>Instructor</td><td>Ebrahim Saberinia</td></tr>
+        <tr><td>Date</td><td>09-08-2026</td></tr>
+      </table>
+
+      <p>
+        Three estimation-theory problems: (1) bias and variance of the biased sample-variance
+        estimator $\hat\sigma^2$ for IID $\mathcal{N}(0,\sigma^2)$ data, and its behavior as
+        $N\to\infty$; (2) a derivation that the sample mean $\hat A$ is exactly
+        $\mathcal{N}(A,\sigma^2/N)$; (3) the minimum-variance linear unbiased estimator among
+        linear estimators $\hat A=\sum_n a_n x[n]$, obtained via Lagrange multipliers.
+      </p>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 1 ══════════════════════════ -->
+      <h2>Problem 1</h2>
+      <p>
+        The data $\{x[0],x[1],\ldots,x[N-1]\}$ are observed, where the $x[n]$'s are independent
+        and identically distributed (IID) as $\mathcal{N}(0,\sigma^2)$. We wish to estimate the
+        variance $\sigma^2$ as
+      </p>
+      $$\hat\sigma^2 = \frac{1}{N}\sum_{n=0}^{N-1} x^2[n].$$
+      <p>Is this an unbiased estimator? Find the variance of $\hat\sigma^2$ and examine what happens as $N\to\infty$.</p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>
+        Consider the estimator $\hat\sigma^2=\frac{1}{N}\sum_{n=0}^{N-1}x^2[n]$, with $x[n]\sim\mathcal{N}(0,\sigma^2)$.
+        To determine whether it is unbiased, note that
+      </p>
+      $$E[x^2[n]] = \operatorname{Var}(x[n]) + \bigl(E[x[n]]\bigr)^2 = \sigma^2.$$
+      <p>Therefore,</p>
+      $$E[\hat\sigma^2] = \frac{1}{N}\sum_{n=0}^{N-1} E[x^2[n]] = \sigma^2.$$
+
+      <div class="answer-box">
+        <span class="ans-label">Unbiasedness</span>
+        $\hat\sigma^2$ is an unbiased estimator of $\sigma^2$.
+      </div>
+
+      <p>
+        To calculate its variance, use the fourth-moment identity for a zero-mean Gaussian random
+        variable, $E[x^4[n]]=3\sigma^4$. It follows that
+      </p>
+      $$\operatorname{Var}(x^2[n]) = E[x^4[n]] - \bigl(E[x^2[n]]\bigr)^2 = 3\sigma^4 - \sigma^4 = 2\sigma^4.$$
+      <p>Since the observations are independent, their squares are also independent. Hence,</p>
+      $$\operatorname{Var}(\hat\sigma^2) = \frac{1}{N^2}\sum_{n=0}^{N-1}\operatorname{Var}(x^2[n])
+        = \frac{1}{N^2}(N\cdot 2\sigma^4) = \frac{2\sigma^4}{N}.$$
+
+      <p>
+        As $N\to\infty$, the variance approaches zero. Since the estimator is unbiased, its mean
+        squared error satisfies
+      </p>
+      $$E\bigl[(\hat\sigma^2-\sigma^2)^2\bigr] = \frac{2\sigma^4}{N} \longrightarrow 0.$$
+      <p>
+        Therefore $\hat\sigma^2$ converges to $\sigma^2$ in mean square. Furthermore, by Chebyshev's
+        inequality, for every $\varepsilon>0$,
+      </p>
+      $$P\bigl(|\hat\sigma^2-\sigma^2|\ge\varepsilon\bigr) \le \frac{2\sigma^4}{N\varepsilon^2} \longrightarrow 0.$$
+
+      <div class="highlight-box">
+        <strong>Consistency:</strong> $\hat\sigma^2$ is consistent. The denominator is $N$, rather
+        than $N-1$, because the population mean is known to be zero.
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 2 ══════════════════════════ -->
+      <h2>Problem 2</h2>
+      <p>Prove that the PDF of $\hat A$ given in Example 2.1 is $\mathcal{N}(A,\sigma^2/N)$.</p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>In Problem 1, the observations follow the model</p>
+      $$x[n] = A + w[n], \qquad n=0,1,\ldots,N-1,$$
+      <p>where $A$ is an unknown constant and $w[n]\sim\mathcal{N}(0,\sigma^2)$. The estimator is the sample mean:</p>
+      $$\hat A = \frac{1}{N}\sum_{n=0}^{N-1} x[n] = A + \frac{1}{N}\sum_{n=0}^{N-1} w[n].$$
+      <p>
+        A linear combination of independent Gaussian random variables is Gaussian. Consequently,
+        $\hat A$ is Gaussian, and its distribution is completely determined by its mean and variance.
+      </p>
+      <p>Its mean is</p>
+      $$E[\hat A] = A + \frac{1}{N}\sum_{n=0}^{N-1} E[w[n]] = A.$$
+      <p>Using the independence of the noise samples, its variance is</p>
+      $$\operatorname{Var}(\hat A) = \operatorname{Var}\!\left(\frac{1}{N}\sum_{n=0}^{N-1} w[n]\right)
+        = \frac{1}{N^2}\sum_{n=0}^{N-1}\operatorname{Var}(w[n]) = \frac{N\sigma^2}{N^2} = \frac{\sigma^2}{N}.$$
+      <p>Therefore,</p>
+      $$\hat A \sim \mathcal{N}\!\left(A,\frac{\sigma^2}{N}\right).$$
+
+      <div class="answer-box">
+        <span class="ans-label">Probability density function</span>
+        $$f_{\hat A}(a;A) = \sqrt{\frac{N}{2\pi\sigma^2}}\exp\!\left[-\frac{N(a-A)^2}{2\sigma^2}\right], \quad -\infty<a<\infty.$$
+      </div>
+
+      <p>
+        This distribution is exact for every $N$; it does not require a central-limit-theorem
+        approximation. Strictly speaking, the problem concerns the PDF of $\hat A$, since $A$ is a
+        fixed unknown parameter.
+      </p>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 3 ══════════════════════════ -->
+      <h2>Problem 3</h2>
+      <p>For the problem described in Example 2.1, the more general estimator</p>
+      $$\hat A = \sum_{n=0}^{N-1} a_n\, x[n]$$
+      <p>
+        is proposed. Find the $a_n$'s so that the estimator is unbiased and the variance is
+        minimized. <em>Hint: use Lagrange multipliers with unbiasedness as the constraint equation.</em>
+      </p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>Under the same observation model, consider the linear estimator</p>
+      $$\hat A = \sum_{n=0}^{N-1} a_n\, x[n],$$
+      <p>where the $a_n$'s are deterministic coefficients.</p>
+
+      <p>First, impose the unbiasedness requirement. Since $E[x[n]]=A$,</p>
+      $$E[\hat A] = \sum_{n=0}^{N-1} a_n\, E[x[n]] = A\sum_{n=0}^{N-1} a_n.$$
+      <p>
+        For this expectation to equal $A$ for every possible value of $A$, the coefficients must
+        satisfy $\sum_{n=0}^{N-1} a_n = 1$. Because the observations are independent and each has
+        variance $\sigma^2$,
+      </p>
+      $$\operatorname{Var}(\hat A) = \sum_{n=0}^{N-1} a_n^2 \operatorname{Var}(x[n]) = \sigma^2 \sum_{n=0}^{N-1} a_n^2.$$
+      <p>The optimization problem is therefore</p>
+      $$\min_{\{a_n\}} \ \sigma^2 \sum_{n=0}^{N-1} a_n^2 \quad \text{subject to} \quad \sum_{n=0}^{N-1} a_n = 1.$$
+      <p>Introduce the Lagrangian</p>
+      $$\mathcal{L}(a_0,\ldots,a_{N-1},\lambda) = \sigma^2\sum_{n=0}^{N-1} a_n^2 + \lambda\!\left(\sum_{n=0}^{N-1} a_n - 1\right).$$
+      <p>Differentiating with respect to each coefficient and setting the derivative to zero gives</p>
+      $$\frac{\partial\mathcal{L}}{\partial a_n} = 2\sigma^2 a_n + \lambda = 0 \ \implies \ a_n = -\frac{\lambda}{2\sigma^2},$$
+      <p>so all coefficients must be equal. Substituting into the constraint yields</p>
+      $$-\frac{N\lambda}{2\sigma^2} = 1 \ \implies \ \lambda = -\frac{2\sigma^2}{N}.$$
+      <p>Therefore,</p>
+      $$a_n = \frac{1}{N}, \qquad n=0,1,\ldots,N-1.$$
+
+      <p>
+        For $\sigma^2>0$, the objective function is strictly convex and the constraint is linear,
+        so this solution is the unique global minimum.
+      </p>
+
+      <div class="answer-box">
+        <span class="ans-label">Minimum-variance linear unbiased estimator</span>
+        $$\hat A_{\text{opt}} = \frac{1}{N}\sum_{n=0}^{N-1} x[n],
+          \qquad \operatorname{Var}(\hat A_{\text{opt}}) = \sigma^2\sum_{n=0}^{N-1}\left(\frac{1}{N}\right)^2 = \frac{\sigma^2}{N}.$$
+      </div>
+
+      <div class="highlight-box">
+        <strong>Conclusion:</strong> Among all linear unbiased estimators, the sample mean minimizes
+        variance — with $\operatorname{Var}(\hat A_{\text{opt}})=\sigma^2/N$, matching the exact
+        distribution derived in Problem 2.
+      </div>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

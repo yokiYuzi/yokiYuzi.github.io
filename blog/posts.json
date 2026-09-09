@@ -1,5 +1,12 @@
 [
   {
+    "title": "ECG 782 HW1 — Bias, Variance and the Minimum-Variance Linear Unbiased Estimator",
+    "date": "2026-09-08",
+    "summary": "Three estimation-theory problems: (1) bias/variance of the biased sample-variance estimator for IID N(0,σ²) data, Var=2σ⁴/N, consistency as N→∞; (2) proof that the sample mean Â is exactly N(A,σ²/N); (3) minimum-variance linear unbiased estimator among Â=Σaₙx[n] via Lagrange multipliers, yielding aₙ=1/N — the sample mean.",
+    "path": "/blog/posts/ecg782-hw1/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
     "title": "宏观经济学复习：第九～十二章——基本指标、收入支出模型、IS-LM 与 AD-AS 模型",
     "date": "2026-09-01",
     "summary": "期末复习整理：第九章 GDP/GNP/CPI/失业率等宏观指标；第十章消费-储蓄函数、投资理论与乘数（K_G, K_T, K_tr）；第十一章 IS-LM 模型推导、货币市场三区域与挤出效应；第十二章 AD-AS 模型、价格水平效应与财政/货币政策实现充分就业。含公式推导、图形逻辑与多道例题详解。",
