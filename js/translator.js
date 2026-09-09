@@ -36,19 +36,63 @@ const Translator = (function () {
     return result;
   }
 
-  async function fetchZh(text) {
-    const k = text.trim();
-    if (!k || k.length < 2) return text;
-    if (cache.has(k)) return cache.get(k);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  // Single in-flight request at a time, with a floor on the gap between
+  // requests. Google's unofficial gtx endpoint treats concurrent/bursty
+  // traffic as abuse and starts returning a hard block page (not just a
+  // 429) — after which every subsequent request fails until the block
+  // lifts. Serializing requests keeps us under that threshold.
+  let chain = Promise.resolve();
+  const MIN_GAP_MS = 220;
+  let lastRequestAt = 0;
+
+  function enqueue(task) {
+    const result = chain.then(async () => {
+      const wait = lastRequestAt + MIN_GAP_MS - Date.now();
+      if (wait > 0) await sleep(wait);
+      lastRequestAt = Date.now();
+      return task();
+    });
+    // Swallow rejections in the chain itself so one failure doesn't
+    // permanently wedge every request queued after it.
+    chain = result.catch(() => {});
+    return result;
+  }
+
+  async function translateOnce(k) {
     const url =
       'https://translate.googleapis.com/translate_a/single' +
       '?client=gtx&sl=en&tl=zh-CN&dt=t&q=' +
       encodeURIComponent(k);
-    const d = await (await fetch(url)).json();
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('translate http ' + res.status);
+    const ct = res.headers.get('content-type') || '';
+    if (!ct.includes('json')) throw new Error('translate non-json response (blocked?)');
+    const d = await res.json();
     const t = (d[0] || []).map(seg => (seg && seg[0]) || '').join('');
-    const result = t || k;
-    cache.set(k, result);
-    return result;
+    return t || k;
+  }
+
+  async function fetchZh(text) {
+    const k = text.trim();
+    if (!k || k.length < 2) return text;
+    if (cache.has(k)) return cache.get(k);
+
+    const attempts = [0, 500, 1500]; // retry backoff in ms before each attempt
+    let lastErr;
+    for (const delay of attempts) {
+      if (delay) await sleep(delay);
+      try {
+        const result = await enqueue(() => translateOnce(k));
+        cache.set(k, result);
+        return result;
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    console.warn('translator: giving up on segment after retries', lastErr);
+    return text;
   }
 
   async function run(btn) {
@@ -56,18 +100,15 @@ const Translator = (function () {
     if (!body) return;
 
     btn.disabled = true;
-    btn.textContent = 'TRANSLATING...';
 
     const nodes = getTextNodes(body);
     backups = nodes.map(n => ({ node: n, original: n.textContent }));
 
-    for (let i = 0; i < nodes.length; i += 6) {
-      await Promise.all(
-        nodes.slice(i, i + 6).map(async n => {
-          try { n.textContent = await fetchZh(n.textContent); } catch (_) {}
-        })
-      );
-      if (i + 6 < nodes.length) await new Promise(r => setTimeout(r, 120));
+    let done = 0;
+    for (const n of nodes) {
+      try { n.textContent = await fetchZh(n.textContent); } catch (_) {}
+      done++;
+      btn.textContent = `TRANSLATING... ${done}/${nodes.length}`;
     }
 
     active = true;
