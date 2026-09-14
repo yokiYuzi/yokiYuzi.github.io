@@ -1,5 +1,12 @@
 [
   {
+    "title": "Cramér–Rao 下界（CRLB）学习整理——从 MVU 估计到参数变换",
+    "date": "2026-09-14",
+    "summary": "系统整理 Kay 教材第 2 章（MVU 估计）到 3.6 节（参数变换）：MSE 分解、似然函数、Fisher 信息、CRLB 定理的完整推导（正则条件 + Cauchy–Schwarz 证明）、可达条件与有效估计量、WGN 中信号的通用公式 (3.14)、相位估计（Example 3.4）完整六步代数拆解、参数变换规则 (3.16) 与非线性变换对有效性的破坏。附常见误区汇总、公式速查表与解题流程图。",
+    "path": "/blog/posts/ecg782-crlb-notes/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
     "title": "ECG 782 HW1 — Bias, Variance and the Minimum-Variance Linear Unbiased Estimator",
     "date": "2026-09-08",
     "summary": "Three estimation-theory problems: (1) bias/variance of the biased sample-variance estimator for IID N(0,σ²) data, Var=2σ⁴/N, consistency as N→∞; (2) proof that the sample mean Â is exactly N(A,σ²/N); (3) minimum-variance linear unbiased estimator among Â=Σaₙx[n] via Lagrange multipliers, yielding aₙ=1/N — the sample mean.",
