@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 762 HW2 | Chang Wang</title>
+  <meta name="description" content="ECG 762 Homework 2 — CRLB for an exponentially/power-weighted DC level and for an unknown base r, CRLB for a DC level in correlated Gaussian noise, the Fisher information matrix for polynomial curve fitting, and CRLB vs. the limiting variance of a biased random-amplitude variance estimator.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg762-hw2/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      max-width: 480px;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 38%; }
+
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 762 HW2 — CRLB for Exponential/Power Signals, Correlated Noise, Polynomial Fitting, and Random-Amplitude Estimation</h1>
+        <span class="meta">
+          Course: ECG 762 &nbsp;·&nbsp;
+          Student: Chang Wang (2002721058) &nbsp;·&nbsp;
+          Instructor: Ebrahim Saberinia &nbsp;·&nbsp;
+          09-15-2026
+        </span>
+        <div class="pdf-download">
+          <a href="/blog/files/ecg762-hw2.pdf" download>
+            ⬇ Download original PDF report (461 KB)
+          </a>
+        </div>
+      </div>
+
+      <table class="info-table">
+        <tr><td>Course</td><td>ECG 762</td></tr>
+        <tr><td>Student Name</td><td>Chang Wang</td></tr>
+        <tr><td>Student ID</td><td>2002721058</td></tr>
+        <tr><td>Instructor</td><td>Ebrahim Saberinia</td></tr>
+        <tr><td>Date</td><td>09-15-2026</td></tr>
+      </table>
+
+      <p>
+        Five estimation-theory problems (Kay, Ch. 3): (1) CRLB for the amplitude $A$ of an
+        exponentially/power-weighted DC level $x[n]=Ar^n+w[n]$, and the limiting behavior of the
+        efficient estimator's variance as $N\to\infty$ for $0&lt;r&lt;1$, $r=1$, and $r&gt;1$;
+        (2) CRLB for the base $r$ itself in $x[n]=r^n+w[n]$, showing no unbiased estimator attains
+        it for $N\ge3$ while $N=2$ is efficient and $N=1$ is unidentifiable; (3) CRLB for a DC
+        level in two correlated Gaussian samples, and the limits as $\rho\to\pm1$;
+        (4) the Fisher information matrix for polynomial curve fitting via a Vandermonde design
+        matrix; (5) the limiting variance of the biased estimator
+        $\widehat{\sigma_A^2}=\hat A^2$ in a random-amplitude model, compared against the CRLB.
+      </p>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 1 ══════════════════════════ -->
+      <h2>Problem 1 (3.3)</h2>
+      <p>
+        The data $x[n]=Ar^n+w[n]$ for $n=0,1,\ldots,N-1$ are observed, where $w[n]$ is WGN with
+        variance $\sigma^2$ and $r&gt;0$ is known. Find the CRLB for $A$. Show that an efficient
+        estimator exists and find its variance. What happens to the variance as $N\to\infty$ for
+        various values of $r$?
+      </p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>The observation model is</p>
+      $$x[n]=Ar^n+w[n], \qquad n=0,1,\ldots,N-1,$$
+      <p>where $r&gt;0$ is known and $A$ is the unknown parameter. Here,</p>
+      $$s[n;A]=Ar^n, \qquad \frac{\partial s[n;A]}{\partial A}=r^n.$$
+      <p>Substituting into the general WGN formula yields</p>
+      $$\operatorname{Var}(\hat A)\ge \operatorname{CRLB}(A)=\frac{\sigma^2}{\sum_{n=0}^{N-1}r^{2n}}.$$
+      <p>Using the geometric-series formula,</p>
+      $$\operatorname{CRLB}(A)=
+        \begin{cases}
+        \sigma^2\,\dfrac{1-r^2}{1-r^{2N}}, & r\ne1,\\[0.6em]
+        \dfrac{\sigma^2}{N}, & r=1.
+        \end{cases}$$
+
+      <p>To show that an efficient estimator exists, consider</p>
+      $$\hat A=\frac{\sum_{n=0}^{N-1}r^n\,x[n]}{\sum_{n=0}^{N-1}r^{2n}}.$$
+      <p>Substituting $x[n]=Ar^n+w[n]$ gives</p>
+      $$\hat A = A + \frac{\sum_{n=0}^{N-1}r^n\,w[n]}{\sum_{n=0}^{N-1}r^{2n}}.$$
+      <p>Since $E[w[n]]=0$, $E[\hat A]=A$, so the estimator is unbiased. Using the independence of
+        the noise samples and $\operatorname{Var}(cX)=c^2\operatorname{Var}(X)$,</p>
+      $$\operatorname{Var}(\hat A)
+        = \frac{\sum_{n=0}^{N-1}r^{2n}\operatorname{Var}(w[n])}{\left(\sum_{n=0}^{N-1}r^{2n}\right)^2}
+        = \frac{\sigma^2\sum_{n=0}^{N-1}r^{2n}}{\left(\sum_{n=0}^{N-1}r^{2n}\right)^2}
+        = \frac{\sigma^2}{\sum_{n=0}^{N-1}r^{2n}}.$$
+
+      <div class="answer-box">
+        <span class="ans-label">Efficiency</span>
+        $\hat A$ is unbiased and its variance equals the CRLB — it is an efficient estimator.
+      </div>
+
+      <p>As $N\to\infty$, the variance behaves as follows:</p>
+      <ul>
+        <li><strong>If $0&lt;r&lt;1$:</strong> $\operatorname{Var}(\hat A)\to \sigma^2(1-r^2)&gt;0$.
+          The signal decays with $n$, so the total Fisher information remains finite and the
+          estimation variance does not approach zero.</li>
+        <li><strong>If $r=1$:</strong> $\operatorname{Var}(\hat A)=\sigma^2/N\to0$, decreasing at
+          the rate $1/N$.</li>
+        <li><strong>If $r&gt;1$:</strong>
+          $\operatorname{Var}(\hat A)=\dfrac{\sigma^2(r^2-1)}{r^{2N}-1}\to0$ exponentially, because
+          later observations contain increasingly strong signal.</li>
+      </ul>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 2 ══════════════════════════ -->
+      <h2>Problem 2 (3.4)</h2>
+      <p>
+        If $x[n]=r^n+w[n]$ for $n=0,1,\ldots,N-1$ are observed, where $w[n]$ is WGN with variance
+        $\sigma^2$ and $r$ is to be estimated, find the CRLB. Does an efficient estimator exist,
+        and if so, find its variance?
+      </p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>The observation model is $x[n]=r^n+w[n]$, $n=0,1,\ldots,N-1$, where $r$ is the unknown
+        parameter. Here, $s[n;r]=r^n$. For $n=0$ the signal equals $1$ and its derivative with
+        respect to $r$ is zero; for $n\ge1$,</p>
+      $$\frac{\partial s[n;r]}{\partial r}=nr^{n-1}.$$
+      <p>Therefore, for $N\ge2$,</p>
+      $$\operatorname{Var}(\hat r)\ge \operatorname{CRLB}(r)=\frac{\sigma^2}{\sum_{n=1}^{N-1}n^2r^{2n-2}}.$$
+
+      <p>To determine whether an efficient estimator exists, use the equality condition for the
+        CRLB, $\partial\ell(r)/\partial r = I(r)(\hat r-r)$, where $\ell(r)$ is the log-likelihood
+        and $I(r)$ the Fisher information. For this model,</p>
+      $$\frac{\partial\ell(r)}{\partial r}=\frac{1}{\sigma^2}\sum_{n=1}^{N-1}nr^{n-1}\bigl(x[n]-r^n\bigr).$$
+      <p>Let</p>
+      $$S(r)=\sum_{n=1}^{N-1}n^2r^{2n-2}, \qquad I(r)=\frac{S(r)}{\sigma^2}.$$
+      <p>The equality condition then requires</p>
+      $$\hat r = r + \frac{\sum_{n=1}^{N-1}nr^{n-1}\bigl(x[n]-r^n\bigr)}{S(r)}.$$
+      <p>For $N\ge3$, the coefficients of $x[1]$ and $x[2]$ in this expression are</p>
+      $$a_1(r)=\frac{1}{S(r)}, \qquad a_2(r)=\frac{2r}{S(r)}.$$
+      <p>Their ratio is $a_2(r)/a_1(r)=2r$, which depends on the unknown parameter. Consequently,
+        no single estimator that depends only on the observations and known quantities can satisfy
+        the equality condition for every $r$.</p>
+
+      <div class="answer-box">
+        <span class="ans-label">Result</span>
+        For $N\ge3$, no unbiased estimator attains the CRLB throughout the parameter range.
+      </div>
+
+      <p>There are two special sample-size cases:</p>
+      <ul>
+        <li><strong>If $N=2$:</strong> since $x[1]=r+w[1]$, the estimator $\hat r=x[1]$ satisfies
+          $E[\hat r]=r$, $\operatorname{Var}(\hat r)=\sigma^2=\operatorname{CRLB}(r)$. Hence an
+          efficient estimator exists, with variance $\sigma^2$.</li>
+        <li><strong>If $N=1$:</strong> the only observation is $x[0]=1+w[0]$, whose distribution
+          does not depend on $r$. The Fisher information is zero and $r$ is not identifiable.</li>
+      </ul>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 3 ══════════════════════════ -->
+      <h2>Problem 3 (3.9)</h2>
+      <p>We observe two samples of a DC level in correlated Gaussian noise,</p>
+      $$x[0]=A+w[0], \qquad x[1]=A+w[1],$$
+      <p>where $\mathbf{w}=[w[0]\ w[1]]^T$ is zero mean with covariance matrix</p>
+      $$\mathbf{C}=\sigma^2\begin{bmatrix}1 & \rho \\ \rho & 1\end{bmatrix}.$$
+      <p>The parameter $\rho$ is the correlation coefficient between $w[0]$ and $w[1]$. Compute the
+        CRLB for $A$ and compare it to the case when $w[n]$ is WGN ($\rho=0$). Also explain what
+        happens when $\rho\to\pm1$. Finally, comment on the additivity property of the Fisher
+        information for nonindependent observations.</p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>The two observations can be written as $\mathbf{x}=A\mathbf{1}+\mathbf{w}$,
+        $\mathbf{1}=[1\ 1]^T$, where $\mathbf{w}\sim\mathcal N(\mathbf{0},\mathbf{C})$,
+        $\mathbf{C}=\sigma^2\begin{bmatrix}1&\rho\\\rho&1\end{bmatrix}$. Thus
+        $\mathbf{x}\sim\mathcal N(\boldsymbol\mu(A),\mathbf{C})$, $\boldsymbol\mu(A)=A\mathbf{1}$.</p>
+
+      <p>First, assume $-1&lt;\rho&lt;1$, so that $\mathbf{C}$ is invertible. Using the general
+        Gaussian Fisher information formula,</p>
+      $$I(A)=\left[\frac{\partial\boldsymbol\mu(A)}{\partial A}\right]^T\mathbf{C}^{-1}
+        \left[\frac{\partial\boldsymbol\mu(A)}{\partial A}\right]
+        + \frac12\operatorname{tr}\!\left[\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial A}\right)^2\right].$$
+      <p>Since $\partial\boldsymbol\mu(A)/\partial A=\mathbf{1}$ and $\partial\mathbf{C}/\partial A=0$,
+        the covariance-dependent term vanishes and $I(A)=\mathbf{1}^T\mathbf{C}^{-1}\mathbf{1}$. The
+        inverse covariance matrix is</p>
+      $$\mathbf{C}^{-1}=\frac{1}{\sigma^2(1-\rho^2)}\begin{bmatrix}1&-\rho\\-\rho&1\end{bmatrix}.$$
+      <p>Consequently,</p>
+      $$I(A)=\frac{1}{\sigma^2(1-\rho^2)}\begin{bmatrix}1&1\end{bmatrix}
+        \begin{bmatrix}1&-\rho\\-\rho&1\end{bmatrix}\begin{bmatrix}1\\1\end{bmatrix}
+        = \frac{2(1-\rho)}{\sigma^2(1-\rho^2)} = \frac{2}{\sigma^2(1+\rho)}.$$
+
+      <div class="answer-box">
+        <span class="ans-label">CRLB</span>
+        $$\operatorname{Var}(\hat A)\ge \operatorname{CRLB}(A)=\frac{\sigma^2(1+\rho)}{2}.$$
+      </div>
+
+      <p>This bound is attained by the sample mean $\hat A=(x[0]+x[1])/2$. Indeed,
+        $E[\hat A]=\bigl(E[x[0]]+E[x[1]]\bigr)/2=A$, so the estimator is unbiased. Its variance is</p>
+      $$\operatorname{Var}(\hat A)=\frac14\operatorname{Var}(w[0]+w[1])
+        = \frac14\Bigl[\operatorname{Var}(w[0])+\operatorname{Var}(w[1])+2\operatorname{Cov}(w[0],w[1])\Bigr]
+        = \frac14(\sigma^2+\sigma^2+2\rho\sigma^2)
+        = \frac{\sigma^2(1+\rho)}{2}.$$
+      <p>Therefore $\hat A$ is an efficient estimator. For white Gaussian noise, $\rho=0$, giving
+        $\operatorname{CRLB}(A)=\sigma^2/2$.</p>
+
+      <div class="highlight-box">
+        Positive correlation increases the bound relative to the independent-noise case, whereas
+        negative correlation decreases it. Positively correlated noise tends to reinforce itself
+        when averaged; negatively correlated noise tends to cancel.
+      </div>
+
+      <p>As $\rho\to1$, $\operatorname{CRLB}(A)\to\sigma^2$. At $\rho=1$, the noise samples satisfy
+        $w[1]=w[0]$ almost surely, so $x[0]=x[1]=A+w[0]$: the second observation provides no
+        additional information, and averaging does not reduce the noise variance.</p>
+      <p>As $\rho\to-1$, $\operatorname{CRLB}(A)\to0$. At $\rho=-1$, the noise samples satisfy
+        $w[1]=-w[0]$ almost surely. Therefore,</p>
+      $$\hat A=\frac{x[0]+x[1]}{2}=A+\frac{w[0]+w[1]}{2}=A.$$
+
+      <div class="highlight-box">
+        <strong>Additivity:</strong> for independent observations, Fisher information adds sample by
+        sample ($I_N=N\cdot I_1$). Here the two samples are <em>not</em> independent, so this
+        result shows that correlation modulates — rather than simply accumulates — Fisher
+        information: correlated noise can either inflate the bound (positive $\rho$) or let it
+        collapse to zero (perfect negative correlation, where the noise itself is fully
+        informative about how to cancel it).
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 4 ══════════════════════════ -->
+      <h2>Problem 4 (3.13)</h2>
+      <p>
+        Consider a generalization of the line fitting problem described in Example 3.7, termed
+        polynomial or curve fitting. The data model is
+      </p>
+      $$x[n]=\sum_{k=0}^{p-1}A_kn^k+w[n], \qquad n=0,1,\ldots,N-1,$$
+      <p>
+        where $w[n]$ is WGN with variance $\sigma^2$. It is desired to estimate
+        $\{A_0,A_1,\ldots,A_{p-1}\}$. Find the Fisher information matrix for this problem.
+      </p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>The unknown parameter vector is $\mathbf{A}=[A_0\ A_1\ \cdots\ A_{p-1}]^T$, and</p>
+      $$w[n]\sim\mathcal N(0,\sigma^2).$$
+      <p>The joint likelihood, since the observations are independent, is</p>
+      $$p(\mathbf{x};\mathbf{A})=(2\pi\sigma^2)^{-N/2}
+        \exp\!\left[-\frac{1}{2\sigma^2}\sum_{n=0}^{N-1}\Bigl(x[n]-\sum_{k=0}^{p-1}A_kn^k\Bigr)^2\right],$$
+      <p>so the log-likelihood is</p>
+      $$\ell(\mathbf{A})=-\frac{N}{2}\ln(2\pi\sigma^2)
+        -\frac{1}{2\sigma^2}\sum_{n=0}^{N-1}\Bigl(x[n]-\sum_{k=0}^{p-1}A_kn^k\Bigr)^2.$$
+      <p>For $i=0,1,\ldots,p-1$, $\partial\bigl(\sum_kA_kn^k\bigr)/\partial A_i=n^i$. Thus</p>
+      $$\frac{\partial\ell}{\partial A_i}=\frac{1}{\sigma^2}\sum_{n=0}^{N-1}n^i
+        \Bigl(x[n]-\sum_{k=0}^{p-1}A_kn^k\Bigr), \qquad
+        \frac{\partial^2\ell}{\partial A_i\partial A_j}=-\frac{1}{\sigma^2}\sum_{n=0}^{N-1}n^{i+j}.$$
+      <p>The $(i,j)$ entry of the Fisher information matrix is
+        $\mathcal{I}_{ij}(\mathbf{A})=-E\bigl[\partial^2\ell/\partial A_i\partial A_j\bigr]$. Since
+        the second derivative does not depend on the observations,</p>
+      $$\mathcal{I}_{ij}(\mathbf{A})=\frac{1}{\sigma^2}\sum_{n=0}^{N-1}n^{i+j}, \qquad i,j=0,1,\ldots,p-1.$$
+      <p>Define $S_m=\sum_{n=0}^{N-1}n^m$, $S_0=N$ (with $n^0$ taken to be $1$, including at
+        $n=0$). The Fisher information matrix is therefore</p>
+      $$\mathcal{I}(\mathbf{A})=\frac{1}{\sigma^2}
+        \begin{bmatrix}
+        S_0 & S_1 & \cdots & S_{p-1}\\
+        S_1 & S_2 & \cdots & S_p\\
+        \vdots & \vdots & \ddots & \vdots\\
+        S_{p-1} & S_p & \cdots & S_{2p-2}
+        \end{bmatrix}.$$
+      <p>Equivalently, defining the Vandermonde design matrix</p>
+      $$\mathbf{H}=\begin{bmatrix}
+        1 & 0 & 0 & \cdots & 0\\
+        1 & 1 & 1 & \cdots & 1\\
+        1 & 2 & 2^2 & \cdots & 2^{p-1}\\
+        \vdots & \vdots & \vdots & \ddots & \vdots\\
+        1 & N-1 & (N-1)^2 & \cdots & (N-1)^{p-1}
+        \end{bmatrix},$$
+
+      <div class="answer-box">
+        <span class="ans-label">Fisher information matrix</span>
+        $$\mathcal{I}(\mathbf{A})=\frac{1}{\sigma^2}\mathbf{H}^T\mathbf{H}.$$
+      </div>
+
+      <p>For example, when $p=2$ the model reduces to straight-line fitting,
+        $x[n]=A_0+A_1n+w[n]$, and</p>
+      $$\mathcal{I}(\mathbf{A})=\frac{1}{\sigma^2}
+        \begin{bmatrix}
+        N & \dfrac{N(N-1)}{2}\\[0.6em]
+        \dfrac{N(N-1)}{2} & \dfrac{N(N-1)(2N-1)}{6}
+        \end{bmatrix}.$$
+
+      <div class="highlight-box">
+        Because the sampling locations $0,1,\ldots,N-1$ are distinct, $\mathbf{H}$ has full column
+        rank when $N\ge p$, and the Fisher information matrix is invertible. When $N&lt;p$, the
+        matrix is singular and the full coefficient vector is not identifiable.
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 5 ══════════════════════════ -->
+      <h2>Problem 5 (3.14)</h2>
+      <p>
+        For the data model in Example 3.11, consider the estimator
+        $\widehat{\sigma_A^2}=(\hat A)^2$, where $\hat A$ is the sample mean. Assume we observe a
+        given data set in which the realization of the random variable $A$ is the value $A_0$.
+        Show that $\hat A\to A_0$ as $N\to\infty$ by verifying that
+      </p>
+      $$E(\hat A\mid A=A_0)=A_0, \qquad \operatorname{var}(\hat A\mid A=A_0)=\frac{\sigma^2}{N}.$$
+      <p>
+        Hence $\widehat{\sigma_A^2}\to A_0^2$ as $N\to\infty$ for the given realization $A=A_0$.
+        Next, find the variance of $\widehat{\sigma_A^2}$ as $N\to\infty$ by determining
+        $\operatorname{var}(A^2)$, where $A\sim\mathcal N(0,\sigma_A^2)$, and compare it to the
+        CRLB. Explain why $\sigma_A^2$ cannot be estimated without error even for $N\to\infty$.
+      </p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>Consider the random-amplitude model</p>
+      $$x[n]=A+w[n], \qquad n=0,1,\ldots,N-1, \qquad
+        A\sim\mathcal N(0,\sigma_A^2), \quad w[n]\sim\mathcal N(0,\sigma^2),$$
+      <p>where $A$ is independent of the noise, $\sigma^2$ is known, and all $N$ observations share
+        the same realization of $A$. The sample mean is</p>
+      $$\hat A=\frac{1}{N}\sum_{n=0}^{N-1}x[n], \qquad \widehat{\sigma_A^2}=(\hat A)^2.$$
+
+      <p>Conditional on the realization $A=A_0$, $x[n]=A_0+w[n]$, so</p>
+      $$\hat A=A_0+\frac{1}{N}\sum_{n=0}^{N-1}w[n].$$
+      <p>Since the noise is independent of $A$ and has zero mean,</p>
+      $$E[\hat A\mid A=A_0]=A_0+\frac{1}{N}\sum_{n=0}^{N-1}E[w[n]\mid A=A_0]=A_0.$$
+      <p>Furthermore, independence of the noise samples gives</p>
+      $$\operatorname{Var}(\hat A\mid A=A_0)
+        = \operatorname{Var}\!\left(\frac{1}{N}\sum_{n=0}^{N-1}w[n]\right)
+        = \frac{1}{N^2}\sum_{n=0}^{N-1}\operatorname{Var}(w[n]) = \frac{\sigma^2}{N}.$$
+      <p>Consequently,</p>
+      $$E\bigl[(\hat A-A_0)^2\mid A=A_0\bigr]=\frac{\sigma^2}{N}\longrightarrow0.$$
+
+      <div class="answer-box">
+        <span class="ans-label">Convergence</span>
+        Conditional on $A=A_0$, $\hat A$ converges to $A_0$ in mean square and hence in
+        probability, $\hat A\xrightarrow{P}A_0$. By continuity of the squaring function,
+        $\widehat{\sigma_A^2}=(\hat A)^2\xrightarrow{P}A_0^2$ — the limit is the squared amplitude
+        of the particular realization, not necessarily the population variance $\sigma_A^2$.
+      </div>
+
+      <p>To determine the variation across realizations, note that a zero-mean Gaussian random
+        variable satisfies $E[A^2]=\sigma_A^2$, $E[A^4]=3\sigma_A^4$. Therefore,</p>
+      $$\operatorname{Var}(A^2)=E[A^4]-\bigl(E[A^2]\bigr)^2=3\sigma_A^4-\sigma_A^4=2\sigma_A^4.$$
+
+      <p>The finite-sample variance confirms this limit. Since
+        $\hat A=A+\frac{1}{N}\sum_{n=0}^{N-1}w[n]$ is the sum of independent Gaussian random
+        variables,</p>
+      $$\hat A\sim\mathcal N\!\left(0,\ \sigma_A^2+\frac{\sigma^2}{N}\right).$$
+      <p>Hence,</p>
+      $$\operatorname{Var}\bigl(\widehat{\sigma_A^2}\bigr)=2\left(\sigma_A^2+\frac{\sigma^2}{N}\right)^2,
+        \qquad
+        \lim_{N\to\infty}\operatorname{Var}\bigl(\widehat{\sigma_A^2}\bigr)=2\sigma_A^4.$$
+
+      <p>To compare this result with the CRLB, let $\tau=\sigma_A^2&gt;0$. After marginalizing
+        over $A$, the observation vector has distribution $\mathbf{x}\sim\mathcal N(\mathbf 0,\mathbf{C}(\tau))$,
+        where</p>
+      $$\mathbf{C}(\tau)=\tau\,\mathbf{1}\mathbf{1}^T+\sigma^2\mathbf{I}_N,$$
+      <p>with $\mathbf{1}$ the $N$-dimensional vector of ones — the observations are correlated
+        because they share the same random amplitude. Since the mean does not depend on $\tau$,
+        the Gaussian Fisher information formula reduces to</p>
+      $$I(\tau)=\frac12\operatorname{tr}\!\left[\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\tau}\right)^2\right].$$
+      <p>We have $\partial\mathbf{C}/\partial\tau=\mathbf{1}\mathbf{1}^T$, and
+        $\mathbf{C}\mathbf{1}=(\sigma^2+N\tau)\mathbf{1}$, which implies
+        $\mathbf{C}^{-1}\mathbf{1}=\mathbf{1}/(\sigma^2+N\tau)$. Therefore,</p>
+      $$I(\tau)=\frac12\bigl(\mathbf{1}^T\mathbf{C}^{-1}\mathbf{1}\bigr)^2
+        = \frac12\left(\frac{N}{\sigma^2+N\tau}\right)^2
+        = \frac{1}{2(\tau+\sigma^2/N)^2}.$$
+
+      <div class="answer-box">
+        <span class="ans-label">CRLB vs. limiting variance</span>
+        $$\operatorname{CRLB}(\sigma_A^2)=2\left(\sigma_A^2+\frac{\sigma^2}{N}\right)^2
+          \ \xrightarrow[N\to\infty]{}\ 2\sigma_A^4.$$
+        The limiting variance of the proposed estimator equals the limiting CRLB.
+      </div>
+
+      <p>For finite $N$, however, $E\bigl[\widehat{\sigma_A^2}\bigr]=\sigma_A^2+\sigma^2/N$, so the
+        estimator is biased. An unbiased version is</p>
+      $$\widetilde{\sigma_A^2}=(\hat A)^2-\frac{\sigma^2}{N},$$
+      <p>which has the same variance and attains the finite-sample CRLB.</p>
+
+      <div class="highlight-box">
+        <strong>Why $\sigma_A^2$ can never be estimated exactly:</strong> even as $N\to\infty$, all
+        $N$ observations share the <em>same single realization</em> of $A$ — extra samples only
+        average out the observation noise $w[n]$ and pin down that one realization $A_0$ exactly,
+        never additional independent draws of $A$ itself. Estimating $\sigma_A^2$ from one draw of
+        a Gaussian is like estimating a variance from a sample size of one: the CRLB floor
+        $2\sigma_A^4$ is the irreducible cost of only ever seeing $A$ once.
+      </div>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

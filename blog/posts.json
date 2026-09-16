@@ -1,5 +1,12 @@
 [
   {
+    "title": "ECG 762 HW2 — CRLB for Exponential/Power Signals, Correlated Noise, Polynomial Fitting, and Random-Amplitude Estimation",
+    "date": "2026-09-15",
+    "summary": "Five estimation-theory problems: (1) CRLB for the amplitude A of x[n]=Ar^n+w[n] and its limiting variance as N→∞ for 0<r<1, r=1, r>1; (2) CRLB for the base r in x[n]=r^n+w[n] — no unbiased estimator attains it for N≥3, N=2 is efficient, N=1 is unidentifiable; (3) CRLB for a DC level in two correlated Gaussian samples, limits as ρ→±1, and Fisher-information additivity for correlated data; (4) Fisher information matrix for polynomial curve fitting via a Vandermonde design matrix; (5) limiting variance of the biased estimator σ̂_A²=Â² in a random-amplitude model vs. the CRLB, and why σ_A² can never be estimated exactly.",
+    "path": "/blog/posts/ecg762-hw2/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
     "title": "Cramér–Rao 下界（CRLB）学习整理——从 MVU 估计到参数变换",
     "date": "2026-09-14",
     "summary": "系统整理 Kay 教材第 2 章（MVU 估计）到 3.6 节（参数变换）：MSE 分解、似然函数、Fisher 信息、CRLB 定理的完整推导（正则条件 + Cauchy–Schwarz 证明）、可达条件与有效估计量、WGN 中信号的通用公式 (3.14)、相位估计（Example 3.4）完整六步代数拆解、参数变换规则 (3.16) 与非线性变换对有效性的破坏。附常见误区汇总、公式速查表与解题流程图。",
