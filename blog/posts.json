@@ -7,7 +7,7 @@
     "category": "ECE · Detection & Estimation Theory"
   },
   {
-    "title": "ECG 782 HW1 — Bias, Variance and the Minimum-Variance Linear Unbiased Estimator",
+    "title": "ECG 762 HW1 — Bias, Variance and the Minimum-Variance Linear Unbiased Estimator",
     "date": "2026-09-08",
     "summary": "Three estimation-theory problems: (1) bias/variance of the biased sample-variance estimator for IID N(0,σ²) data, Var=2σ⁴/N, consistency as N→∞; (2) proof that the sample mean Â is exactly N(A,σ²/N); (3) minimum-variance linear unbiased estimator among Â=Σaₙx[n] via Lagrange multipliers, yielding aₙ=1/N — the sample mean.",
     "path": "/blog/posts/ecg782-hw1/",
