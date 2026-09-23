@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 762 HW3 | Chang Wang</title>
+  <meta name="description" content="ECG 762 Homework 3 — CRLB for the correlation coefficient of independent bivariate Gaussian samples, and feasibility analysis of a line-array bearing-estimation specification via the CRLB.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg762-hw3/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      max-width: 480px;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 38%; }
+
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 762 HW3 — CRLB for the Bivariate Gaussian Correlation Coefficient and Feasibility of a Line-Array Bearing Estimator</h1>
+        <span class="meta">
+          Course: ECG 762 &nbsp;·&nbsp;
+          Student: Chang Wang (2002721058) &nbsp;·&nbsp;
+          Instructor: Ebrahim Saberinia &nbsp;·&nbsp;
+          09-22-2026
+        </span>
+        <div class="pdf-download">
+          <a href="/blog/files/ecg762-hw3.pdf" download>
+            ⬇ Download original PDF report (277 KB)
+          </a>
+        </div>
+      </div>
+
+      <table class="info-table">
+        <tr><td>Course</td><td>ECG 762</td></tr>
+        <tr><td>Student Name</td><td>Chang Wang</td></tr>
+        <tr><td>Student ID</td><td>2002721058</td></tr>
+        <tr><td>Instructor</td><td>Ebrahim Saberinia</td></tr>
+        <tr><td>Date</td><td>09-22-2026</td></tr>
+      </table>
+
+      <p>
+        Two estimation-theory problems (Kay, Ch. 3): (1) the CRLB for the correlation
+        coefficient $\rho$ of independent bivariate Gaussian samples with covariance
+        $\mathbf{C}=\begin{bmatrix}1&\rho\\\rho&1\end{bmatrix}$, derived from the general
+        Gaussian Fisher-information formula (3.32); (2) a bearing-estimation feasibility
+        study for a $\lambda/2$-spaced line array at 1 MHz — using the CRLB for the bearing
+        $\beta$ (Example 3.15, Eq. 3.43) to determine the minimum number of antenna elements
+        needed for a $5^\circ$ standard deviation at broadside with 0 dB SNR, and assessing
+        whether the resulting array is practical for aircraft-wing mounting.
+      </p>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 1 ══════════════════════════ -->
+      <h2>Problem 1 (3.15)</h2>
+      <p>
+        Independent bivariate Gaussian samples $\{\mathbf{x}[0],\mathbf{x}[1],\ldots,
+        \mathbf{x}[N-1]\}$ are observed. Each observation is a $2\times1$ vector distributed
+        as $\mathbf{x}[n]\sim\mathcal N(\mathbf 0,\mathbf C)$ with
+        $\mathbf{C}=\begin{bmatrix}1&\rho\\\rho&1\end{bmatrix}$. Find the CRLB for the
+        correlation coefficient $\rho$. Hint: use (3.32),
+      </p>
+      $$I(\theta)=\left[\frac{\partial\boldsymbol\mu(\theta)}{\partial\theta}\right]^T\mathbf{C}^{-1}(\theta)
+        \left[\frac{\partial\boldsymbol\mu(\theta)}{\partial\theta}\right]
+        + \frac12\operatorname{tr}\!\left[\left(\mathbf{C}^{-1}(\theta)\frac{\partial\mathbf{C}(\theta)}{\partial\theta}\right)^2\right].$$
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>Each observation is distributed as</p>
+      $$\mathbf{x}[n]\sim\mathcal N(\mathbf 0,\mathbf C), \qquad
+        \mathbf{C}=\begin{bmatrix}1&\rho\\\rho&1\end{bmatrix}, \qquad |\rho|&lt;1.$$
+      <p>Since the mean vector does not depend on $\rho$, $\partial\boldsymbol\mu/\partial\rho=\mathbf 0$,
+        and the first term of (3.32) vanishes. Therefore, the Fisher information from a
+        single observation reduces to</p>
+      $$I_1(\rho)=\frac12\operatorname{tr}\!\left[\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\rho}\right)^2\right].$$
+      <p>The inverse covariance matrix and its derivative with respect to $\rho$ are</p>
+      $$\mathbf{C}^{-1}=\frac{1}{1-\rho^2}\begin{bmatrix}1&-\rho\\-\rho&1\end{bmatrix}, \qquad
+        \frac{\partial\mathbf{C}}{\partial\rho}=\begin{bmatrix}0&1\\1&0\end{bmatrix}.$$
+      <p>Multiplying these together,</p>
+      $$\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\rho}
+        = \frac{1}{1-\rho^2}\begin{bmatrix}-\rho&1\\1&-\rho\end{bmatrix},$$
+      <p>and squaring,</p>
+      $$\left(\mathbf{C}^{-1}\frac{\partial\mathbf{C}}{\partial\rho}\right)^2
+        = \frac{1}{(1-\rho^2)^2}\begin{bmatrix}1+\rho^2&-2\rho\\-2\rho&1+\rho^2\end{bmatrix}.$$
+      <p>Taking the trace gives</p>
+      $$I_1(\rho)=\frac12\cdot\frac{2(1+\rho^2)}{(1-\rho^2)^2}=\frac{1+\rho^2}{(1-\rho^2)^2}.$$
+      <p>Because the $N$ observations are independent, their Fisher information adds:</p>
+      $$I_N(\rho)=N\,I_1(\rho)=\frac{N(1+\rho^2)}{(1-\rho^2)^2}.$$
+
+      <div class="answer-box">
+        <span class="ans-label">CRLB</span>
+        $$\operatorname{var}(\hat\rho)\ge\frac{1}{I_N(\rho)}=\frac{(1-\rho^2)^2}{N(1+\rho^2)}, \qquad |\rho|&lt;1.$$
+      </div>
+
+      <hr class="divider">
+
+      <!-- ══════════════════════════ PROBLEM 2 ══════════════════════════ -->
+      <h2>Problem 2 (3.19)</h2>
+      <p>
+        A line array of antennas with $d=\lambda/2$ spacing for a 1 MHz electromagnetic
+        signal is to be designed to yield a $5^\circ$ standard deviation at $\beta=90^\circ$.
+        If the SNR $\eta$ is 0 dB, comment on the feasibility of the requirement. Assume the
+        line array is to be mounted on the wing of an aircraft. Use $c=3\times10^8$ m/s.
+      </p>
+
+      <div class="problem-badge">SOLUTION</div>
+
+      <p>Let $M$ denote the number of antenna elements. From the bearing-estimation result
+        in Example 3.15, Eq. (3.43), the CRLB is</p>
+      $$\operatorname{var}(\hat\beta)\ge
+        \frac{12}{\eta M(M^2-1)\left(\dfrac{2\pi d}{\lambda}\right)^2\sin^2\beta},$$
+      <p>where $\beta$ is measured in radians and $\eta$ is the linear SNR. For a 1 MHz
+        electromagnetic signal, the wavelength is</p>
+      $$\lambda=\frac{c}{f}=\frac{3\times10^8}{1\times10^6}=300\text{ m}.$$
+      <p>Therefore, the required element spacing is</p>
+      $$d=\frac{\lambda}{2}=150\text{ m}.$$
+      <p>Since</p>
+      $$\eta=10^{0/10}=1, \qquad \sin^2 90^\circ=1, \qquad \frac{2\pi d}{\lambda}=\pi,$$
+      <p>the bound reduces to</p>
+      $$\operatorname{var}(\hat\beta)\ge\frac{12}{\pi^2 M(M^2-1)}.$$
+      <p>The desired standard deviation, expressed in radians, is</p>
+      $$\sigma_{\text{target}}=5\cdot\frac{\pi}{180}=\frac{\pi}{36}\approx0.08727\text{ rad}.$$
+      <p>A necessary condition for meeting this requirement is that the CRLB not exceed the
+        target variance,</p>
+      $$\frac{12}{\pi^2 M(M^2-1)}\le\left(\frac{\pi}{36}\right)^2.$$
+      <p>Rearranging gives</p>
+      $$M(M^2-1)\ge\frac{15552}{\pi^4}\approx159.66.$$
+
+      <p>For $M=5$, $M(M^2-1)=5(25-1)=120$, which does not satisfy the condition. For
+        $M=6$, $M(M^2-1)=6(36-1)=210$, which satisfies it.</p>
+
+      <div class="answer-box">
+        <span class="ans-label">Result</span>
+        The CRLB requires at least six antenna elements. The corresponding array length is
+        $$L=(M-1)d=(6-1)(150)=750\text{ m}.$$
+      </div>
+
+      <div class="highlight-box">
+        The requirement is impractical for an array mounted on an aircraft wing: even the
+        idealized CRLB calculation requires a 750 m array. Moreover, satisfying the CRLB
+        condition is necessary but does not guarantee that a practical estimator will
+        achieve the desired standard deviation.
+      </div>
+
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

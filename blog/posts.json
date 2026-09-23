@@ -1,5 +1,12 @@
 [
   {
+    "title": "ECG 762 HW3 — CRLB for the Bivariate Gaussian Correlation Coefficient and Feasibility of a Line-Array Bearing Estimator",
+    "date": "2026-09-22",
+    "summary": "Two estimation-theory problems: (1) CRLB for the correlation coefficient ρ of independent bivariate Gaussian samples with covariance [[1,ρ],[ρ,1]], derived via the general Gaussian Fisher-information formula; (2) feasibility study for a λ/2-spaced line array at 1 MHz targeting a 5° standard deviation at broadside with 0 dB SNR — the CRLB requires at least 6 elements (750 m array), showing the specification is impractical for an aircraft-wing-mounted array.",
+    "path": "/blog/posts/ecg762-hw3/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
     "title": "ECG 762 HW2 — CRLB for Exponential/Power Signals, Correlated Noise, Polynomial Fitting, and Random-Amplitude Estimation",
     "date": "2026-09-15",
     "summary": "Five estimation-theory problems: (1) CRLB for the amplitude A of x[n]=Ar^n+w[n] and its limiting variance as N→∞ for 0<r<1, r=1, r>1; (2) CRLB for the base r in x[n]=r^n+w[n] — no unbiased estimator attains it for N≥3, N=2 is efficient, N=1 is unidentifiable; (3) CRLB for a DC level in two correlated Gaussian samples, limits as ρ→±1, and Fisher-information additivity for correlated data; (4) Fisher information matrix for polynomial curve fitting via a Vandermonde design matrix; (5) limiting variance of the biased estimator σ̂_A²=Â² in a random-amplitude model vs. the CRLB, and why σ_A² can never be estimated exactly.",
