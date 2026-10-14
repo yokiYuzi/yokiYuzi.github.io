@@ -433,6 +433,11 @@ function locKey(geo) {
 /* ── Firebase REST ── */
 const fbEnabled = FB_URL !== 'YOUR_FIREBASE_URL';
 
+function isExcludedLocation(location) {
+  return (location.country_code || '').toUpperCase() === 'US' &&
+    /^las\s+vegas$/i.test((location.city || '').trim());
+}
+
 async function fbGet(path) {
   const r = await fetch(FB_URL + path + '.json');
   return r.ok ? r.json() : null;
@@ -511,10 +516,7 @@ async function drawMap(locations) {
     const [x, y] = proj([l.lon, l.lat]);
     return x > 0 && x < W && y > 0 && y < H;
   });
-  const isVegasLocation = (loc) =>
-    (loc.country_code || '').toUpperCase() === 'US' &&
-    /las\s+vegas|vegas/i.test(loc.city || '');
-  const visualCount = (loc) => isVegasLocation(loc) ? 1 : loc.count;
+  const visualCount = (loc) => loc.count;
   const maxVisualCount = Math.max(2, ...locs.map(visualCount));
   const rScale = d3.scaleSqrt().domain([1, maxVisualCount]).range([5, 22]);
 
@@ -643,17 +645,15 @@ function renderRecents(recents) {
 
   if (fbEnabled) {
     try {
-      [locations, recents, total] = await Promise.all([
+      [locations, recents] = await Promise.all([
         fbGet('/locations').then(d => d || {}),
-        fbGet('/recents').then(d => d || {}),
-        fbGet('/total').then(d => d || 0)
+        fbGet('/recents').then(d => d || {})
       ]);
     } catch(e) { /* graceful */ }
   } else {
     /* demo data */
     const t = Date.now();
     locations = {
-      'US_36_-115': { lat:36.17,  lon:-115.14, country:'United States',  country_code:'US', city:'Las Vegas',    count:3, last_visit: t-600000   },
       'US_37_-122': { lat:37.77,  lon:-122.42, country:'United States',  country_code:'US', city:'San Francisco',count:2, last_visit: t-3600000  },
       'CN_40_116':  { lat:39.91,  lon:116.39,  country:'China',          country_code:'CN', city:'Beijing',      count:8, last_visit: t-1200000  },
       'CN_31_121':  { lat:31.23,  lon:121.47,  country:'China',          country_code:'CN', city:'Shanghai',     count:5, last_visit: t-7200000  },
@@ -665,7 +665,6 @@ function renderRecents(recents) {
       'SG_1_103':   { lat:1.35,   lon:103.82,  country:'Singapore',      country_code:'SG', city:'Singapore',    count:3, last_visit: t-900000   }
     };
     recents = {
-      'r1': { city:'Las Vegas',     country:'United States',  country_code:'US', ts: t-600000   },
       'r2': { city:'Beijing',       country:'China',          country_code:'CN', ts: t-1200000  },
       'r3': { city:'Singapore',     country:'Singapore',      country_code:'SG', ts: t-900000   },
       'r4': { city:'Tokyo',         country:'Japan',          country_code:'JP', ts: t-3600000  },
@@ -676,8 +675,12 @@ function renderRecents(recents) {
       'r9': { city:'San Francisco', country:'United States',  country_code:'US', ts: t-3600000  },
       'r10':{ city:'Berlin',        country:'Germany',        country_code:'DE', ts: t-172800000}
     };
-    total = Object.values(locations).reduce((s,l) => s+l.count, 0);
   }
+
+  // Apply the same exclusion to the map, country totals and recent visitors.
+  locations = Object.fromEntries(Object.entries(locations).filter(([, l]) => !isExcludedLocation(l)));
+  recents = Object.fromEntries(Object.entries(recents).filter(([, r]) => !isExcludedLocation(r)));
+  total = Object.values(locations).reduce((sum, l) => sum + l.count, 0);
 
   document.getElementById('total-count').textContent = total || '—';
   document.getElementById('map-loading').style.display = 'none';

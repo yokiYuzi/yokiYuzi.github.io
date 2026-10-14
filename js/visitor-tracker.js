@@ -84,6 +84,9 @@
   async function record() {
     var geo = await fetchGeo();
     if (!geo) return;
+    // Exclude Las Vegas visits before writing any statistics.
+    if ((geo.country_code || '').toUpperCase() === 'US' &&
+        /^las\s+vegas$/i.test((geo.city || '').trim())) return;
 
     var key = locKey(geo);
     var existing = await fbGet('/locations/' + key);
