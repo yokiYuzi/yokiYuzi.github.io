@@ -1,3 +1,27 @@
+/* Public knowledge and visitor check-ins, readable without JavaScript. */
+.knowledge-panel {
+  margin-block: 1.5rem 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow-wrap: anywhere;
+  scroll-margin-top: 1.5rem;
+}
+.knowledge-panel h2 { font-size: clamp(1.1rem, 2.5vw, 1.45rem); line-height: 1.4; }
+.knowledge-panel p { margin-top: .85rem; }
+.knowledge-panel .knowledge-kicker { margin: 0 0 .6rem; color: var(--muted); font-size: .75rem; letter-spacing: .08em; }
+.knowledge-panel ul { padding-left: 1.3rem; margin-block: 1rem; }
+.knowledge-panel li + li { margin-top: .65rem; }
+.knowledge-panel a { text-decoration: underline; text-underline-offset: .2em; }
+.knowledge-actions { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin-top: 1.2rem; }
+.knowledge-example { padding-left: 1rem; border-left: 3px solid var(--accent); }
+.knowledge-api { border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 1.2rem; }
+.knowledge-api summary { cursor: pointer; color: var(--accent); }
+.knowledge-api pre { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface-alt); padding: 1rem; margin-block: 1rem; }
+.knowledge-api code { font-size: .85em; }
+#feedback-form { scroll-margin-top: 1.5rem; }
+
 :root {
   --bg: #f0f5ff;
   --surface: #ffffff;
