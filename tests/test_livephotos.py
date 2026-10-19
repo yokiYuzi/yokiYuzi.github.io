@@ -105,7 +105,14 @@ class LivePhotosTests(unittest.TestCase):
     def test_build_gallery_original_download_and_escaping(self):
         source = self.package(kind='JPEG')
         source.with_suffix('.json').write_text(json.dumps({'title': '<script>test</script>',
-            'caption': 'Quotes " & waves', 'date': '2026-10-18'}), encoding='utf-8')
+            'caption': 'Quotes " & waves', 'date': '2026-10-18',
+            'article': '/column/posts/test-essay/'}), encoding='utf-8')
+        article = self.root / 'column/posts/test-essay/index.html'
+        article.parent.mkdir(parents=True)
+        article.write_text('Essay<!-- LIVE_PHOTOS_START --><!-- LIVE_PHOTOS_END -->', encoding='utf-8')
+        unrelated = self.root / 'column/posts/other-essay/index.html'
+        unrelated.parent.mkdir(parents=True)
+        unrelated.write_text('Other essay', encoding='utf-8')
         template = Path(__file__).resolve().parents[1] / 'column' / 'index.html'
         shutil.copy2(template, self.root / 'column' / 'index.html')
         items = build(self.root, self.output)
@@ -117,6 +124,8 @@ class LivePhotosTests(unittest.TestCase):
         self.assertEqual(source.read_bytes(), (self.output / source.relative_to(self.root)).read_bytes())
         self.assertEqual(len(json.loads((self.output / 'column' / 'livephotos.json').read_text(encoding='utf-8'))), 1)
         self.assertIn(items[0]['video'], render_gallery(items))
+        self.assertIn(items[0]['video'], (self.output / article.relative_to(self.root)).read_text(encoding='utf-8'))
+        self.assertEqual((self.output / unrelated.relative_to(self.root)).read_text(encoding='utf-8'), 'Other essay')
         with self.assertRaises(ValueError):
             build(self.root, self.output)
 

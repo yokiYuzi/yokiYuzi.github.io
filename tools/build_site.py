@@ -50,6 +50,17 @@ def build(root: Path, output: Path) -> list[dict]:
         if replaced != 1:
             raise ValueError('The column page must contain exactly one live photo gallery placeholder.')
     page.write_text(source_html, encoding='utf-8')
+    for article in sorted({item['article'] for item in items if item['article']}):
+        article_page = output / article.lstrip('/') / 'index.html'
+        article_html = article_page.read_text(encoding='utf-8')
+        gallery = render_gallery(sorted((item for item in items if item['article'] == article),
+                                        key=lambda item: (item['date'], item['title'])))
+        article_html, replaced = re.subn(r'<!-- LIVE_PHOTOS_START -->.*?<!-- LIVE_PHOTOS_END -->',
+            lambda _: '<!-- LIVE_PHOTOS_START -->\n' + gallery + '\n<!-- LIVE_PHOTOS_END -->',
+            article_html, flags=re.S)
+        if replaced != 1:
+            raise ValueError(f'{article} must contain exactly one live photo gallery placeholder.')
+        article_page.write_text(article_html, encoding='utf-8')
     print(f'Built {output}; {len(items)} Live Photo(s).', flush=True)
     return items
 

@@ -1,0 +1,35 @@
+.essay-main { padding-bottom: 4rem; }
+.essay-heading { max-width: 780px; margin: 0 auto; padding: 3.5rem 0 2rem; }
+.essay-back { font-size: .8rem; }
+.essay-kicker { color: var(--accent); font-size: .73rem; letter-spacing: .2em; margin: 2.5rem 0 .8rem; }
+.essay-heading h1 { font-family: "Noto Serif SC", "Songti SC", SimSun, serif; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.5; letter-spacing: .06em; }
+.essay-byline { color: var(--muted); font-size: .8rem; margin-top: 1rem; }
+.essay-byline span { margin-inline: .7rem; }
+.essay-toc { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; font-size: .8rem; padding-top: 1.5rem; }
+.essay-prose { max-width: 780px; margin: 0 auto 4rem; font-family: "Noto Serif SC", "Songti SC", SimSun, serif; font-size: clamp(1.05rem, 2vw, 1.2rem); line-height: 2.3; }
+.essay-prose p + p { margin-top: 1.6rem; }
+.essay-section { border-top: 1px solid var(--line); padding-top: .5rem; margin-top: 3.5rem; scroll-margin-top: 6rem; }
+.essay-section-heading { margin: 1.7rem 0; max-width: 780px; }
+.essay-section-heading h2 { font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: .7rem; }
+.essay-section-heading h3 { font-size: 1.3rem; }
+.essay-section-heading > p:last-child { color: var(--muted); font-size: .9rem; }
+.essay-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.8rem 1.3rem; align-items: start; }
+.essay-photo { margin: 0; min-width: 0; }
+.essay-photo a { display: block; }
+.essay-photo img { display: block; width: 100%; height: auto; border-radius: 3px; }
+.essay-photo figcaption { padding: .6rem 0 0; color: var(--muted); font-size: .78rem; line-height: 1.8; }
+.essay-photo figcaption span { color: var(--accent); white-space: nowrap; margin-left: .5rem; font-size: .7rem; }
+#live-moments { margin-top: 3rem; scroll-margin-top: 6rem; }
+.bird-group { margin: 2.5rem 0 3.5rem; scroll-margin-top: 6rem; }
+.bird-group h3 { font-size: 1.3rem; font-weight: 600; }
+.bird-group h3 span { display: block; color: var(--muted); font-size: .78rem; font-weight: 400; margin-top: .3rem; }
+.bird-note { max-width: 780px; margin: .8rem 0 1.3rem; font-size: .9rem; line-height: 1.9; }
+.field-guide { display: inline-block; font-size: .75rem; text-decoration: underline; text-underline-offset: .2em; }
+.habitat-label { color: var(--accent); letter-spacing: .15em; font-size: .8rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); margin-top: 2.5rem; }
+.essay-end { text-align: center; color: var(--muted); padding: 3rem 0; border-top: 1px solid var(--line); font-family: "Songti SC", SimSun, serif; }
+@media (max-width: 650px) {
+  .essay-heading { padding-top: 2rem; }
+  .essay-gallery { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .essay-prose { line-height: 2.15; margin-bottom: 2.5rem; }
+  .essay-section { margin-top: 2.5rem; }
+}

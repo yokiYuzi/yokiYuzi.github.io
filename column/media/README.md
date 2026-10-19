@@ -33,3 +33,7 @@ python -m http.server 8000 --directory _site
 也可用 `FFMPEG` / `FFPROBE` 环境变量指定可执行文件路径。构建目录须为空；生成文件不用提交。GitHub Pages 使用仓库的 Actions 工作流部署。
 
 处理实现参考：[Apple LivePhotosKit](https://developer.apple.com/documentation/LivePhotosKitJS)、[pillow-heif](https://pillow-heif.readthedocs.io/en/latest/)、[FFmpeg](https://ffmpeg.org/ffmpeg.html)。
+
+## Attach Live Photos to an essay
+
+Add `"article": "/column/posts/your-slug/"` to a photo's JSON sidecar to include it in that essay as well as the column gallery. The article must contain one `<!-- LIVE_PHOTOS_START -->` / `<!-- LIVE_PHOTOS_END -->` pair and load `/css/livephotos.css` and `/js/livephotos.js`.

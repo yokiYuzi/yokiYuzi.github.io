@@ -6,6 +6,7 @@ import html
 import io
 import json
 import os
+import re
 from pathlib import Path, PurePosixPath
 import shutil
 import subprocess
@@ -120,11 +121,14 @@ def convert(source: Path, root: Path, destination: Path) -> dict:
     metadata_path = source.with_suffix('.json')
     metadata = json.loads(metadata_path.read_text(encoding='utf-8')) if metadata_path.exists() else {}
     if not isinstance(metadata, dict) or any(not isinstance(metadata.get(k, ''), str)
-                                           for k in ['title', 'caption', 'date', 'alt']):
+                                           for k in ['title', 'caption', 'date', 'alt', 'article']):
         raise ValueError(f'Invalid caption metadata: {metadata_path.name}')
+    article = metadata.get('article', '')
+    if article and not re.fullmatch(r'/column/posts/[a-z0-9-]+/', article):
+        raise ValueError(f'Invalid article path: {metadata_path.name}')
     title = metadata.get('title') or source.stem
     return {'id': asset_id, 'title': title, 'caption': metadata.get('caption', ''),
-            'date': metadata.get('date', ''), 'alt': metadata.get('alt') or title,
+            'date': metadata.get('date', ''), 'alt': metadata.get('alt') or title, 'article': article,
             'photo': f'/assets/livephotos/{asset_id}/photo.jpg',
             'video': f'/assets/livephotos/{asset_id}/motion.mp4',
             'original': '/' + quote(relative, safe='/'), 'width': width, 'height': height,
