@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Following the Card: Auditing Performance Attribution in Federated Tool Workflows | Chang Wang</title>
+  <meta name="description" content="An attribution audit of FedWCD: runtime workflow cards, rule baselines, preference controls, and tie scoring in ToolWorld-v2 and offline Airline ranking. Read the findings and download the full paper.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/following-the-card/">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 { font-size: clamp(1.15rem, 2.6vw, 1.7rem); color: var(--accent); line-height: 1.45; margin-bottom: .75rem; }
+    .meta, .caption { font-size: .78rem; color: var(--muted); }
+    .post-header .authors { margin: .8rem 0 .2rem; }
+    .pdf-download { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.1rem; }
+    .pdf-download a { display: inline-block; border: 1px solid var(--accent); padding: .5rem .9rem; font-size: .8rem; }
+    .pdf-download a:hover, .pdf-download a:focus-visible { background: var(--accent); color: #fff; }
+    .post-body { line-height: 1.85; overflow-wrap: anywhere; }
+    .post-body h2 { color: var(--accent); font-size: 1rem; margin: 2rem 0 .8rem; padding-bottom: .4rem; border-bottom: 1px solid var(--line); }
+    .post-body p { margin-bottom: 1rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+    .post-body li { margin: .5rem 0; }
+    .highlight-box { background: var(--surface-alt); border-left: 3px solid var(--accent2); padding: 1rem 1.2rem; margin: 1.5rem 0; }
+    .highlight-box p:last-child { margin-bottom: 0; }
+    .table-scroll { overflow-x: auto; margin: 1rem 0; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+    .result-table caption { text-align: left; color: var(--muted); margin-bottom: .7rem; }
+    .result-table th, .result-table td { border: 1px solid var(--line); padding: .5rem .65rem; text-align: left; }
+    .result-table thead { background: var(--surface-alt); color: var(--accent); }
+    .result-table td:not(:first-child) { white-space: nowrap; }
+    .back-link { display: inline-block; margin-bottom: 1.5rem; font-size: .8rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/column/">Column</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <a class="back-link" href="/blog/">← Back to Blog</a>
+    <article class="section post-body">
+      <div class="post-header">
+        <h1>Following the Card: Auditing Performance Attribution in Federated Tool Workflows</h1>
+        <p class="meta">Posted <time datetime="2026-10-19">2026-10-19</time> &nbsp;·&nbsp; ECE · Federated Learning</p>
+        <p class="authors">Chang Wang, Ming Zhu, and Shengjie Zhai</p>
+        <p class="meta">Department of Electrical and Computer Engineering, University of Nevada, Las Vegas</p>
+        <div class="pdf-download">
+          <a href="/blog/files/following-the-card.pdf" download>↓ Download full paper (PDF, 9 pages, 458 KB)</a>
+          <a href="/blog/files/following-the-card.pdf" target="_blank" rel="noopener">Read PDF in browser ↗</a>
+        </div>
+      </div>
+
+      <h2>Research overview</h2>
+      <p>A workflow card records execution progress, verified identifiers, write eligibility, a controller’s suggested next action, and answer readiness. In the audited system, the same card both generates local training targets and supplies information to the policy at execution time. This creates an attribution problem: high task success alone cannot show which behavior was learned and which decisions were supplied by the controller.</p>
+      <p>This paper audits <strong>FedWCD (Federated Workflow-Card Distillation)</strong> through two studies: a 20-client ToolWorld-v2 environment and an external τ<sup>3</sup> Airline offline candidate-ranking diagnostic. The comparisons examine a rule using the same runtime information, card-label corruption, runtime-field removal, and score differences across specific training choices.</p>
+      <div class="highlight-box">
+        <p><strong>Central finding:</strong> the reported comparisons do not isolate the contributions they were intended to measure. An exact card rule solves the controlled tasks, a matched supervised control nearly matches the preference-based system, and tie scoring accounts for much of the external ranking gap.</p>
+      </div>
+
+      <h2>ToolWorld-v2: what explains task success?</h2>
+      <div class="table-scroll" role="region" aria-label="ToolWorld-v2 results" tabindex="0">
+        <table class="result-table">
+          <caption>Selected results from Table 3. Means over training seeds 42–46 after validation-based checkpoint selection.</caption>
+          <thead><tr><th scope="col">Method or condition</th><th scope="col">Success ↑</th><th scope="col">Violation score ↓</th><th scope="col">Worst-client success ↑</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Exact card rule, same view</th><td>1.0000</td><td>0.0000</td><td>1.0000</td></tr>
+            <tr><th scope="row">FedWCD, full modular configuration</th><td>0.9875</td><td>0.0125</td><td>0.8875</td></tr>
+            <tr><th scope="row">Anchor SFT + ActionCE</th><td>0.9825</td><td>0.0175</td><td>0.8875</td></tr>
+            <tr><th scope="row">Anchor-only SFT</th><td>0.9463</td><td>0.0537</td><td>0.8000</td></tr>
+            <tr><th scope="row">Full objective, no anchors</th><td>0.8187</td><td>0.1812</td><td>0.4125</td></tr>
+            <tr><th scope="row">Single-block policy</th><td>0.7075</td><td>2.6938</td><td>0.3375</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The exact rule exceeds the best learned configuration by 0.0125 success. The full configuration exceeds the preference-free SFT + ActionCE control by only 0.0050, with identical worst-client success. The paper does not treat that small difference as evidence of a preference-objective benefit. Larger differences from removing anchors or changing the parameterization do not establish a benefit from federated aggregation.</p>
+      <ul>
+        <li><strong>Card quality:</strong> corrupting 5% of next-action labels leaves success at 0.9669, while the violation score rises from 0.0125 to 0.1313, about 10.5 times the clean value.</li>
+        <li><strong>Runtime dependence:</strong> in a separate ablation block with its own full-card reference of 0.979, withholding the next-action field reduces success to 0.294, even though the remaining card fields determine the action label exactly.</li>
+        <li><strong>Metric redundancy:</strong> nine of fifteen reported conditions satisfy |V − (1 − S)| ≤ 0.001. In those conditions, violation score largely repeats the failure rate.</li>
+        <li><strong>Violation meaning:</strong> under 5% label noise, sequence deviations account for 9.3 of 13.1 severity-weighted events per 100 validation episodes. The score mainly measures workflow conformance, rather than independently established unsafe business actions.</li>
+      </ul>
+
+      <h2>Offline Airline ranking: separating coverage from accuracy</h2>
+      <p>On the challenge set, four training configurations—full global/local, centralized, global-head-only, and uniform modular aggregation—all report accuracy of 0.7444 to four decimals. The ranking features and simulated labels derive from the same visible state, and these results do not distinguish the training-structure choices.</p>
+      <div class="table-scroll" role="region" aria-label="Airline tie-scoring comparison" tabindex="0">
+        <table class="result-table">
+          <caption>Challenge protocol, E75 labels (Table 8): changing how ties are scored changes the apparent advantage.</caption>
+          <thead><tr><th scope="col">System</th><th scope="col">Ties as errors</th><th scope="col">Ties at one half</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Structured state, full view</th><td>0.7444</td><td>0.7444</td></tr>
+            <tr><th scope="row">Best generic control</th><td>0.3722</td><td>0.6222</td></tr>
+            <tr><th scope="row">No-card control</th><td>0.1222</td><td>0.5389</td></tr>
+            <tr><th scope="row">Full view − generic control</th><td>+0.3722</td><td>+0.1222</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>About two-thirds of the previously reported gap reflects how often a scorer commits to a non-tied answer. With ties counted as errors, accuracy plus the accuracy of an exact score reversal equals the commitment rate, provided both evaluations use the same fixed scores, pairs, and invalid handling.</p>
+      <div class="highlight-box">
+        <p><strong>The supported external advantage:</strong> on the separate original 400-pair audit, the structured-state ranker scores 0.7125 versus 0.6830 for the best predefined generic control. The difference is <strong>2.95 percentage points</strong>, with a source-state-grouped paired-bootstrap 95% interval of <strong>+1.35 to +4.50 points</strong>. This supports a narrower claim about offline candidate ranking.</p>
+      </div>
+
+      <h2>What would make attribution measurable?</h2>
+      <ol>
+        <li>Keep next-action labels as training targets while withholding that field at execution; compare against a rule using the remaining runtime information.</li>
+        <li>Test intermittent or delayed cards and held-out workflow types to measure whether the policy can reconstruct decisions.</li>
+        <li>Accept alternative compliant paths, and use a matched centralized model to separate parameterization effects from aggregation effects.</li>
+        <li>Report rule baselines, commitment rates, and tie-scoring rules; obtain preference labels independently of the scorer’s own features.</li>
+      </ol>
+
+      <h2>Scope and limitations</h2>
+      <p>ToolWorld-v2 uses a compact vector policy over fixed features; these experiments are not language-model-agent results. The external study uses a separate linear ranker with simulated preference labels. Runtime-view ablations evaluate policies trained with a full-card teacher and do not establish what training under each mask could achieve. Experiment generations and ablation blocks have different baselines and are kept separate.</p>
+      <p>Keeping trajectories and cards local does not by itself protect information in parameter updates or module-support statistics. Secure aggregation and differential privacy require separate implementation and evaluation. The paper’s proposed protocol changes are future experiments, not demonstrated improvements.</p>
+      <p class="caption">This page summarizes the supplied manuscript. The full PDF contains the methodology, all ten tables, three figures, limitations, and references.</p>
+      <p><a href="/blog/files/following-the-card.pdf" download>Download the complete paper →</a></p>
+    </article>
+  </main>
+  <footer><div class="container">© 2026 Chang Wang</div></footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

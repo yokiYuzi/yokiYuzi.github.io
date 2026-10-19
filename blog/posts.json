@@ -49,6 +49,13 @@
     "category": "ECE · Adaptive Signal Processing"
   },
   {
+    "title": "Following the Card: Auditing Performance Attribution in Federated Tool Workflows",
+    "date": "2026-10-19",
+    "summary": "An attribution audit of FedWCD in ToolWorld-v2 and offline Airline ranking. An exact workflow-card rule reaches 1.0000 success versus 0.9875 for the best learned configuration; tie scoring explains two-thirds of a reported ranking gap. Includes key results and the full 9-page PDF.",
+    "path": "/blog/posts/following-the-card/",
+    "category": "ECE · Federated Learning"
+  },
+  {
     "title": "FedTrajPO++ — Federated Trajectory Policy Optimization for Tool-Calling LLM Agents",
     "date": "2026-05-11",
     "summary": "ECG 618 Final Paper. Compliance-constrained federated trajectory DPO for tool-using LLM agents. FedTrajPO++ reduces violations by 94.6% and tool calls by 74.2% vs. FedAvg-SFT on ToolWorld-v2, via warm-started mixed SFT+DPO, modular skill bank, and support-aware aggregation. Not the raw-success winner — a safety-cost trade-off.",
