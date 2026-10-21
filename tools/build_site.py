@@ -9,7 +9,7 @@ import shutil
 
 from livephotos import convert, render_gallery
 
-PUBLIC_DIRS = ['archives', 'assets', 'blog', 'column', 'css', 'guestbook', 'js', 'resume', 'visitors']
+PUBLIC_DIRS = ['archives', 'assets', 'blog', 'column', 'css', 'display', 'guestbook', 'js', 'resume', 'visitors']
 PUBLIC_FILES = ['index.html', 'robots.txt', 'sitemap.xml', 'CNAME', '404.html']
 
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111c2c">
+  <title>太平洋时间 · 第二道题参数</title>
+  <meta name="description" content="实时太平洋时间与第二道题参数：εox = 3.45 × 10⁻¹³ F/cm。上下半屏大字展示。">
+  <link rel="canonical" href="https://yokiyuzi.github.io/display/">
+  <link rel="stylesheet" href="/display/style.css">
+  <script src="/display/clock.js" defer></script>
+</head>
+<body>
+  <main class="display">
+    <section class="clock-panel" aria-labelledby="clock-heading">
+      <div class="top-bar">
+        <a class="home-link" href="/" aria-label="返回首页">↖ 首页</a>
+        <button id="fullscreen" type="button" hidden>全屏显示 ⛶</button>
+      </div>
+      <div class="clock-content">
+        <h1 id="clock-heading">太平洋时间 <span class="zone" id="zone">PT</span></h1>
+        <time class="clock" id="clock" aria-label="实时太平洋时间">--:--:--</time>
+        <p class="date" id="date">美国 · 洛杉矶</p>
+        <noscript><p class="clock-note">请启用 JavaScript 以显示实时时间。</p></noscript>
+      </div>
+      <p class="clock-note">PACIFIC TIME · LOS ANGELES · 24 小时制</p>
+    </section>
+
+    <section class="notice-panel" aria-labelledby="notice-heading">
+      <h2 id="notice-heading"><span class="question-number">02</span> 第二道题 <span class="notice-label">参数更正</span></h2>
+      <p class="parameter-name">氧化层介电常数 · Epsilon ox</p>
+      <div class="parameter" role="math" aria-label="epsilon 下标 ox 等于 3.45 乘以 10 的负 13 次方，单位法拉每厘米">
+        <span class="symbol">ε<sub>ox</sub></span>
+        <span class="equals">=</span>
+        <span class="value">3.45 <span class="multiply">×</span> 10<sup>−13</sup></span>
+        <span class="unit">F/cm</span>
+      </div>
+      <div class="context" role="math" aria-label="C 下标 ox 等于 epsilon 下标 ox 除以 t 下标 ox；t 下标 ox 等于 100 乘以 10 的负 8 次方厘米">
+        <span><i>C</i><sub>ox</sub> = <span class="fraction"><span>ε<sub>ox</sub></span><span><i>t</i><sub>ox</sub></span></span></span>
+        <span class="context-divider" aria-hidden="true"></span>
+        <span><i>t</i><sub>ox</sub> = 100 × 10<sup>−8</sup> cm</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
