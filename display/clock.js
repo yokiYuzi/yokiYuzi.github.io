@@ -4,7 +4,7 @@
   const timeFormat = new Intl.DateTimeFormat('en-GB', {
     timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
   });
-  const dateFormat = new Intl.DateTimeFormat('zh-CN', {
+  const dateFormat = new Intl.DateTimeFormat('en-US', {
     timeZone, year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
   });
   const zoneFormat = new Intl.DateTimeFormat('en-US', {timeZone, timeZoneName: 'short'});
@@ -36,11 +36,11 @@
         if (document.fullscreenElement) await document.exitFullscreen();
         else await document.documentElement.requestFullscreen();
       } catch (_) {
-        fullscreen.textContent = '请使用浏览器全屏';
+        fullscreen.textContent = 'Use browser fullscreen';
       }
     });
     document.addEventListener('fullscreenchange', () => {
-      fullscreen.textContent = document.fullscreenElement ? '退出全屏 ⛶' : '全屏显示 ⛶';
+      fullscreen.textContent = document.fullscreenElement ? 'Exit fullscreen ⛶' : 'Fullscreen ⛶';
     });
   }
 })();
