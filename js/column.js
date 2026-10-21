@@ -45,11 +45,11 @@
         entries.appendChild(article);
       });
       list.replaceChildren(entries);
-      count.textContent = published.length + (published.length === 1 ? ' essay' : ' essays');
+      count.textContent = published.length + (published.length === 1 ? ' entry' : ' entries');
     })
     .catch(function () {
       var message = document.createElement('p');
-      message.textContent = 'The essay list could not be loaded. Please refresh to try again.';
+      message.textContent = 'The entry list could not be loaded. Please refresh to try again.';
       list.replaceChildren(message);
       count.textContent = 'Unavailable';
     });
