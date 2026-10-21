@@ -1,5 +1,33 @@
 [
   {
+    "title": "ECG 762 HW7 — Maximum Likelihood Estimation and the Limits of Asymptotic Variance Comparisons",
+    "date": "2026-10-18",
+    "summary": "Four worked problems (7.3, 7.4, 7.7, 7.8): Gaussian and exponential MLEs, finite-sample variance crossover at N=100 with the original comparison plot, exponential-family likelihood equations, and Bernoulli MLE boundary cases. Includes the original PDF.",
+    "path": "/blog/posts/ecg762-hw7/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
+    "title": "ECG 762 HW6 — BLUE for Exponential Signals, Laplacian and Gaussian Means, and a Known Offset",
+    "date": "2026-10-11",
+    "summary": "Three worked problems (6.1, 6.4, 6.6): BLUE for an exponential amplitude and its variance limit, the distinction between BLUE and MVU under Laplacian/Gaussian noise, and a Lagrange-multiplier proof of affine BLUE with a known offset. Includes the original PDF.",
+    "path": "/blog/posts/ecg762-hw6/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
+    "title": "ECG 762 HW5 — Sufficient Statistics and MVU Estimation for Rayleigh, Exponential, Gaussian, Sinusoidal, and Bernoulli Models",
+    "date": "2026-10-04",
+    "summary": "Five worked problems (5.2, 5.3, 5.6, 5.7, 5.9): Neyman-Fisher factorization, known-mean Gaussian variance estimation, minimal sufficiency for sinusoidal frequency, and the Bernoulli MVU estimator. Includes the original PDF.",
+    "path": "/blog/posts/ecg762-hw5/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
+    "title": "ECG 762 HW4 — MVU Estimation in Linear Models: Exponential Amplitudes, Fourier Signals, Whitening, and Random Design",
+    "date": "2026-09-28",
+    "summary": "Four worked problems (4.1, 4.4, 4.10, 4.13): Gaussian linear-model amplitude estimation, singular Gaussian signal estimates and Fourier covariance, inverse-variance weighting, and conditional mean/covariance with a random design matrix. Includes the original PDF.",
+    "path": "/blog/posts/ecg762-hw4/",
+    "category": "ECE · Detection & Estimation Theory"
+  },
+  {
     "title": "ECG 762 HW3 — CRLB for the Bivariate Gaussian Correlation Coefficient and Feasibility of a Line-Array Bearing Estimator",
     "date": "2026-09-22",
     "summary": "Two estimation-theory problems: (1) CRLB for the correlation coefficient ρ of independent bivariate Gaussian samples with covariance [[1,ρ],[ρ,1]], derived via the general Gaussian Fisher-information formula; (2) feasibility study for a λ/2-spaced line array at 1 MHz targeting a 5° standard deviation at broadside with 0 dB SNR — the CRLB requires at least 6 elements (750 m array), showing the specification is impractical for an aircraft-wing-mounted array.",

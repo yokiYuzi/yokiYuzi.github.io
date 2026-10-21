@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 762 HW4 | Chang Wang</title>
+  <meta name="description" content="Four worked problems (4.1, 4.4, 4.10, 4.13): Gaussian linear-model amplitude estimation, singular Gaussian signal estimates and Fourier covariance, inverse-variance weighting, and conditional mean/covariance with a random design matrix. Includes the original PDF.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg762-hw4/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      max-width: 480px;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 38%; }
+
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+
+    .post-body { overflow-wrap: anywhere; }
+    .post-body h3 { font-size: .95rem; color: var(--accent); margin: 1.5rem 0 .7rem; }
+    .pdf-download { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .homework-nav { display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; margin: 1.3rem 0; font-size: .85rem; }
+    .table-scroll { overflow-x: auto; margin: 1rem 0; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .result-table th, .result-table td { border: 1px solid var(--line); padding: .5rem .7rem; text-align: left; }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .homework-figure { margin: 1.5rem 0; }
+    .homework-figure img { display: block; width: 100%; height: auto; background: white; }
+    .homework-figure figcaption { font-size: .78rem; color: var(--muted); margin-top: .6rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/column/">Column</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 762 HW4 — MVU Estimation in Linear Models: Exponential Amplitudes, Fourier Signals, Whitening, and Random Design</h1>
+        <p class="meta">ECG 762 · Chang Wang · Instructor: Ebrahim Saberinia<br>Report date: <time datetime="2026-09-28">2026-09-28</time> · Posted 2026-10-21</p>
+        <div class="pdf-download">
+          <a href="/blog/files/ecg762-hw4.pdf" download>↓ Download original PDF (6 pages, 322 KB)</a>
+          <a href="/blog/files/ecg762-hw4.pdf" target="_blank" rel="noopener">Read PDF in browser ↗</a>
+        </div>
+      </div>
+      <nav class="homework-nav" aria-label="ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <span aria-current="page">HW4</span> · <a href="/blog/posts/ecg762-hw5/">HW5</a> · <a href="/blog/posts/ecg762-hw6/">HW6</a> · <a href="/blog/posts/ecg762-hw7/">HW7</a></nav>
+      <p>Four problems from Chapter 4 connect Gaussian linear estimation to signal reconstruction, whitening, and random design matrices. The derivations distinguish parameter estimates from estimated signals, and weights on whitened observations from weights on raw observations.</p>
+
+      <h2 id="problem-4-1">Problem 4.1 — Amplitudes of exponentials</h2>
+      <p>For known real $r_i$, observe $x[n]=\sum_{i=1}^{p}A_i r_i^n+w[n]$, $n=0,\ldots,N-1$, with white Gaussian noise of variance $\sigma^2$. Define $H_{ni}=r_i^n$ and write $\mathbf x=\mathbf H\mathbf A+\mathbf w$. If $\mathbf H$ has full column rank, the Gaussian linear-model estimator is</p>
+      $$\widehat{\mathbf A}=(\mathbf H^T\mathbf H)^{-1}\mathbf H^T\mathbf x.$$
+      <p>Substitution gives $\widehat{\mathbf A}=\mathbf A+(\mathbf H^T\mathbf H)^{-1}\mathbf H^T\mathbf w$, so</p>
+      $$E[\widehat{\mathbf A}]=\mathbf A,\qquad \operatorname{Cov}(\widehat{\mathbf A})=\sigma^2(\mathbf H^T\mathbf H)^{-1}.$$
+      <p>The estimator attains the CRLB and is MVU. Distinct real $r_i$ and $N\ge p$ ensure the Vandermonde design has full column rank. For computation,</p>
+      $$[\mathbf H^T\mathbf H]_{ij}=\sum_{n=0}^{N-1}(r_i r_j)^n,\qquad [\mathbf H^T\mathbf x]_i=\sum_{n=0}^{N-1}r_i^n x[n].$$
+      <h3>Constant and alternating components</h3>
+      <p>For $p=2$, $r_1=1$, $r_2=-1$, and even $N$, the two columns are orthogonal because $\sum_n(-1)^n=0$. Thus $\mathbf H^T\mathbf H=N\mathbf I_2$ and</p>
+      $$\widehat A_1=\frac1N\sum_{n=0}^{N-1}x[n],\qquad \widehat A_2=\frac1N\sum_{n=0}^{N-1}(-1)^n x[n].$$
+      <div class="answer-box"><span class="ans-label">Result</span>Both estimates have variance $\sigma^2/N$ and zero covariance. Since they are jointly Gaussian, they are independent. Ordinary averaging isolates the constant component; alternating-sign averaging isolates the other component.</div>
+
+      <h2 id="problem-4-4">Problem 4.4 — Distribution of the estimated signal</h2>
+      <p>The true signal $\mathbf s=\mathbf H\boldsymbol\theta$ is deterministic. Its estimate $\widehat{\mathbf s}=\mathbf H\widehat{\boldsymbol\theta}$ is a linear transformation of a Gaussian parameter estimate, so</p>
+      $$\widehat{\mathbf s}\sim\mathcal N\!\left(\mathbf s,\sigma^2\mathbf H(\mathbf H^T\mathbf H)^{-1}\mathbf H^T\right).$$
+      <p>When $p&lt;N$, this covariance has rank $p$: the distribution is supported on the column space of $\mathbf H$ and has no ordinary $N$-dimensional density.</p>
+      <h3>Fourier analysis in Example 4.2</h3>
+      $$s[n]=\sum_{k=1}^{M}\left[a_k\cos\!\left(\frac{2\pi kn}{N}\right)+b_k\sin\!\left(\frac{2\pi kn}{N}\right)\right],\qquad M&lt;\frac N2.$$
+      <p>The sine and cosine columns are orthogonal, giving $\mathbf H^T\mathbf H=(N/2)\mathbf I_{2M}$. Consequently,</p>
+      $$\operatorname{Cov}(\widehat s[n],\widehat s[m])=\frac{2\sigma^2}{N}\sum_{k=1}^{M}\cos\!\left(\frac{2\pi k(n-m)}{N}\right).$$
+      $$\operatorname{Var}(\widehat s[n])=\frac{2M\sigma^2}{N},\qquad \widehat s[n]\sim\mathcal N\!\left(s[n],\frac{2M\sigma^2}{N}\right).$$
+      <p>For fixed $M$, increasing the number of observations reduces each estimated sample's variance.</p>
+
+      <h2 id="problem-4-10">Problem 4.10 — Unequal noise variances and whitening</h2>
+      <p>For $x[n]=A+w[n]$ with $\mathbf C=\operatorname{diag}(\sigma_0^2,\ldots,\sigma_{N-1}^2)$, initially assume every variance is positive. Whiten using $\mathbf D=\operatorname{diag}(1/\sigma_0,\ldots,1/\sigma_{N-1})$, so $x'[n]=x[n]/\sigma_n$.</p>
+      <p>The textbook's coefficients $d_n$ multiply the <em>whitened</em> data:</p>
+      $$d_n=\frac{1/\sigma_n}{\sum_{k=0}^{N-1}1/\sigma_k^2},\qquad \widehat A=\sum_{n=0}^{N-1}d_n x'[n].$$
+      <p>On the original observations, the weights are instead inverse-variance weights:</p>
+      $$\alpha_n=\frac{1/\sigma_n^2}{\sum_{k=0}^{N-1}1/\sigma_k^2},\qquad \widehat A=\frac{\sum_n x[n]/\sigma_n^2}{\sum_n1/\sigma_n^2}.$$
+      $$\sum_n\alpha_n=1,\qquad \operatorname{Var}(\widehat A)=\left(\sum_{n=0}^{N-1}\frac1{\sigma_n^2}\right)^{-1}.$$
+      <p>More reliable observations receive greater weight; equal variances recover the sample mean. If $\sigma_j^2=0$, then $w[j]=0$ almost surely and $x[j]=A$. Use $\widehat A=x[j]$, with zero variance. The covariance matrix is then singular, so directly substituting into an inverse-covariance formula is invalid.</p>
+
+      <h2 id="problem-4-13">Problem 4.13 — A random design matrix</h2>
+      <p>Suppose the realized $\mathbf H$ is observed, has full column rank almost surely, and the required moments exist. Set $\mathbf B(\mathbf H)=(\mathbf H^T\mathbf H)^{-1}\mathbf H^T$. Then $\widehat{\boldsymbol\theta}=\boldsymbol\theta+\mathbf B(\mathbf H)\mathbf w$.</p>
+      <p>If $\mathbf H$ and $\mathbf w$ are independent, conditioning on $\mathbf H$ gives</p>
+      $$E[\widehat{\boldsymbol\theta}\mid\mathbf H]=\boldsymbol\theta,\qquad \operatorname{Cov}(\widehat{\boldsymbol\theta}\mid\mathbf H)=\sigma^2(\mathbf H^T\mathbf H)^{-1}.$$
+      <p>Total expectation and total covariance therefore yield</p>
+      $$E[\widehat{\boldsymbol\theta}]=\boldsymbol\theta,\qquad \operatorname{Cov}(\widehat{\boldsymbol\theta})=\sigma^2 E_{\mathbf H}\!\left[(\mathbf H^T\mathbf H)^{-1}\right].$$
+      <p>The inverse is taken <em>before</em> the expectation. Without independence, the conditional noise mean can be nonzero:</p>
+      $$E[\widehat{\boldsymbol\theta}]=\boldsymbol\theta+E_{\mathbf H}\!\left[\mathbf B(\mathbf H)E[\mathbf w\mid\mathbf H]\right].$$
+      <p>For a scalar counterexample, take $w\sim\mathcal N(0,\sigma^2)$ and $H=\operatorname{sign}(w)$. Then $\widehat\theta=\theta+|w|$, so</p>
+      $$E[\widehat\theta]=\theta+\sigma\sqrt{\frac2\pi},\qquad \operatorname{Var}(\widehat\theta)=\sigma^2\left(1-\frac2\pi\right).$$
+      <div class="highlight-box">Independence is sufficient but not necessary. The original conclusions still hold if $E[\mathbf w\mid\mathbf H]=\mathbf0$ and $\operatorname{Cov}(\mathbf w\mid\mathbf H)=\sigma^2\mathbf I$.</div>
+
+      <hr class="divider">
+      <p>Source: ECG 762 HW4 report by Chang Wang, dated 2026-09-28. <a href="/blog/files/ecg762-hw4.pdf" download>Download the complete original report</a>.</p>
+      <nav class="homework-nav" aria-label="More ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <span aria-current="page">HW4</span> · <a href="/blog/posts/ecg762-hw5/">HW5</a> · <a href="/blog/posts/ecg762-hw6/">HW6</a> · <a href="/blog/posts/ecg762-hw7/">HW7</a></nav>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

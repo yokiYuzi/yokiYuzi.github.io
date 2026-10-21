@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 762 HW7 | Chang Wang</title>
+  <meta name="description" content="Four worked problems (7.3, 7.4, 7.7, 7.8): Gaussian and exponential MLEs, finite-sample variance crossover at N=100 with the original comparison plot, exponential-family likelihood equations, and Bernoulli MLE boundary cases. Includes the original PDF.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg762-hw7/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      max-width: 480px;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 38%; }
+
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+
+    .post-body { overflow-wrap: anywhere; }
+    .post-body h3 { font-size: .95rem; color: var(--accent); margin: 1.5rem 0 .7rem; }
+    .pdf-download { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .homework-nav { display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; margin: 1.3rem 0; font-size: .85rem; }
+    .table-scroll { overflow-x: auto; margin: 1rem 0; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .result-table th, .result-table td { border: 1px solid var(--line); padding: .5rem .7rem; text-align: left; }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .homework-figure { margin: 1.5rem 0; }
+    .homework-figure img { display: block; width: 100%; height: auto; background: white; }
+    .homework-figure figcaption { font-size: .78rem; color: var(--muted); margin-top: .6rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/column/">Column</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 762 HW7 — Maximum Likelihood Estimation and the Limits of Asymptotic Variance Comparisons</h1>
+        <p class="meta">ECG 762 · Chang Wang · Instructor: Ebrahim Saberinia<br>Report date: <time datetime="2026-10-18">2026-10-18</time> · Posted 2026-10-21</p>
+        <div class="pdf-download">
+          <a href="/blog/files/ecg762-hw7.pdf" download>↓ Download original PDF (8 pages, 420 KB)</a>
+          <a href="/blog/files/ecg762-hw7.pdf" target="_blank" rel="noopener">Read PDF in browser ↗</a>
+        </div>
+      </div>
+      <nav class="homework-nav" aria-label="ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <a href="/blog/posts/ecg762-hw4/">HW4</a> · <a href="/blog/posts/ecg762-hw5/">HW5</a> · <a href="/blog/posts/ecg762-hw6/">HW6</a> · <span aria-current="page">HW7</span></nav>
+      <p>Chapter 7 derives maximum likelihood estimators and verifies that they maximize the likelihood. A finite-sample variance comparison illustrates why an asymptotically better estimator can still be worse at the sample size actually available.</p>
+
+      <h2 id="problem-7-3">Problem 7.3 — Gaussian and exponential MLEs</h2>
+      <h3>Gaussian mean with unit variance</h3>
+      <p>For IID $\mathcal N(\mu,1)$ observations, the log-likelihood is</p>
+      $$\ell(\mu)=-\frac N2\log(2\pi)-\frac12\sum_{n=0}^{N-1}(x[n]-\mu)^2.$$
+      $$\ell'(\mu)=\sum_n x[n]-N\mu,\qquad \ell''(\mu)=-N&lt;0.$$
+      <p>Solving the score equation gives $\widehat\mu_{\mathrm{ML}}=\overline x$. Strict concavity proves that this is the unique global maximizer. It estimates the population mean by the sample mean.</p>
+      <h3>Exponential rate</h3>
+      <p>For positive IID samples with density $\lambda e^{-\lambda x}$, $\lambda&gt;0$,</p>
+      $$L(\lambda)=\lambda^N e^{-\lambda\sum_n x[n]},\qquad \ell(\lambda)=N\log\lambda-\lambda\sum_nx[n].$$
+      $$\ell'(\lambda)=\frac N\lambda-\sum_nx[n],\qquad \ell''(\lambda)=-\frac N{\lambda^2}&lt;0.$$
+      $$\widehat\lambda_{\mathrm{ML}}=\frac N{\sum_{n=0}^{N-1}x[n]}=\frac1{\overline x}.$$
+      <p>The positive estimate is the unique global maximizer. Since $E[x]=1/\lambda$, larger observations correspond to a smaller estimated rate.</p>
+
+      <h2 id="problem-7-4">Problem 7.4 — Finite-sample and asymptotic rankings</h2>
+      <p>Two unbiased estimators have variances $V_1=2/N$ and $V_2=1/N+100/N^2$. Their MSEs equal their variances. Subtracting gives</p>
+      $$V_2-V_1=\frac{100-N}{N^2}.$$
+      <div class="table-scroll" role="region" aria-label="Variance comparison" tabindex="0">
+        <table class="result-table">
+          <thead><tr><th scope="col">Sample size</th><th scope="col">Variance comparison</th><th scope="col">Better estimator</th></tr></thead>
+          <tbody>
+            <tr><td>$1\le N&lt;100$</td><td>$V_1&lt;V_2$</td><td>$\widehat\theta_1$</td></tr>
+            <tr><td>$N=100$</td><td>$V_1=V_2=0.02$</td><td>Equal performance</td></tr>
+            <tr><td>$N&gt;100$</td><td>$V_2&lt;V_1$</td><td>$\widehat\theta_2$</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figure class="homework-figure">
+        <img src="/blog/posts/ecg762-hw7/variance-comparison.png" width="1199" height="490" loading="lazy" alt="Variance curves 2/N and 1/N + 100/N squared. They cross at N=100 with variance 0.02; estimator 1 is better below 100 and estimator 2 above 100.">
+        <figcaption>Original figure from the HW7 report: logarithmic overview at left and the crossover near $N=100$ at right.</figcaption>
+      </figure>
+      <p>Although $V_2/V_1\to1/2$ as $N\to\infty$, the second estimator is worse for $N&lt;100$. The omitted term is not small relative to $1/N$ until $N$ is large compared with 100:</p>
+      $$\frac{100/N^2}{1/N}=\frac{100}{N}.$$
+      <div class="highlight-box">An asymptotic ranking is not a finite-sample ranking. Keep the higher-order term when it is still material at the sample size of interest.</div>
+
+      <h2 id="problem-7-7">Problem 7.7 — The exponential-family likelihood equation</h2>
+      <p>For IID observations from $p(x;\theta)=\exp[A(\theta)B(x)+C(x)+D(\theta)]$,</p>
+      $$\ell(\theta)=A(\theta)\sum_{n=0}^{N-1}B(x[n])+\sum_{n=0}^{N-1}C(x[n])+ND(\theta).$$
+      <p>Assuming differentiability and parameter-independent support, an interior MLE must satisfy</p>
+      $$A'(\widehat\theta_{\mathrm{ML}})\sum_{n=0}^{N-1}B(x[n])+ND'(\widehat\theta_{\mathrm{ML}})=0.$$
+      <p>If $A'(\widehat\theta_{\mathrm{ML}})\ne0$, this becomes</p>
+      $$\frac1N\sum_{n=0}^{N-1}B(x[n])=-\frac{D'(\widehat\theta_{\mathrm{ML}})}{A'(\widehat\theta_{\mathrm{ML}})}.$$
+      <p>For the Gaussian model, choose $A(\mu)=\mu$, $B(x)=x$, $C(x)=-x^2/2$, and $D(\mu)=-\mu^2/2-\tfrac12\log(2\pi)$. The equation reduces to $\sum_nx[n]-N\widehat\mu=0$.</p>
+      <p>For the exponential model, choose $A(\lambda)=-\lambda$, $B(x)=x$, $C(x)=0$, and $D(\lambda)=\log\lambda$. The equation becomes $-\sum_nx[n]+N/\widehat\lambda=0$.</p>
+      <p>These recover the estimators in Problem 7.3. A score-equation solution still requires a maximum check, and boundary maxima must be considered separately.</p>
+
+      <h2 id="problem-7-8">Problem 7.8 — Bernoulli MLE including boundaries</h2>
+      <p>Let $K=\sum_nx[n]$ count successes in $N$ IID Bernoulli trials. For $0\le p\le1$,</p>
+      $$L(p)=p^K(1-p)^{N-K}.$$
+      <p>When $0&lt;K&lt;N$, the log-likelihood has derivatives</p>
+      $$\ell'(p)=\frac Kp-\frac{N-K}{1-p},\qquad \ell''(p)=-\frac K{p^2}-\frac{N-K}{(1-p)^2}&lt;0.$$
+      <p>Setting the score to zero gives $K-Np=0$, hence the unique interior maximum is $K/N$. The boundary cases agree:</p>
+      <ul><li>If $K=0$, $L(p)=(1-p)^N$ is maximized at $p=0$.</li><li>If $K=N$, $L(p)=p^N$ is maximized at $p=1$.</li></ul>
+      <div class="answer-box"><span class="ans-label">Result for every possible sample</span>$$\widehat p_{\mathrm{ML}}=\frac KN=\frac1N\sum_{n=0}^{N-1}x[n].$$The MLE is the observed success proportion, including all-failure and all-success samples.</div>
+
+      <hr class="divider">
+      <p>Source: ECG 762 HW7 report by Chang Wang, dated 2026-10-18. <a href="/blog/files/ecg762-hw7.pdf" download>Download the complete original report</a>.</p>
+      <nav class="homework-nav" aria-label="More ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <a href="/blog/posts/ecg762-hw4/">HW4</a> · <a href="/blog/posts/ecg762-hw5/">HW5</a> · <a href="/blog/posts/ecg762-hw6/">HW6</a> · <span aria-current="page">HW7</span></nav>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

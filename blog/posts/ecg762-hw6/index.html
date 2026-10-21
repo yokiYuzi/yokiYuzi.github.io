@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 762 HW6 | Chang Wang</title>
+  <meta name="description" content="Three worked problems (6.1, 6.4, 6.6): BLUE for an exponential amplitude and its variance limit, the distinction between BLUE and MVU under Laplacian/Gaussian noise, and a Lagrange-multiplier proof of affine BLUE with a known offset. Includes the original PDF.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg762-hw6/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      max-width: 480px;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 38%; }
+
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+
+    .post-body { overflow-wrap: anywhere; }
+    .post-body h3 { font-size: .95rem; color: var(--accent); margin: 1.5rem 0 .7rem; }
+    .pdf-download { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .homework-nav { display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; margin: 1.3rem 0; font-size: .85rem; }
+    .table-scroll { overflow-x: auto; margin: 1rem 0; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .result-table th, .result-table td { border: 1px solid var(--line); padding: .5rem .7rem; text-align: left; }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .homework-figure { margin: 1.5rem 0; }
+    .homework-figure img { display: block; width: 100%; height: auto; background: white; }
+    .homework-figure figcaption { font-size: .78rem; color: var(--muted); margin-top: .6rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/column/">Column</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 762 HW6 — BLUE for Exponential Signals, Laplacian and Gaussian Means, and a Known Offset</h1>
+        <p class="meta">ECG 762 · Chang Wang · Instructor: Ebrahim Saberinia<br>Report date: <time datetime="2026-10-11">2026-10-11</time> · Posted 2026-10-21</p>
+        <div class="pdf-download">
+          <a href="/blog/files/ecg762-hw6.pdf" download>↓ Download original PDF (7 pages, 308 KB)</a>
+          <a href="/blog/files/ecg762-hw6.pdf" target="_blank" rel="noopener">Read PDF in browser ↗</a>
+        </div>
+      </div>
+      <nav class="homework-nav" aria-label="ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <a href="/blog/posts/ecg762-hw4/">HW4</a> · <a href="/blog/posts/ecg762-hw5/">HW5</a> · <span aria-current="page">HW6</span> · <a href="/blog/posts/ecg762-hw7/">HW7</a></nav>
+      <p>Chapter 6 studies the best linear unbiased estimator (BLUE). The three problems show how signal energy controls variance, why Gaussian assumptions matter when moving from BLUE to MVU, and how a known offset is removed in an affine estimator.</p>
+
+      <h2 id="problem-6-1">Problem 6.1 — An exponential signal in white noise</h2>
+      <p>For known real $r$, observe $x[n]=Ar^n+w[n]$, where the noise is zero-mean white with variance $\sigma^2&gt;0$. Let $\mathbf s=[1,r,\ldots,r^{N-1}]^T$ and $\mathbf C=\sigma^2\mathbf I$. The scalar BLUE formula gives</p>
+      $$\widehat A_{\mathrm{BLUE}}=\frac{\mathbf s^T\mathbf C^{-1}\mathbf x}{\mathbf s^T\mathbf C^{-1}\mathbf s}=\frac{\sum_{n=0}^{N-1}r^n x[n]}{\sum_{n=0}^{N-1}r^{2n}}.$$
+      <p>Taking expectations replaces $x[n]$ by $Ar^n$, proving unbiasedness. The minimum variance among linear unbiased estimators is</p>
+      $$\operatorname{Var}(\widehat A_{\mathrm{BLUE}})=\frac{\sigma^2}{\sum_{n=0}^{N-1}r^{2n}}=\begin{cases}\displaystyle\sigma^2\frac{1-r^2}{1-r^{2N}},&amp;r^2\ne1,\\[4pt]\displaystyle\frac{\sigma^2}{N},&amp;r^2=1.\end{cases}$$
+      <ul>
+        <li>If $|r|&lt;1$, the variance tends to $\sigma^2(1-r^2)&gt;0$.</li>
+        <li>If $|r|=1$, the variance is $\sigma^2/N\to0$.</li>
+        <li>If $|r|&gt;1$, the variance is $\sigma^2(r^2-1)/(r^{2N}-1)\to0$.</li>
+      </ul>
+      <div class="answer-box"><span class="ans-label">Result</span>The variance tends to zero exactly when $|r|\ge1$. A decaying signal has finite total energy, leaving a positive variance floor even with indefinitely many observations.</div>
+
+      <h2 id="problem-6-4">Problem 6.4 — BLUE versus MVU for two location models</h2>
+      <p>For IID observations with mean $\mu$ and individual variance $v$, $E[\mathbf x]=\mu\mathbf1$ and $\mathbf C=v\mathbf I$. Therefore,</p>
+      $$\widehat\mu_{\mathrm{BLUE}}=\frac{\mathbf1^T\mathbf C^{-1}\mathbf x}{\mathbf1^T\mathbf C^{-1}\mathbf1}=\overline x,\qquad \operatorname{Var}(\overline x)=\frac vN.$$
+      <h3>Laplacian observations</h3>
+      <p>For $p(x;\mu)=\tfrac12 e^{-|x-\mu|}$, symmetry gives mean $\mu$, and</p>
+      $$v=\int_0^\infty z^2e^{-z}\,dz=2,\qquad \operatorname{Var}(\widehat\mu_{\mathrm{BLUE}})=\frac2N.$$
+      <p>Being best among linear unbiased estimators does not establish optimality among all unbiased estimators. For $N=3$, the sample median $M$ is unbiased by symmetry and</p>
+      $$\operatorname{Var}(M)=\frac{23}{36}&lt;\frac23=\operatorname{Var}(\overline x).$$
+      <p>Thus the sample mean is not MVU in this case. The comparison alone does not establish that the median is MVU.</p>
+      <h3>Gaussian observations</h3>
+      <p>For $x[n]\sim\mathcal N(\mu,1)$, $v=1$ and the Fisher information is $I(\mu)=N$. The unbiased sample mean attains the CRLB:</p>
+      $$\widehat\mu_{\mathrm{MVU}}=\widehat\mu_{\mathrm{BLUE}}=\overline x,\qquad \operatorname{Var}(\overline x)=\frac1N.$$
+
+      <h2 id="problem-6-6">Problem 6.6 — Affine BLUE with a known offset</h2>
+      <p>Suppose $E[\mathbf x]=\theta\mathbf s+\beta\mathbf1$, with known $\beta$, positive-definite covariance $\mathbf C$, and $\mathbf s\ne\mathbf0$. Consider $\widehat\theta=\mathbf a^T\mathbf x+b$. Unbiasedness for every $\theta$ requires</p>
+      $$\mathbf a^T\mathbf s=1,\qquad b=-\beta\mathbf a^T\mathbf1.$$
+      <p>Every admissible estimator can therefore be written as $\widehat\theta=\mathbf a^T(\mathbf x-\beta\mathbf1)$, with variance $\mathbf a^T\mathbf C\mathbf a$. Minimize this quadratic form subject to $\mathbf a^T\mathbf s=1$ using</p>
+      $$L(\mathbf a,\lambda)=\mathbf a^T\mathbf C\mathbf a-2\lambda(\mathbf a^T\mathbf s-1).$$
+      <p>The stationarity condition $2\mathbf C\mathbf a-2\lambda\mathbf s=\mathbf0$ gives $\mathbf a=\lambda\mathbf C^{-1}\mathbf s$. Applying the constraint yields</p>
+      $$\lambda=\frac1{\mathbf s^T\mathbf C^{-1}\mathbf s},\qquad \mathbf a_{\mathrm{opt}}=\frac{\mathbf C^{-1}\mathbf s}{\mathbf s^T\mathbf C^{-1}\mathbf s}.$$
+      <p>Positive definiteness makes the objective strictly convex, so this stationary point is the global minimum:</p>
+      $$\widehat\theta_{\mathrm{BLUE}}=\frac{\mathbf s^T\mathbf C^{-1}(\mathbf x-\beta\mathbf1)}{\mathbf s^T\mathbf C^{-1}\mathbf s},\qquad b_{\mathrm{opt}}=-\beta\frac{\mathbf s^T\mathbf C^{-1}\mathbf1}{\mathbf s^T\mathbf C^{-1}\mathbf s}.$$
+      $$\operatorname{Var}(\widehat\theta_{\mathrm{BLUE}})=\mathbf a_{\mathrm{opt}}^T\mathbf C\mathbf a_{\mathrm{opt}}=\frac1{\mathbf s^T\mathbf C^{-1}\mathbf s}.$$
+      <div class="highlight-box">Subtracting a known offset changes the mean but not the covariance. The offset is removed before estimation and does not change the minimum variance.</div>
+
+      <hr class="divider">
+      <p>Source: ECG 762 HW6 report by Chang Wang, dated 2026-10-11. <a href="/blog/files/ecg762-hw6.pdf" download>Download the complete original report</a>.</p>
+      <nav class="homework-nav" aria-label="More ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <a href="/blog/posts/ecg762-hw4/">HW4</a> · <a href="/blog/posts/ecg762-hw5/">HW5</a> · <span aria-current="page">HW6</span> · <a href="/blog/posts/ecg762-hw7/">HW7</a></nav>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>

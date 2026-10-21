@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECG 762 HW5 | Chang Wang</title>
+  <meta name="description" content="Five worked problems (5.2, 5.3, 5.6, 5.7, 5.9): Neyman-Fisher factorization, known-mean Gaussian variance estimation, minimal sufficiency for sinusoidal frequency, and the Bernoulli MVU estimator. Includes the original PDF.">
+  <link rel="canonical" href="https://yokiyuzi.github.io/blog/posts/ecg762-hw5/">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });"></script>
+
+  <style>
+    .post-header { margin-bottom: 2rem; }
+    .post-header h1 {
+      font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+      color: var(--accent);
+      letter-spacing: 0.03em;
+      line-height: 1.45;
+      margin-bottom: 0.45rem;
+    }
+    .post-header .meta { font-size: 0.76rem; color: var(--muted); }
+    .pdf-download { margin-top: 0.8rem; }
+    .pdf-download a {
+      display: inline-block;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.4rem 0.9rem;
+      transition: background 0.18s, color 0.18s;
+    }
+    .pdf-download a:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .post-body { line-height: 1.88; }
+    .post-body h2 {
+      color: var(--accent);
+      font-size: 0.84rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 2.4rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .post-body p  { margin-bottom: 0.9rem; }
+    .post-body ul, .post-body ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+    .post-body li { margin: 0.35rem 0; }
+
+    .katex-display {
+      overflow-x: auto;
+      margin: 1.3rem 0;
+      padding: 0.9rem 1.2rem;
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent);
+    }
+
+    .info-table {
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      width: 100%;
+      max-width: 480px;
+      margin: 1rem 0 1.5rem;
+    }
+    .info-table td { border: 1px solid var(--line); padding: 0.4rem 0.8rem; }
+    .info-table td:first-child { color: var(--muted); width: 38%; }
+
+    .problem-badge {
+      display: inline-block;
+      background: var(--accent2);
+      color: #fff;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.12rem 0.55rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .answer-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.8rem 1.1rem;
+      margin: 0.6rem 0 1.3rem;
+      font-size: 0.86rem;
+    }
+    .answer-box .ans-label {
+      display: block;
+      color: var(--accent2);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .highlight-box {
+      background: var(--surface-alt);
+      border-left: 3px solid var(--accent2);
+      padding: 0.7rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--line); margin: 2.5rem 0; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .back-link::before { content: "← "; }
+
+    .post-body { overflow-wrap: anywhere; }
+    .post-body h3 { font-size: .95rem; color: var(--accent); margin: 1.5rem 0 .7rem; }
+    .pdf-download { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .homework-nav { display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; margin: 1.3rem 0; font-size: .85rem; }
+    .table-scroll { overflow-x: auto; margin: 1rem 0; }
+    .result-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .result-table th, .result-table td { border: 1px solid var(--line); padding: .5rem .7rem; text-align: left; }
+    .result-table th { background: var(--surface-alt); color: var(--accent); }
+    .homework-figure { margin: 1.5rem 0; }
+    .homework-figure img { display: block; width: 100%; height: auto; background: white; }
+    .homework-figure figcaption { font-size: .78rem; color: var(--muted); margin-top: .6rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="/">Chang Wang</a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/resume/">Resume</a>
+        <a href="/archives/">Archives</a>
+        <a href="/blog/">Blog</a>
+        <a href="/column/">Column</a>
+        <a href="/visitors/">Visitors</a>
+        <a href="/guestbook/">Guestbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <a class="back-link" href="/blog/">Back to Blog</a>
+
+    <article class="section post-body">
+
+      <div class="post-header">
+        <h1>ECG 762 HW5 — Sufficient Statistics and MVU Estimation for Rayleigh, Exponential, Gaussian, Sinusoidal, and Bernoulli Models</h1>
+        <p class="meta">ECG 762 · Chang Wang · Instructor: Ebrahim Saberinia<br>Report date: <time datetime="2026-10-04">2026-10-04</time> · Posted 2026-10-21</p>
+        <div class="pdf-download">
+          <a href="/blog/files/ecg762-hw5.pdf" download>↓ Download original PDF (7 pages, 300 KB)</a>
+          <a href="/blog/files/ecg762-hw5.pdf" target="_blank" rel="noopener">Read PDF in browser ↗</a>
+        </div>
+      </div>
+      <nav class="homework-nav" aria-label="ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <a href="/blog/posts/ecg762-hw4/">HW4</a> · <span aria-current="page">HW5</span> · <a href="/blog/posts/ecg762-hw6/">HW6</a> · <a href="/blog/posts/ecg762-hw7/">HW7</a></nav>
+      <p>Chapter 5 uses factorization to identify sufficient statistics, then combines completeness and unbiasedness to obtain MVU estimators. The frequency-estimation problem also clarifies why the full data are always sufficient, even when a useful reduction does not exist.</p>
+
+      <h2 id="problem-5-2">Problem 5.2 — Rayleigh scale</h2>
+      <p>For independent Rayleigh observations with $x[n]&gt;0$ and parameter $\sigma^2&gt;0$,</p>
+      $$p(x[n];\sigma^2)=\frac{x[n]}{\sigma^2}\exp\!\left(-\frac{x[n]^2}{2\sigma^2}\right).$$
+      <p>The joint density factors into</p>
+      $$p(\mathbf x;\sigma^2)=(\sigma^2)^{-N}\exp\!\left(-\frac{\sum_n x[n]^2}{2\sigma^2}\right)\prod_n x[n].$$
+      <p>Include the positive-support indicator in the parameter-free factor. By the Neyman–Fisher factorization theorem,</p>
+      $$T(\mathbf x)=\sum_{n=0}^{N-1}x[n]^2$$
+      <p>is sufficient for $\sigma^2$: the parameter-dependent part of the density uses the data only through this sum of squares.</p>
+
+      <h2 id="problem-5-3">Problem 5.3 — Exponential rate</h2>
+      <p>For IID observations with density $p(x;\lambda)=\lambda e^{-\lambda x}$ on $x&gt;0$, $\lambda&gt;0$,</p>
+      $$p(\mathbf x;\lambda)=\lambda^N\exp\!\left(-\lambda\sum_{n=0}^{N-1}x[n]\right).$$
+      <p>The support is independent of $\lambda$, so the factorization theorem gives</p>
+      $$T(\mathbf x)=\sum_{n=0}^{N-1}x[n].$$
+      <p>For fixed $N$, the sample mean is an invertible rescaling of $T$ and is also sufficient.</p>
+
+      <h2 id="problem-5-6">Problem 5.6 — Gaussian variance with a known mean</h2>
+      <p>Observe $x[n]=A+w[n]$, where $A$ is known and $w[n]$ are independent $\mathcal N(0,\sigma^2)$ samples. The joint density is</p>
+      $$p(\mathbf x;\sigma^2)=(2\pi\sigma^2)^{-N/2}\exp\!\left(-\frac{\sum_n(x[n]-A)^2}{2\sigma^2}\right).$$
+      <p>Thus $T=\sum_n(x[n]-A)^2$ is sufficient. Since $E[T]=N\sigma^2$, the estimator $T/N$ is unbiased. Under the problem's completeness assumption, the Rao–Blackwell–Lehmann–Scheffé theorem makes it MVU:</p>
+      $$\widehat{\sigma^2}_{\mathrm{MVU}}=\frac1N\sum_{n=0}^{N-1}(x[n]-A)^2.$$
+      $$\frac{T}{\sigma^2}\sim\chi_N^2,\qquad \operatorname{Var}(\widehat{\sigma^2}_{\mathrm{MVU}})=\frac{2\sigma^4}{N}.$$
+      <div class="answer-box"><span class="ans-label">Why the denominator is N</span>The mean is known. No degree of freedom is spent estimating it, so the denominator is $N$, rather than $N-1$.</div>
+
+      <h2 id="problem-5-7">Problem 5.7 — Sinusoidal frequency and minimal sufficiency</h2>
+      <p>For $x[n]=\cos(2\pi f_0n)+w[n]$ with known Gaussian noise variance, expanding the likelihood leaves the parameter-dependent data term</p>
+      $$\sum_{n=0}^{N-1}x[n]\cos(2\pi f_0n).$$
+      <p>This expression itself is not a statistic for the unknown frequency: its weights depend on $f_0$. More precisely, compare two observation vectors:</p>
+      $$\log\frac{p(\mathbf x;f_0)}{p(\mathbf y;f_0)}=C(\mathbf x,\mathbf y)+\frac1{\sigma^2}\sum_{n=1}^{N-1}(x[n]-y[n])\cos(2\pi f_0n).$$
+      <p>When $f_0$ ranges over a nondegenerate interval, the functions $1,\cos(2\pi f_0),\ldots,\cos(2\pi(N-1)f_0)$ are linearly independent. The ratio is parameter-independent exactly when $x[n]=y[n]$ for every $n=1,\ldots,N-1$. Hence a minimal sufficient statistic is</p>
+      $$T(\mathbf x)=(x[1],x[2],\ldots,x[N-1]).$$
+      <div class="highlight-box">The full observation vector is always sufficient. Here $x[0]=1+w[0]$ can be discarded because it is independent of the other observations and its distribution does not depend on frequency. All remaining observations must be preserved up to an invertible transformation. The conclusion concerns the absence of a nontrivial information-losing reduction, not the absence of every sufficient statistic.</div>
+
+      <h2 id="problem-5-9">Problem 5.9 — Bernoulli success probability</h2>
+      <p>Let $x[n]\in\{0,1\}$ be IID Bernoulli observations with success probability $\theta$. Their joint probability mass function is</p>
+      $$p(\mathbf x;\theta)=\theta^{T(\mathbf x)}(1-\theta)^{N-T(\mathbf x)},\qquad T(\mathbf x)=\sum_{n=0}^{N-1}x[n].$$
+      <p>Factorization makes the number of successes sufficient. Since $E[T]=N\theta$, $T/N$ is unbiased; with the assumed completeness,</p>
+      $$\widehat\theta_{\mathrm{MVU}}=\frac1N\sum_{n=0}^{N-1}x[n],\qquad \operatorname{Var}(\widehat\theta_{\mathrm{MVU}})=\frac{\theta(1-\theta)}{N}.$$
+      <p>The MVU estimate is the observed proportion of successes.</p>
+
+      <hr class="divider">
+      <p>Source: ECG 762 HW5 report by Chang Wang, dated 2026-10-04. <a href="/blog/files/ecg762-hw5.pdf" download>Download the complete original report</a>.</p>
+      <nav class="homework-nav" aria-label="More ECG 762 homework"><a href="/blog/posts/ecg762-hw3/">HW3</a> · <a href="/blog/posts/ecg762-hw4/">HW4</a> · <span aria-current="page">HW5</span> · <a href="/blog/posts/ecg762-hw6/">HW6</a> · <a href="/blog/posts/ecg762-hw7/">HW7</a></nav>
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Chang Wang</div>
+  </footer>
+  <script src="/js/theme.js"></script>
+  <script src="/js/visitor-tracker.js"></script>
+  <script src="/js/translator.js"></script>
+</body>
+</html>
