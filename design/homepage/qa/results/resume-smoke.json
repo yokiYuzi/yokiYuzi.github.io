@@ -1,0 +1,22 @@
+{
+  "path": "/resume/",
+  "initial": {
+    "viewport": 1440,
+    "document": 1440,
+    "overflow": false
+  },
+  "title": "Resume | Chang Wang",
+  "main": true,
+  "navigationLinks": 7,
+  "canvasCount": 1,
+  "controlsCount": 1,
+  "mathNodes": 0,
+  "mathErrors": 0,
+  "print": {
+    "header": "none",
+    "canvas": "none",
+    "controls": "none",
+    "mainWidth": 1080,
+    "bodyColor": "rgb(0, 0, 0)"
+  }
+}

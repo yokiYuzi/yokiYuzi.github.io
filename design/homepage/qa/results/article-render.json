@@ -1,0 +1,15 @@
+{
+  "path": "/blog/posts/ecg762-hw7/",
+  "initial": {
+    "viewport": 1440,
+    "document": 1440,
+    "overflow": false
+  },
+  "title": "ECG 762 HW7 | Chang Wang",
+  "main": true,
+  "navigationLinks": 7,
+  "canvasCount": 1,
+  "controlsCount": 1,
+  "mathNodes": 58,
+  "mathErrors": 0
+}

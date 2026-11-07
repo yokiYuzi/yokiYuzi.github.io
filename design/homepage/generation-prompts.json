@@ -1,0 +1,17 @@
+{
+  "tool": "builtin image_gen",
+  "prompts": [
+    [
+      "jade-deep",
+      "Use case: stylized-concept. Asset type: original full-bleed mineral texture for an editable SVG website illustration, square 1792 by 1792 pixels. Create a single flat, front-facing polished deep blue-green jade mineral surface, edge to edge with no object silhouette or framing. Rich dark teal and emerald, predominantly #12584E with inky #073C35, irregular translucent cloudy mineral inclusions and fine naturally branching seams, quiet layered crystalline detail reminiscent of mineral pigments and high-end book-cover material. Very restrained milky inclusions, maintain a uniformly deep dark jade overall value to contrast with an ivory pearl disc to be added separately. Soft upper-left illumination, no obvious glossy spotlight. Absolutely no text, letters, logos, icons, circles, moons, orbits, gold, gold lines, gold frames, borders, scenery, leaves or isolated objects. The texture itself fills the entire image."
+    ],
+    [
+      "jade-front",
+      "Use case: stylized-concept. Asset type: original full-bleed mineral texture for an editable SVG website illustration, square 1792 by 1792 pixels. A single flat front-facing pale celadon and translucent mint-jade mineral surface. The entire frame is mineral with no silhouette or framing. Broad irregular pale mint and opalescent milky-white inclusions, semi-translucent layers of crystalline stone, softly branching very fine mineral veins, uneven and natural cloudy pigment texture. Palette pale celadon #A7D3B7 and seafoam #73B59E blending into ivory-white #EBEED9, some deeper green #3B8E77 for contrast; overall substantially lighter than dark jade. White mineral regions should occupy about forty percent, in broad connected natural veins with diagonal movement from lower left to upper right. Fine believable stone texture, soft illumination from upper left, no hard glare. Absolutely no text, letters, logos, icons, circles, moon, orbits, gold, gold lines, border, frame, scenery or isolated objects. Texture fills the whole canvas."
+    ],
+    [
+      "pearl",
+      "Use case: stylized-concept. Asset type: original full-bleed pearl-white mineral texture for a circular SVG moon, square 1536 by 1536 pixels. Create a flat front-facing warm ivory pearl and translucent white alabaster mineral surface covering the entire image. Very delicate cream and pale warm-gray mineral veins, irregular overlapping pearlescent crystal plates, quiet finely detailed natural texture with broad luminous warm white regions. Ninety percent white or near-white, palette #FAF8F2 #F1EDDF #E6DECA, a few exceptionally faint beige seams, no heavy gray or dark regions. Soft upper-left illumination, gentle pearl sheen, no rendered sphere, no shading vignette around edges: only a seamless-looking flat mineral material sheet that will later be clipped into a perfect circle. Absolutely no text, letters, logos, icons, circles, moons, planets, gold lines, border, frame, scenery or isolated objects. Edge-to-edge surface."
+    ]
+  ]
+}

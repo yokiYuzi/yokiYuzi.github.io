@@ -1,0 +1,50 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  },
+  {
+    "route": "/resume/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  },
+  {
+    "route": "/archives/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  },
+  {
+    "route": "/blog/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  },
+  {
+    "route": "/column/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  },
+  {
+    "route": "/visitors/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  },
+  {
+    "route": "/guestbook/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  },
+  {
+    "route": "/blog/posts/ecg762-hw7/",
+    "status": 200,
+    "hasMain": true,
+    "hasNavigation": true
+  }
+]

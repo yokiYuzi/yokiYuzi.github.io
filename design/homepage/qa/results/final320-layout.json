@@ -1,0 +1,66 @@
+{
+  "initial": {
+    "viewport": 320,
+    "document": 320,
+    "overflow": false
+  },
+  "zoom200": {
+    "viewport": 320,
+    "document": 320,
+    "overflow": false,
+    "offenders": []
+  },
+  "menu": {
+    "visible": true,
+    "open": true,
+    "targetSizes": [
+      {
+        "label": "Home",
+        "height": 50.390625
+      },
+      {
+        "label": "Resume",
+        "height": 50.390625
+      },
+      {
+        "label": "Archives",
+        "height": 50.390625
+      },
+      {
+        "label": "Blog",
+        "height": 50.390625
+      },
+      {
+        "label": "Column",
+        "height": 50.390625
+      },
+      {
+        "label": "Visitors",
+        "height": 50.390625
+      },
+      {
+        "label": "Guestbook",
+        "height": 50.390625
+      }
+    ],
+    "escapeCloses": true
+  },
+  "title": "Die Welt zerfällt in Tatsachen.",
+  "titleSize": "40px",
+  "canvasCount": 0,
+  "controlsCount": 0,
+  "loadedTextureHrefs": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "mobileImage": "https://localhost:9443/assets/art/hero-mobile.webp",
+  "artHeight": 240,
+  "colors": {
+    "ink": "rgb(20, 44, 40)",
+    "paper": "rgb(250, 248, 242)"
+  }
+}

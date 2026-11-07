@@ -1,0 +1,143 @@
+Chang Wang — Jade & Pearl 首页交付说明
+日期：2026-11-06
+开发分支：design/jade-pearl-homepage
+回退基点：afe1b50fdb6b4b9b214c6372df147c0ed08d4ab7
+
+交付状态
+已按 Chang_Wang_Homepage_Implementation_Plan.docx 及参考图重建首页。
+遵循文档“先交预览供核对，再发布”：本次只提交开发分支，等待核对后合并 master。
+GitHub Pages 工作流没有修改；本分支不会触发 master 的部署。
+
+查看方式
+本地网页预览：http://localhost:8767/
+可直接双击的离线预览：preview/homepage-preview.html
+离线文件已内嵌样式、图像和首页交互，不需要本地服务器。
+离线预览中的内页导航会打开现有线上内页；它不记录访问统计。
+桌面截图：preview/desktop-1440.png（1440 × 810）
+手机截图：preview/mobile-390.png（390 × 844）
+附加截图：preview/desktop-1366.png、tablet-768.png、mobile-320.png
+
+设计与内容
+首页采用暖纸白 #FAF8F2、墨绿文字 #142C28、深翡翠 #12584E。
+金边由 #886537 深金 2.5px 与 #D6B674 香槟金 1.2px 叠加组成。
+月轮、背层翡翠、前层浅玉石、矿脉金线、轨道弧线分层制作。
+剪裁与轮廓共用同一条 SVG 路径，金边使用 non-scaling-stroke。
+前层玉石遮挡月轮下缘；装饰层可以裁切，文字与焦点轮廓不裁切。
+静态展示，没有 ASCII 画布、随机引文、场景选择器或 Dawn/Dusk 控件。
+
+固定正文：
+Die Welt zerfällt
+in Tatsachen.
+世界分解为诸事实。
+Wittgenstein · § 1.2
+I’m Chang Wang, a PhD student at UNLV working on signal processing and machine learning.
+Explore the archive → /archives/
+About & CV → /resume/
+
+响应式
+1100px 及以上：左侧正文、右侧延展画面；标题两行。
+768–1099px：正文在前，独立平板取景在后，保留完整月轮上缘。
+767px 及以下：20–24px 页边距、40–52px 标题、240–260px 高的独立手机画面。
+导航在 1099px 及以下折叠；无 JavaScript 时直接显示全部导航链接。
+短屏允许内容自然增长；200% 文字放大时不会隐藏正文。
+
+素材与可编辑文件
+desktop-master.svg：1672 × 872 的桌面母版。
+tablet-master.svg：1024 × 440 的平板取景母版。
+mobile-master.svg：780 × 560 的手机母版。
+三个 SVG 都保留路径、剪裁、独立图层及相对链接的 PNG 材质。
+用 Inkscape 打开时请保留同目录 source 文件夹。
+source/jade-deep.png、jade-front.png、pearl.png 为内置 ImageGen 生成的原始材质。
+原始图实际尺寸均为 1254 × 1254；具体提示词见 generation-prompts.json。
+图片中没有标题、导航、链接等文字；网页文字均为可选择的 HTML。
+
+发布资源大小
+assets/art/jade-deep.webp：46,466 bytes
+assets/art/jade-front.webp：55,928 bytes
+assets/art/pearl.webp：15,540 bytes（880 × 880）
+桌面三张纹理合计：117,934 bytes，低于 700 KB 目标。
+assets/art/hero-mobile.webp：30,562 bytes，低于 300 KB 目标。
+手机首次访问只请求 hero-mobile.webp，不请求三张桌面纹理。
+桌面与平板只为当前可见 SVG 设置图片 href。
+图片失败时保留底色、轮廓和文字；桌面无 JS 时保留纯色 SVG 构图。
+
+实现文件
+index.html：首页真实文字、分层 SVG、手机 picture、导航及原有后续内容。
+css/home-hero.css：限定在 home-jade 首页的配色、排版、布局及导航样式。
+js/home-hero.js：按屏幕尺寸加载纹理及图片失败回退。
+js/theme.js：home-jade 跳过旧画布和外观工具，继续使用公共导航增强。
+assets/svg/jade-orbit.svg、blank.svg：首页标志与桌面 picture 的透明占位。
+tools/build_home_art.mjs：统一生成三个母版、四个 WebP 和首页 SVG。
+tools/export_home_preview.py：生成可离线查看的首页预览。
+内页 HTML、正文、共享 style.css、留言板、访客数据逻辑及部署工作流没有修改。
+原有未跟踪的“个人专栏”目录没有纳入本次提交。
+
+验证结果
+全站生产构建成功，生成 4 组 Live Photo；已有 6 项 Live Photo 测试全部通过。
+首页 25 个本地链接/资源目标全部存在，DOM/SVG ID 无重复。
+7 个主导航页面和一篇公式文章的实际 HTTP 请求均返回 200。
+320、390、768、1024、1366、1440 宽度均检查过普通布局和 200% 文字放大。
+上述宽度均无横向页面溢出；短屏 1366 × 768 可正常滚动。
+手机导航链接触摸高度约 50px；Tab 可到跳转链接、站点名和菜单。
+菜单焦点轮廓 2px 可见；Enter 展开、Esc 收起并恢复菜单焦点。
+首页没有 canvas 或旧外观控件。
+无 JavaScript、纹理返回 404 的桌面与手机回退均通过渲染检查。
+正文/纸白对比度 13.92:1；次级文字 6.27:1；深金文字 4.99:1。
+简历打印样式正确隐藏页眉、背景画布和外观工具，并使用黑色文字。
+ECG 762 HW7 的 58 处 KaTeX 公式渲染成功，公式错误数为 0。
+文章检查使用与页面相同的 KaTeX 0.16.11 本地依赖，页面源码及 CDN 引用没有改动。
+内页旧样式的链接区分和外观按钮标签仍有现存的可访问性提示，本轮未扩展修改。
+
+Lighthouse 性能记录
+报告：qa/results/http-mobile-1.html、http-mobile-2.html、http-mobile-3.html
+原始 JSON、网络检查及汇总也保存在 qa/results/。
+环境：Windows，Headless Chrome 155，Lighthouse 13.6.0，Node 24.15.0。
+视口：390 × 844，DPR 1，移动端模拟，独立全新浏览器配置。
+模拟限速：RTT 150ms、1638.4 Kbps、CPU 4 倍；三次条件一致。
+真实本地 HTTP/2 地址：https://127.0.0.1:9443/
+本地自签名证书仅由独立测试浏览器接受，没有安装到系统信任存储。
+三轮实际请求全部成功，使用 h2，没有资源拦截，没有加载失败。
+测试浏览器预设会话标记，避免测试访问写入现有访客统计。
+
+轮次    性能    可访问性    LCP         CLS    TBT
+1       100     100         1.380s      0      0ms
+2       100     100         1.351077s   0      0ms
+3       100     100         1.351062s   0      0ms
+中位数  100     100         1.351077s   0      0ms
+
+本机备份服务曾耗尽连接池，造成 ERR_NO_BUFFER_SPACE；失败的网络测量未纳入上表。
+布局矩阵、离线兼容与公式回归通过 Lighthouse 的 DevTools 资源读取完成。
+这些离线运行仅用于布局和功能验证，没有作为上表的性能成绩。
+桌面及手机主截图来自实际 HTTP 页面渲染；离线预览本身也经过浏览器检查。
+线上部署后的三轮测试需在用户核对并发布后运行，当前不把本地分数当作线上分数。
+
+重新构建
+在仓库根目录运行 PowerShell：
+$env:FFMPEG='C:\yokiYuzi.github.io\.venv-livephotos\Lib\site-packages\static_ffmpeg\bin\win32\ffmpeg.exe'
+$env:FFPROBE='C:\yokiYuzi.github.io\.venv-livephotos\Lib\site-packages\static_ffmpeg\bin\win32\ffprobe.exe'
+.\.venv-livephotos\Scripts\python.exe -m unittest discover -s tests -v
+.\.venv-livephotos\Scripts\python.exe tools\build_site.py --output <一个新建或空的输出目录>
+
+需要重新生成美术资源时：
+$artTools=Join-Path $env:TEMP 'jade-home-qa'
+npm install --prefix $artTools --no-audit --no-fund sharp@0.35.5 @resvg/resvg-js@2.6.2 lighthouse@13.6.0 katex@0.16.11
+node tools\build_home_art.mjs (Join-Path $artTools 'node_modules')
+.\.venv-livephotos\Scripts\python.exe tools\export_home_preview.py
+母版可直接编辑；需要同步到网页时，把调整后的几何路径回填 build_home_art.mjs 再生成。
+普通网站构建不需要安装这些美术或 Lighthouse 依赖。
+
+重新运行审查
+$env:JADE_MODULES=Join-Path $env:TEMP 'jade-home-qa\node_modules'
+$env:LH_FPS_TEST='1'
+$env:JADE_URL='http://127.0.0.1:8765/'
+node design\homepage\qa\lighthouse-review.mjs mobile-1 390 844 mobile
+node design\homepage\qa\lighthouse-review.mjs mobile-2 390 844 mobile
+node design\homepage\qa\lighthouse-review.mjs mobile-3 390 844 mobile
+本地服务器可用 python -m http.server 8765 --bind 127.0.0.1 启动。
+JADE_OFFLINE=1 仅用于布局检查；JADE_NOJS=1 禁用页面脚本；JADE_BLOCK_ART=1 模拟素材失败。
+JADE_KEYBOARD=1 检查真实 Tab/Enter/Esc 输入；线上性能检查应清除以上测试模式变量。
+
+核对后的发布步骤
+确认当前预览；正常合并开发分支至 master，push origin master。
+检查 GitHub Pages 构建与部署，再以相同移动配置对线上地址测量三次。
+若需要回退，使用 git revert 回退此次合并或提交，保留历史；基点见文件开头。

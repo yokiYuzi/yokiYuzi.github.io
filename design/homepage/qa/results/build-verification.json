@@ -1,0 +1,17 @@
+{
+  "homepageLocalResources": 25,
+  "missingResources": [],
+  "duplicateIds": false,
+  "requiredRoutes": [
+    "/",
+    "/resume/",
+    "/archives/",
+    "/blog/",
+    "/column/",
+    "/visitors/",
+    "/guestbook/"
+  ],
+  "sourceFilesExcludedFromDeploy": true,
+  "builtLivePhotos": 4,
+  "innerPageSourceFilesChanged": false
+}

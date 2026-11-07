@@ -1,0 +1,66 @@
+{
+  "initial": {
+    "viewport": 768,
+    "document": 768,
+    "overflow": false
+  },
+  "zoom200": {
+    "viewport": 768,
+    "document": 768,
+    "overflow": false,
+    "offenders": []
+  },
+  "menu": {
+    "visible": true,
+    "open": true,
+    "targetSizes": [
+      {
+        "label": "Home",
+        "height": 50.390625
+      },
+      {
+        "label": "Resume",
+        "height": 50.390625
+      },
+      {
+        "label": "Archives",
+        "height": 50.390625
+      },
+      {
+        "label": "Blog",
+        "height": 50.390625
+      },
+      {
+        "label": "Column",
+        "height": 50.390625
+      },
+      {
+        "label": "Visitors",
+        "height": 50.390625
+      },
+      {
+        "label": "Guestbook",
+        "height": 50.390625
+      }
+    ],
+    "escapeCloses": true
+  },
+  "title": "Die Welt zerfällt in Tatsachen.",
+  "titleSize": "68px",
+  "canvasCount": 0,
+  "controlsCount": 0,
+  "loadedTextureHrefs": [
+    null,
+    null,
+    null,
+    "/assets/art/jade-deep.webp",
+    "/assets/art/pearl.webp",
+    "/assets/art/jade-front.webp"
+  ],
+  "mobileImage": "https://localhost:9443/assets/svg/blank.svg",
+  "artHeight": 380,
+  "colors": {
+    "ink": "rgb(20, 44, 40)",
+    "paper": "rgb(250, 248, 242)"
+  }
+}

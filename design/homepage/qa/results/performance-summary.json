@@ -1,0 +1,93 @@
+{
+  "url": "https://127.0.0.1:9443/",
+  "lighthouseVersion": "13.6.0",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+  "settings": {
+    "output": [
+      "json",
+      "html"
+    ],
+    "maxWaitForFcp": 30000,
+    "maxWaitForLoad": 30000,
+    "pauseAfterFcpMs": 1000,
+    "pauseAfterLoadMs": 1000,
+    "networkQuietThresholdMs": 1000,
+    "cpuQuietThresholdMs": 1000,
+    "formFactor": "mobile",
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 562.5,
+      "downloadThroughputKbps": 1474.5600000000002,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "throttlingMethod": "simulate",
+    "screenEmulation": {
+      "mobile": true,
+      "width": 390,
+      "height": 844,
+      "deviceScaleFactor": 1,
+      "disabled": false
+    },
+    "emulatedUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+    "auditMode": false,
+    "gatherMode": false,
+    "clearStorageTypes": [
+      "file_systems",
+      "shader_cache",
+      "service_workers",
+      "cache_storage"
+    ],
+    "disableStorageReset": false,
+    "debugNavigation": false,
+    "channel": "node",
+    "usePassiveGathering": false,
+    "disableFullPageScreenshot": false,
+    "skipAboutBlank": false,
+    "blankPage": "about:blank",
+    "ignoreStatusCode": false,
+    "locale": "en-US",
+    "blockedUrlPatterns": null,
+    "additionalTraceCategories": null,
+    "extraHeaders": null,
+    "precomputedLanternData": null,
+    "onlyAudits": null,
+    "onlyCategories": [
+      "performance",
+      "accessibility"
+    ],
+    "skipAudits": null
+  },
+  "transport": "Real local HTTP/2; no resource interception. Separate fresh Chrome profile per run. Synthetic visitor tracking suppressed only in the test browser. Local self-signed certificate accepted only in the test browser.",
+  "runs": [
+    {
+      "performance": 100,
+      "accessibility": 100,
+      "LCP_ms": 1380,
+      "CLS": 0,
+      "TBT_ms": 0
+    },
+    {
+      "performance": 100,
+      "accessibility": 100,
+      "LCP_ms": 1351.077,
+      "CLS": 0,
+      "TBT_ms": 0
+    },
+    {
+      "performance": 100,
+      "accessibility": 100,
+      "LCP_ms": 1351.062,
+      "CLS": 0,
+      "TBT_ms": 0
+    }
+  ],
+  "medians": {
+    "performance": 100,
+    "accessibility": 100,
+    "LCP_ms": 1351.077,
+    "CLS": 0,
+    "TBT_ms": 0
+  }
+}

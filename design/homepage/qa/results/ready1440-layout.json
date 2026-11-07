@@ -1,0 +1,34 @@
+{
+  "initial": {
+    "viewport": 1440,
+    "document": 1440,
+    "overflow": false
+  },
+  "zoom200": {
+    "viewport": 1440,
+    "document": 1440,
+    "overflow": false,
+    "offenders": []
+  },
+  "menu": {
+    "visible": false
+  },
+  "title": "Die Welt zerfällt in Tatsachen.",
+  "titleSize": "76.32px",
+  "canvasCount": 0,
+  "controlsCount": 0,
+  "loadedTextureHrefs": [
+    "/assets/art/jade-deep.webp",
+    "/assets/art/pearl.webp",
+    "/assets/art/jade-front.webp",
+    null,
+    null,
+    null
+  ],
+  "mobileImage": "https://localhost:9443/assets/svg/blank.svg",
+  "artHeight": 740,
+  "colors": {
+    "ink": "rgb(20, 44, 40)",
+    "paper": "rgb(250, 248, 242)"
+  }
+}

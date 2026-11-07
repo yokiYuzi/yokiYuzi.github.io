@@ -1,0 +1,9 @@
+{
+  "transport": "real HTTP",
+  "failedRequests": [],
+  "protocols": [
+    "h2",
+    "data"
+  ],
+  "loadFailures": []
+}
