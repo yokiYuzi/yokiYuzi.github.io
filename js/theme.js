@@ -1,120 +1,78 @@
+/* Shared navigation, appearance controls and accessible progressive enhancement. */
 (function () {
   'use strict';
-
-  /* ── Apply saved theme before first paint (called from inline <head> script) ── */
-  var html  = document.documentElement;
-  var saved = localStorage.getItem('theme') || 'light';
-  html.setAttribute('data-theme', saved);
-
-  /* ── Page-scan animation on toggle ── */
-  function triggerPageScan() {
-    var old = document.getElementById('theme-scan');
-    if (old) old.parentNode.removeChild(old);
-
-    var line = document.createElement('div');
-    line.id = 'theme-scan';
-    document.body.appendChild(line);
-
-    setTimeout(function () {
-      if (line.parentNode) line.parentNode.removeChild(line);
-    }, 800);
-  }
-
-  /* ── Update button icon + label ── */
-  function updateBtn(theme) {
-    var icon = document.getElementById('theme-toggle-icon');
-    var lbl  = document.getElementById('theme-toggle-lbl');
-    if (icon) icon.textContent = theme === 'dark' ? '☼' : '☾';
-    if (lbl)  lbl.textContent  = theme === 'dark' ? 'SUN' : 'MOON';
-  }
-
-  /* ── Core toggle ── */
-  function toggle() {
-    var curr = html.getAttribute('data-theme') || 'light';
-    var next = curr === 'light' ? 'dark' : 'light';
-    var btn  = document.getElementById('theme-toggle');
-
-    /* spin the icon */
-    if (btn) {
-      btn.classList.remove('spinning');
-      void btn.offsetWidth;
-      btn.classList.add('spinning');
-      setTimeout(function () { btn.classList.remove('spinning'); }, 600);
+  function init() {
+    var html = document.documentElement;
+    var main = document.querySelector('main');
+    if (main && !main.id) main.id = 'main-content';
+    if (main && !document.querySelector('.skip-link')) {
+      var skip = document.createElement('a');
+      skip.className = 'skip-link'; skip.href = '#' + main.id; skip.textContent = 'Skip to content';
+      document.body.prepend(skip);
     }
-
-    triggerPageScan();
-
-    html.classList.add('theme-switching');
-    setTimeout(function () {
+    var links = document.querySelector('.nav-links');
+    if (links) {
+      links.id = 'site-navigation'; links.setAttribute('aria-label', 'Main navigation');
+      var path = location.pathname.replace(/index\.html$/, '');
+      links.querySelectorAll('a').forEach(function (a) {
+        var href = a.getAttribute('href');
+        if (href === '/' ? path === '/' : path.indexOf(href) === 0) {
+          a.classList.add('nav-active'); a.setAttribute('aria-current', 'page');
+        }
+      });
+      var menu = document.createElement('button');
+      menu.type = 'button'; menu.className = 'menu-toggle'; menu.textContent = 'Menu';
+      menu.setAttribute('aria-controls', links.id); menu.setAttribute('aria-expanded', 'false');
+      links.before(menu);
+      function closeMenu() { menu.setAttribute('aria-expanded', 'false'); links.classList.remove('is-open'); }
+      menu.addEventListener('click', function () {
+        var expanded = menu.getAttribute('aria-expanded') === 'true';
+        menu.setAttribute('aria-expanded', String(!expanded)); links.classList.toggle('is-open', !expanded);
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') { closeMenu(); menu.focus(); }
+      });
+      links.addEventListener('click', function (event) { if (event.target.closest('a')) closeMenu(); });
+      document.addEventListener('click', function (event) {
+        if (!event.target.closest('.nav') && menu.getAttribute('aria-expanded') === 'true') closeMenu();
+      });
+      html.classList.add('js-nav');
+    }
+    if (!document.getElementById('orbital-canvas')) {
+      var world = document.createElement('div'); world.className = 'orbital-world'; world.setAttribute('aria-hidden', 'true');
+      var canvas = document.createElement('canvas'); canvas.id = 'orbital-canvas';
+      world.appendChild(canvas); document.body.prepend(world);
+    }
+    var toolbar = document.createElement('div'); toolbar.className = 'field-tools';
+    toolbar.setAttribute('role', 'group'); toolbar.setAttribute('aria-label', 'Appearance and animation');
+    var pause = document.createElement('button'); pause.type = 'button'; pause.id = 'motion-toggle';
+    pause.disabled = true; pause.setAttribute('aria-label', 'Animation unavailable');
+    pause.innerHTML = '<span class="tool-icon" aria-hidden="true">Ⅱ</span><span class="tool-label">Still</span>';
+    pause.addEventListener('click', function () { document.dispatchEvent(new CustomEvent('orbital:toggle-motion')); });
+    document.addEventListener('orbital:motion', function (event) {
+      var stopped = event.detail.paused;
+      pause.disabled = false; pause.setAttribute('aria-pressed', String(stopped));
+      pause.setAttribute('aria-label', stopped ? 'Resume animation' : 'Pause animation');
+      pause.querySelector('.tool-icon').textContent = stopped ? '▷' : 'Ⅱ';
+      pause.querySelector('.tool-label').textContent = stopped ? 'Play' : 'Pause';
+    });
+    var themeButton = document.createElement('button'); themeButton.type = 'button'; themeButton.id = 'theme-toggle';
+    themeButton.innerHTML = '<span class="tool-icon" aria-hidden="true"></span><span class="tool-label"></span>';
+    function updateThemeButton() {
+      var dark = html.getAttribute('data-theme') !== 'light';
+      themeButton.querySelector('.tool-icon').textContent = dark ? '☼' : '◐';
+      themeButton.querySelector('.tool-label').textContent = dark ? 'Dawn' : 'Dusk';
+      themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+    }
+    themeButton.addEventListener('click', function () {
+      var next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
       html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-      updateBtn(next);
-    }, 220);
-
-    setTimeout(function () {
-      html.classList.remove('theme-switching');
-    }, 750);
+      try { localStorage.setItem('orbital-theme', next); } catch (_) {}
+      updateThemeButton(); document.dispatchEvent(new CustomEvent('orbital:theme'));
+    });
+    toolbar.append(pause, themeButton); document.body.appendChild(toolbar); updateThemeButton();
+    var footer = document.querySelector('footer .container');
+    if (footer) footer.innerHTML = '<span>© ' + new Date().getFullYear() + ' Chang Wang <span class="footer-note">/ A personal orbit.</span></span><div class="footer-links"><a href="https://github.com/yokiYuzi" target="_blank" rel="noopener">GitHub ↗</a><a href="mailto:changw11@unlv.nevada.edu">Email ↗</a><a href="/guestbook/">Leave a note ↗</a></div>';
   }
-
-  /* ── Highlight the active nav link ── */
-  function highlightNav() {
-    var path = window.location.pathname;
-    var links = document.querySelectorAll('.nav-links a');
-    for (var i = 0; i < links.length; i++) {
-      var a = links[i];
-      var href = a.getAttribute('href');
-      var match = href === '/'
-        ? path === '/'
-        : path === href || path.indexOf(href) === 0;
-      if (match) {
-        a.classList.add('nav-active');
-        a.setAttribute('aria-current', 'page');
-      }
-    }
-  }
-
-  /* ── Enhance footer with contact links ── */
-  function enhanceFooter() {
-    var f = document.querySelector('footer .container');
-    if (!f) return;
-    f.innerHTML =
-      '\u00a9 2026 Chang Wang' +
-      ' \u00a0\u00b7\u00a0 ' +
-      '<a href="https://github.com/yokiYuzi" target="_blank" rel="noopener">GitHub</a>' +
-      ' \u00a0\u00b7\u00a0 ' +
-      '<a href="mailto:changw11@unlv.nevada.edu">Email</a>';
-  }
-
-  /* ── Inject theme-toggle button ── */
-  function injectButton() {
-    if (document.getElementById('theme-toggle')) return;
-
-    var btn = document.createElement('button');
-    btn.id = 'theme-toggle';
-    btn.setAttribute('aria-label', 'Toggle dark / light mode');
-    btn.title = 'Toggle dark / light mode';
-
-    var icon = document.createElement('span');
-    icon.id = 'theme-toggle-icon';
-    icon.textContent = saved === 'dark' ? '☼' : '☾';
-
-    var lbl = document.createElement('span');
-    lbl.id = 'theme-toggle-lbl';
-    lbl.textContent = saved === 'dark' ? 'SUN' : 'MOON';
-
-    btn.appendChild(icon);
-    btn.appendChild(lbl);
-    btn.addEventListener('click', toggle);
-    document.body.appendChild(btn);
-
-    highlightNav();
-    enhanceFooter();
-  }
-
-  /* ── Boot ── */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectButton);
-  } else {
-    injectButton();
-  }
+  if (document.body) init(); else document.addEventListener('DOMContentLoaded', init, { once: true });
 })();

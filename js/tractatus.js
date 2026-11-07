@@ -225,11 +225,11 @@
       On the home hero, very long German propositions create tall, broken columns.
       Keep the archive pages complete, but keep the first impression compact.
     */
-    var isHomeHero = !!document.querySelector('.marble-hero');
+    var isHomeHero = !!document.querySelector('.orbital-hero');
     if (!isHomeHero) return QUOTES;
 
     var narrow = window.innerWidth < 640;
-    var maxLen = narrow ? 48 : 88;
+    var maxLen = narrow ? 48 : 64;
     var pool = QUOTES.filter(function (q) {
       if (!q.de || q.de.length > maxLen) return false;
       if (!narrow) return true;
@@ -272,7 +272,7 @@
     var quoteTarget = document.querySelector('[data-quote-refresh]');
     if (quoteTarget) {
       quoteTarget.addEventListener('click', function (event) {
-        if (event.target.closest && event.target.closest('a, button')) return;
+        if (quoteTarget.tagName !== 'BUTTON' && event.target.closest && event.target.closest('a, button')) return;
         renderQuote(pickQuote());
       });
     }

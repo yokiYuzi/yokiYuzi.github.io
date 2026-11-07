@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <script src="/js/theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Blog | Chang Wang</title>
   <meta name="description" content="Free study notes for researchers and AI agents: CRLB, Fisher information, Wiener filters, LMS, RLS, neural networks, and federated learning, with worked derivations by Chang Wang.">
   <link rel="canonical" href="https://yokiyuzi.github.io/blog/">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/orbital-mark.svg">
   <link rel="stylesheet" href="/css/style.css">
 
   <style>
@@ -58,7 +59,7 @@
     /* ── Border charge animation on open ── */
     @keyframes block-charge {
       0%   { border-color: var(--line);   box-shadow: none; }
-      40%  { border-color: var(--accent2); box-shadow: 0 0 18px rgba(0,180,216,0.35); }
+      40%  { border-color: var(--accent2); box-shadow: 0 0 18px rgba(110,171,143,0.35); }
       100% { border-color: var(--accent); box-shadow: 0 0 22px var(--glow); }
     }
     .category-block.charging {
@@ -106,21 +107,21 @@
       overflow: hidden;
     }
     .category-block.open .cat-header {
-      background: linear-gradient(90deg, rgba(0,87,231,0.06), transparent 70%);
+      background: linear-gradient(90deg, rgba(183,156,99,0.06), transparent 70%);
       border-bottom-color: var(--line);
     }
 
     /* Header flash on click */
     @keyframes header-flash {
       0%   { opacity: 1; }
-      30%  { background: rgba(0,180,216,0.18); }
+      30%  { background: rgba(110,171,143,0.18); }
       100% { background: transparent; }
     }
     .cat-header.flashing::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(0,180,216,0.15);
+      background: rgba(110,171,143,0.15);
       animation: header-flash 0.35s ease forwards;
       pointer-events: none;
     }
@@ -203,8 +204,8 @@
       );
       box-shadow:
         0 0 6px  var(--accent2),
-        0 0 16px rgba(0,180,216,0.6),
-        0 0 28px rgba(0,87,231,0.3);
+        0 0 16px rgba(110,171,143,0.6),
+        0 0 28px rgba(183,156,99,0.3);
       animation: scan-travel var(--scan-dur, 0.5s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
     @keyframes scan-travel {
@@ -220,7 +221,7 @@
       height: 40px;
       pointer-events: none;
       z-index: 9;
-      background: linear-gradient(180deg, rgba(0,180,216,0.12), transparent);
+      background: linear-gradient(180deg, rgba(110,171,143,0.12), transparent);
       animation: glow-follow var(--scan-dur, 0.5s) cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
     @keyframes glow-follow {
@@ -297,7 +298,7 @@
     }
     .post-row:last-child { border-bottom: none; }
     .post-row:hover {
-      background: linear-gradient(90deg, rgba(0,87,231,0.04), transparent 70%);
+      background: linear-gradient(90deg, rgba(183,156,99,0.04), transparent 70%);
       padding-left: 1.5rem;
       border-left-color: var(--accent2);
     }
@@ -372,7 +373,7 @@
 
     <div class="blog-hero">
       <div>
-        <h1>// BLOG</h1>
+        <h1>Research notes</h1>
         <div class="sub">Organized by category &nbsp;·&nbsp; Click to expand</div>
       </div>
       <div class="post-count-badge">
@@ -648,6 +649,7 @@ function postRowHTML(p) {
 })();
 </script>
   <script src="/js/theme.js"></script>
+  <script src="/js/orbital-field.js"></script>
   <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>

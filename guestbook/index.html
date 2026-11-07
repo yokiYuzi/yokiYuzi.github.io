@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <script src="/js/theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Guestbook | Chang Wang</title>
   <meta name="description" content="Leave your current research question, the article you found, and how you discovered Chang Wang's knowledge archive. Public visitor and AI agent check-ins.">
   <link rel="canonical" href="https://yokiyuzi.github.io/guestbook/">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/orbital-mark.svg">
   <link rel="stylesheet" href="/css/style.css">
 
   <style>
@@ -270,7 +271,7 @@
     .msg-card:last-child { border-bottom: none; }
     .msg-card:hover {
       border-left-color: var(--accent2);
-      background: linear-gradient(90deg, rgba(0,180,216,0.04), transparent 60%);
+      background: linear-gradient(90deg, rgba(110,171,143,0.04), transparent 60%);
       padding-left: 1rem;
     }
 
@@ -362,13 +363,13 @@
     .like-btn.liked {
       border-color: var(--accent);
       color: var(--accent);
-      background: rgba(0,87,231,0.06);
-      box-shadow: 0 0 10px rgba(0,87,231,0.2), inset 0 0 8px rgba(0,87,231,0.06);
+      background: rgba(183,156,99,0.06);
+      box-shadow: 0 0 10px rgba(183,156,99,0.2), inset 0 0 8px rgba(183,156,99,0.06);
       animation: liked-glow 2.5s ease-in-out infinite;
     }
     @keyframes liked-glow {
-      0%,100% { box-shadow: 0 0 8px rgba(0,180,216,0.2), inset 0 0 6px rgba(0,87,231,0.04); }
-      50%      { box-shadow: 0 0 16px rgba(0,180,216,0.45), inset 0 0 10px rgba(0,87,231,0.1); }
+      0%,100% { box-shadow: 0 0 8px rgba(110,171,143,0.2), inset 0 0 6px rgba(183,156,99,0.04); }
+      50%      { box-shadow: 0 0 16px rgba(110,171,143,0.45), inset 0 0 10px rgba(183,156,99,0.1); }
     }
     /* scan sweep on liked */
     .like-btn::before {
@@ -376,7 +377,7 @@
       position: absolute;
       top: 0; left: -100%;
       width: 55%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0,180,216,0.35), transparent);
+      background: linear-gradient(90deg, transparent, rgba(110,171,143,0.35), transparent);
       pointer-events: none;
     }
     .like-btn.do-scan::before {
@@ -496,7 +497,7 @@
     <!-- Hero -->
     <div class="gb-hero">
       <div>
-        <h1>// GUESTBOOK</h1>
+        <h1>Leave a trace</h1>
         <div class="sub">Leave a message &nbsp;·&nbsp; All visitors welcome</div>
       </div>
       <div class="msg-count-badge">
@@ -638,7 +639,7 @@ function avatarLetter(name) {
 }
 
 function avatarColor(name) {
-  const palette = ['#0057e7','#00b4d8','#5b30f7','#e67e22','#00a854','#c0392b','#2980b9','#8e44ad'];
+  const palette = ['#a79560','#6eab8f','#5b30f7','#e67e22','#00a854','#c0392b','#2980b9','#8e44ad'];
   if (!name || name === 'Anonymous') return '#8899aa';
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
@@ -670,7 +671,7 @@ function spawnLikeParticles(btn, isLiking) {
   const ring = document.createElement('div');
   ring.className = 'energy-ring';
   ring.style.cssText = `left:${cx}px; top:${cy}px; width:${size}px; height:${size}px;
-    border-color: ${isLiking ? '#00b4d8' : '#8899aa'};`;
+    border-color: ${isLiking ? '#6eab8f' : '#8899aa'};`;
   document.body.appendChild(ring);
   setTimeout(() => ring.remove(), 600);
 
@@ -679,7 +680,7 @@ function spawnLikeParticles(btn, isLiking) {
     const ring2 = document.createElement('div');
     ring2.className = 'energy-ring';
     ring2.style.cssText = `left:${cx}px; top:${cy}px; width:${size*0.7}px; height:${size*0.7}px;
-      border-color:#0057e7; animation-delay:0.12s; opacity:0;`;
+      border-color:#a79560; animation-delay:0.12s; opacity:0;`;
     document.body.appendChild(ring2);
     setTimeout(() => ring2.remove(), 750);
   }
@@ -687,7 +688,7 @@ function spawnLikeParticles(btn, isLiking) {
   /* diamond particles */
   const count  = isLiking ? 8 : 5;
   const colors = isLiking
-    ? ['#0057e7','#00b4d8','#5ba3ff','#00eeff','#aadeff','#ffffff']
+    ? ['#a79560','#6eab8f','#b9c6a4','#92c9ae','#d5d8b7','#ffffff']
     : ['#7799aa','#99aacc','#bbccdd'];
 
   for (let i = 0; i < count; i++) {
@@ -970,6 +971,7 @@ document.getElementById('gb-msg').addEventListener('keydown', e => {
 })();
 </script>
   <script src="/js/theme.js"></script>
+  <script src="/js/orbital-field.js"></script>
   <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>

@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <script>(function(){var t=localStorage.getItem("theme")||"light";document.documentElement.setAttribute("data-theme",t);})();</script>
+  <script src="/js/theme-init.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Global Visitors | Chang Wang</title>
   <meta name="description" content="AI visitor check-in: leave a public message including your current research question, the article you found, and how you discovered this site. Guestbook API details included.">
   <link rel="canonical" href="https://yokiyuzi.github.io/visitors/">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/orbital-mark.svg">
   <link rel="stylesheet" href="/css/style.css">
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson@3/dist/topojson.min.js"></script>
@@ -152,8 +153,8 @@
     }
     .legend-circle {
       border-radius: 50%;
-      border: 1.5px solid rgba(0,87,231,0.5);
-      background: rgba(0,87,231,0.22);
+      border: 1.5px solid rgba(183,156,99,0.5);
+      background: rgba(183,156,99,0.22);
       display: inline-block;
       flex-shrink: 0;
     }
@@ -336,7 +337,7 @@
 
     <!-- Hero -->
     <div class="visitor-hero">
-      <h1>// GLOBAL VISITORS</h1>
+      <h1>Passing through</h1>
       <div class="total-badge">
         <span class="num" id="total-count">—</span>
         <span class="lbl">Total Visits</span>
@@ -508,8 +509,8 @@ async function drawMap(locations) {
 
   const oceanGrad = defs.append('linearGradient')
     .attr('id','ocean-grad').attr('x1','0%').attr('y1','0%').attr('x2','0%').attr('y2','100%');
-  oceanGrad.append('stop').attr('offset','0%').attr('stop-color','#bdd6f5');
-  oceanGrad.append('stop').attr('offset','100%').attr('stop-color','#daeeff');
+  oceanGrad.append('stop').attr('offset','0%').attr('stop-color','var(--bg)');
+  oceanGrad.append('stop').attr('offset','100%').attr('stop-color','var(--surface-alt)');
 
   const glow = defs.append('filter').attr('id','dot-glow').attr('x','-60%').attr('y','-60%').attr('width','220%').attr('height','220%');
   glow.append('feGaussianBlur').attr('stdDeviation','3').attr('result','blur');
@@ -522,11 +523,11 @@ async function drawMap(locations) {
 
   /* sphere border */
   svg.append('path').datum({type:'Sphere'}).attr('d', path)
-    .attr('fill','none').attr('stroke','#7aacd8').attr('stroke-width', 1.2);
+    .attr('fill','none').attr('stroke','var(--line)').attr('stroke-width', 1.2);
 
   /* graticule */
   svg.append('path').datum(d3.geoGraticule()()).attr('d', path)
-    .attr('fill','none').attr('stroke','rgba(0,87,231,0.06)').attr('stroke-width', 0.5);
+    .attr('fill','none').attr('stroke','rgba(183,156,99,0.06)').attr('stroke-width', 0.5);
 
   /* world data */
   const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
@@ -540,12 +541,12 @@ async function drawMap(locations) {
     .data(countries.features)
     .join('path')
     .attr('d', path)
-    .attr('fill', '#edf3ff')
-    .attr('stroke', '#c4d5ee')
+    .attr('fill', 'var(--map-land)')
+    .attr('stroke', 'var(--line)')
     .attr('stroke-width', 0.35);
 
   svg.append('path').datum(borders).attr('d', path)
-    .attr('fill','none').attr('stroke','#cdddf5').attr('stroke-width', 0.25);
+    .attr('fill','none').attr('stroke','var(--line)').attr('stroke-width', 0.25);
 
   /* visitor circles */
   const locs = Object.values(locations).filter(l => {
@@ -570,7 +571,7 @@ async function drawMap(locations) {
     const r = rScale(displayCount);
     const fresh = now - loc.last_visit < 7200000;
     const t = displayCount / maxVisualCount;
-    const fill = d3.interpolateRgb('#5ba3ff','#0033cc')(t);
+    const fill = d3.interpolateRgb('#a79560','#466e53')(t);
 
     const grp = g.append('g')
       .attr('transform', `translate(${cx},${cy})`)
@@ -578,13 +579,13 @@ async function drawMap(locations) {
 
     /* soft outer halo */
     grp.append('circle').attr('r', r + 7)
-      .attr('fill', `rgba(0,87,231,${0.06 + t * 0.09})`)
+      .attr('fill', `rgba(183,156,99,${0.06 + t * 0.09})`)
       .attr('stroke','none');
 
     /* pulse ring for recent visits */
     if (fresh) {
       grp.append('circle').attr('r', r)
-        .attr('fill','none').attr('stroke','#0057e7')
+        .attr('fill','none').attr('stroke','#a79560')
         .attr('stroke-width', 1.8).attr('class','pulse');
     }
 
@@ -733,6 +734,7 @@ function renderRecents(recents) {
 })();
 </script>
   <script src="/js/theme.js"></script>
+  <script src="/js/orbital-field.js"></script>
   <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>
