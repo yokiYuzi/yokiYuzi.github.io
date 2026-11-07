@@ -22,8 +22,8 @@ def export() -> Path:
         html = html.replace(f'  <script src="/js/{script}.js"></script>\n', '')
     html = re.sub(r'<script src="([^"]+)"></script>',
                   lambda m: '<script>\n' + (ROOT / m[1].lstrip('/')).read_text(encoding='utf-8') + '\n</script>', html)
-    for asset in ['jade-deep.webp', 'jade-front.webp', 'pearl.webp', 'hero-mobile.webp']:
-        html = html.replace('/assets/art/' + asset, data_uri('/assets/art/' + asset))
+    for asset in ['jade-wide.webp', 'jade-detail.webp']:
+        html = html.replace('/assets/jade/art/' + asset, data_uri('/assets/jade/art/' + asset))
     for asset in ['jade-orbit.svg', 'blank.svg']:
         html = html.replace('/assets/svg/' + asset, data_uri('/assets/svg/' + asset))
     # Navigation in the portable review opens the existing live reading pages.

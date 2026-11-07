@@ -1,0 +1,117 @@
+/* Drop-in artwork and content layout. All selectors are scoped to the hero. */
+.cw-jade {
+  --cw-paper: #faf8f2;
+  --cw-ink: #142c28;
+  --cw-gold: #886537;
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: grid;
+  align-items: center;
+  width: 100%;
+  aspect-ratio: 1672 / 856;
+  min-block-size: 30rem;
+  padding: clamp(2.25rem, 4.5vw, 5rem) 5.4%;
+  color: var(--cw-ink);
+  background: var(--cw-paper);
+}
+.cw-jade__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  pointer-events: none;
+  overflow: hidden;
+}
+.cw-jade__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: right bottom;
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
+}
+.cw-jade__copy {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 45vw);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: normal;
+}
+.cw-jade__title {
+  margin: 0;
+  color: var(--cw-ink);
+  font: 400 clamp(3.2rem, 5.45vw, 6.65rem)/1.045 Georgia, 'Times New Roman', serif;
+  letter-spacing: -0.045em;
+}
+.cw-jade__line { display: block; }
+.cw-jade__translation {
+  margin: clamp(1.1rem, 2.15vw, 2.2rem) 0 0;
+  font-family: 'Songti SC', 'Noto Serif CJK SC', 'SimSun', serif;
+  font-size: clamp(1rem, 1.4vw, 1.4rem);
+  letter-spacing: 0.09em;
+}
+.cw-jade__source {
+  margin: 0.65rem 0 0;
+  font-size: clamp(0.9rem, 1.1vw, 1.1rem);
+}
+.cw-jade__intro {
+  max-inline-size: 44ch;
+  margin: clamp(1.6rem, 2.9vw, 3.1rem) 0 0;
+  font-size: clamp(1.05rem, 1.3vw, 1.4rem);
+  line-height: 1.52;
+}
+.cw-jade__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem clamp(1.65rem, 3vw, 3rem);
+  margin-block-start: clamp(1.4rem, 2.7vw, 3.2rem);
+}
+.cw-jade__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  border-bottom: 1px solid #b09156;
+  color: var(--cw-ink);
+  font-size: clamp(1rem, 1.2vw, 1.23rem);
+  text-decoration: none;
+}
+.cw-jade__links a span { color: var(--cw-gold); }
+.cw-jade__links a:focus-visible { outline: 2px solid var(--cw-ink); outline-offset: 4px; }
+.cw-jade__links a:hover { border-bottom-color: var(--cw-ink); }
+@media (max-width: 59.99em) {
+  .cw-jade {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    aspect-ratio: auto;
+    padding: 0;
+  }
+  .cw-jade__copy {
+    order: 0;
+    box-sizing: border-box;
+    width: 100%;
+    padding: clamp(2rem, 6vw, 3.5rem) clamp(1.25rem, 5.4vw, 3rem) 1.6rem;
+  }
+  .cw-jade__title { font-size: clamp(2.45rem, 8.8vw, 4.5rem); }
+  .cw-jade__art {
+    order: 1;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: clamp(16.75rem, 78vw, 27rem);
+  }
+  .cw-jade__art img { object-position: 50% 40%; }
+}
+@media print {
+  .cw-jade { min-block-size: 0; aspect-ratio: auto; padding-block: 1.25rem; }
+  .cw-jade__copy { width: 100%; }
+  .cw-jade__art { display: none; }
+}

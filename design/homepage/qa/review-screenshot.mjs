@@ -24,7 +24,7 @@ export default class ReviewScreenshot extends FullPageScreenshot {
           let file=path.resolve(root,'.'+decodeURIComponent(url.pathname));
           if(!file.startsWith(path.resolve(root)+path.sep)&&file!==path.resolve(root)) throw new Error('Outside workspace');
           if((await fs.stat(file)).isDirectory()) file=path.join(file,'index.html');
-          if(process.env.JADE_BLOCK_ART==='1'&&file.includes(path.join('assets','art'))) throw new Error('Intentional texture failure');
+          if(process.env.JADE_BLOCK_ART==='1'&&file.includes(path.join('assets','jade','art'))) throw new Error('Intentional texture failure');
           const body=await fs.readFile(file);
           await session.sendCommand('Fetch.fulfillRequest',{requestId:event.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:mime[path.extname(file)]||'application/octet-stream'},{name:'Content-Length',value:String(body.length)}],body:body.toString('base64')});
         }catch {await session.sendCommand('Fetch.fulfillRequest',{requestId:event.requestId,responseCode:404,body:''}).catch(()=>{});}
@@ -66,8 +66,8 @@ export default class ReviewScreenshot extends FullPageScreenshot {
       zoom200.overflow=zoom200.document>initial.viewport+1;
       zoom200.offenders=nodes.filter(n=>{const r=n.getBoundingClientRect();return r.right>initial.viewport+1&&getComputedStyle(n).display!=='none';}).map(n=>({tag:n.tagName,class:n.className,text:n.textContent.slice(0,80),parent:n.parentElement.outerHTML.slice(0,600),right:n.getBoundingClientRect().right})).slice(0,12);
       sizes.forEach(([n,size])=>n.style.fontSize=size);
-      const svg=document.querySelector('.home-hero__svg');
-      return {initial,zoom200,menu:menuReview,title:title?.textContent.trim(),titleSize:getComputedStyle(title).fontSize,canvasCount:document.querySelectorAll('canvas').length,controlsCount:document.querySelectorAll('.field-tools').length,loadedTextureHrefs:[...document.querySelectorAll('.home-hero__svg image')].map(n=>n.getAttribute('href')),mobileImage:document.querySelector('.home-hero__mobile img')?.currentSrc,artHeight:document.querySelector('.home-hero__art')?.getBoundingClientRect().height,colors:{ink:getComputedStyle(title).color,paper:getComputedStyle(document.body).backgroundColor}};
+      const art=document.querySelector('.cw-jade__art img');
+      return {initial,zoom200,menu:menuReview,title:title?.textContent.trim(),titleSize:getComputedStyle(title).fontSize,canvasCount:document.querySelectorAll('canvas').length,controlsCount:document.querySelectorAll('.field-tools').length,legacyArtCount:document.querySelectorAll('.home-hero__svg,.home-hero__mobile').length,art:art?{src:art.currentSrc,loaded:art.complete&&art.naturalWidth>0,width:art.naturalWidth,height:art.naturalHeight}:null,artHeight:document.querySelector('.cw-jade__art')?.getBoundingClientRect().height,colors:{ink:getComputedStyle(title).color,paper:getComputedStyle(document.body).backgroundColor}};
     },{args:[],useIsolation:false});
     if(review.path?.startsWith('/resume/')) {
       await context.driver.defaultSession.sendCommand('Emulation.setEmulatedMedia',{media:'print'});

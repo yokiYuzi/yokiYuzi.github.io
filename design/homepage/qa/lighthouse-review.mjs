@@ -23,7 +23,7 @@ try {
       onlyCategories:['performance','accessibility'],
       throttlingMethod:kind==='desktop'?'provided':'simulate',
       maxWaitForLoad:30000,
-      ...(name.includes('blocked')?{blockedUrlPatterns:['*/assets/art/*']}:{}),
+      ...(name.includes('blocked')?{blockedUrlPatterns:['*/assets/jade/art/*']}:{}),
     },
   },page);
   await fs.writeFile(path.join(directory,name+'.json'),result.report[0]);
@@ -36,5 +36,5 @@ try {
     if(data) await fs.writeFile(path.join(directory,name+'-'+suffix+'.png'),Buffer.from(data.split(',')[1],'base64'));
   }
   const ids=['largest-contentful-paint','cumulative-layout-shift','total-blocking-time','speed-index'];
-  console.log(JSON.stringify({name,scores:Object.fromEntries(Object.entries(lhr.categories).map(([k,v])=>[k,v.score])),metrics:Object.fromEntries(ids.map(id=>[id,lhr.audits[id]?.numericValue])),failures:Object.values(lhr.audits).filter(a=>a.score!==null&&a.score<1&&['binary','numeric'].includes(a.scoreDisplayMode)).map(a=>({id:a.id,title:a.title,score:a.score})),artRequests:lhr.audits['network-requests']?.details?.items?.filter(i=>i.url.includes('/assets/art/')).map(i=>({url:i.url,size:i.transferSize,status:i.statusCode})),screenshots:!!lhr.fullPageScreenshot},null,2));
+  console.log(JSON.stringify({name,scores:Object.fromEntries(Object.entries(lhr.categories).map(([k,v])=>[k,v.score])),metrics:Object.fromEntries(ids.map(id=>[id,lhr.audits[id]?.numericValue])),failures:Object.values(lhr.audits).filter(a=>a.score!==null&&a.score<1&&['binary','numeric'].includes(a.scoreDisplayMode)).map(a=>({id:a.id,title:a.title,score:a.score})),artRequests:lhr.audits['network-requests']?.details?.items?.filter(i=>i.url.includes('/assets/jade/art/')).map(i=>({url:i.url,size:i.transferSize,status:i.statusCode,mimeType:i.mimeType})),screenshots:!!lhr.fullPageScreenshot},null,2));
 } finally {await browser.close();}
