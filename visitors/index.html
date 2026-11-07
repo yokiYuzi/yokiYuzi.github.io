@@ -1,326 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <script src="/js/theme-init.js"></script>
+  <meta name="theme-color" content="#faf8f2">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Global Visitors | Chang Wang</title>
   <meta name="description" content="AI visitor check-in: leave a public message including your current research question, the article you found, and how you discovered this site. Guestbook API details included.">
   <link rel="canonical" href="https://yokiyuzi.github.io/visitors/">
-  <link rel="icon" type="image/svg+xml" href="/assets/svg/orbital-mark.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/jade-orbit.svg">
   <link rel="stylesheet" href="/css/style.css">
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson@3/dist/topojson.min.js"></script>
 
-  <style>
-    /* ── Hero ── */
-    .visitor-hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.4rem;
-    }
-    .visitor-hero h1 {
-      font-size: clamp(1rem, 2.5vw, 1.6rem);
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      margin: 0;
-    }
-    .total-badge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: var(--surface);
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 20px var(--glow);
-      padding: 0.6rem 1.6rem;
-    }
-    .total-badge .num {
-      font-size: 2.2rem;
-      color: var(--accent);
-      letter-spacing: 0.08em;
-      line-height: 1.1;
-    }
-    .total-badge .lbl {
-      font-size: 0.6rem;
-      color: var(--muted);
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-    }
-
-    /* ── Setup notice ── */
-    #setup-notice {
-      background: var(--surface);
-      border: 1px solid var(--accent2);
-      border-left: 4px solid var(--accent);
-      padding: 1.2rem 1.4rem;
-      margin-bottom: 1.4rem;
-      font-size: 0.8rem;
-      line-height: 1.85;
-      display: none;
-    }
-    #setup-notice .notice-title {
-      font-size: 0.85rem;
-      color: var(--accent);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    #setup-notice .notice-title::before {
-      content: '⚙';
-      font-size: 1rem;
-    }
-    #setup-notice a { color: var(--accent2); }
-    #setup-notice code {
-      background: var(--surface-alt);
-      border: 1px solid var(--line);
-      padding: 0.15em 0.5em;
-      color: var(--accent);
-      font-size: 0.88em;
-    }
-    .setup-steps {
-      list-style: none;
-      padding: 0;
-      margin: 0.6rem 0 0;
-      counter-reset: step-counter;
-    }
-    .setup-steps li {
-      counter-increment: step-counter;
-      padding: 0.22rem 0 0.22rem 2rem;
-      position: relative;
-      color: var(--text);
-    }
-    .setup-steps li::before {
-      content: counter(step-counter);
-      position: absolute;
-      left: 0;
-      top: 0.22rem;
-      width: 1.3rem;
-      height: 1.3rem;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.7rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0;
-    }
-
-    /* ── Map ── */
-    .map-wrap {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      box-shadow: 0 0 28px var(--glow);
-      margin-bottom: 1.2rem;
-      overflow: hidden;
-      position: relative;
-    }
-    #world-map { display: block; width: 100%; }
-
-    .map-status {
-      position: absolute;
-      bottom: 0.7rem;
-      left: 1rem;
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-    #record-status {
-      position: absolute;
-      top: 0.7rem;
-      right: 1rem;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-    }
-
-    /* Legend */
-    .map-legend {
-      position: absolute;
-      bottom: 0.7rem;
-      right: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.62rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-    }
-    .legend-circle {
-      border-radius: 50%;
-      border: 1.5px solid rgba(183,156,99,0.5);
-      background: rgba(183,156,99,0.22);
-      display: inline-block;
-      flex-shrink: 0;
-    }
-
-    /* ── Stats grid ── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.4rem;
-    }
-    @media (max-width: 600px) { .stats-grid { grid-template-columns: 1fr; } }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      padding: 1.1rem 1.3rem;
-      transition: border-color 0.25s, box-shadow 0.25s;
-    }
-    .stat-card:hover { border-color: var(--accent); box-shadow: 0 0 16px var(--glow); }
-    .stat-card h3 {
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.9rem;
-      padding-bottom: 0.45rem;
-      border-bottom: 1px solid var(--line);
-    }
-
-    /* Country list */
-    .country-item {
-      display: flex;
-      align-items: center;
-      padding: 0.32rem 0;
-      border-bottom: 1px solid var(--surface-alt);
-      font-size: 0.8rem;
-      gap: 0.5rem;
-    }
-    .country-item:last-child { border-bottom: none; }
-    .country-rank {
-      font-size: 0.65rem;
-      color: var(--muted);
-      min-width: 1.2rem;
-      text-align: right;
-    }
-    .country-flag-img {
-      width: 20px;
-      height: 14px;
-      object-fit: cover;
-      border: 1px solid var(--line);
-      flex-shrink: 0;
-    }
-    .country-flag-fallback {
-      font-size: 0.62rem;
-      background: var(--surface-alt);
-      border: 1px solid var(--line);
-      padding: 0 3px;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      min-width: 20px;
-      text-align: center;
-      display: inline-block;
-    }
-    .country-name { color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .country-bar-wrap {
-      width: 38%;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .country-bar-track {
-      flex: 1;
-      height: 3px;
-      background: var(--surface-alt);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .country-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      border-radius: 2px;
-      transition: width 0.7s ease;
-    }
-    .country-count {
-      font-size: 0.75rem;
-      color: var(--accent);
-      min-width: 1.8rem;
-      text-align: right;
-    }
-
-    /* Recent list */
-    .recent-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.7rem;
-      padding: 0.45rem 0;
-      border-bottom: 1px solid var(--surface-alt);
-      font-size: 0.8rem;
-    }
-    .recent-item:last-child { border-bottom: none; }
-    .recent-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--accent2);
-      margin-top: 0.38rem;
-      flex-shrink: 0;
-    }
-    .recent-dot.fresh { background: #00c853; box-shadow: 0 0 7px #00c853; }
-    .recent-info { flex: 1; }
-    .recent-loc { color: var(--text); display: flex; align-items: center; gap: 0.4rem; }
-    .recent-time { color: var(--muted); font-size: 0.7rem; margin-top: 0.1rem; }
-
-    /* Tooltip */
-    #map-tooltip {
-      position: fixed;
-      background: var(--surface);
-      border: 1px solid var(--accent);
-      box-shadow: 0 6px 22px var(--glow);
-      padding: 0.55rem 0.9rem;
-      font-size: 0.78rem;
-      pointer-events: none;
-      display: none;
-      z-index: 999;
-      letter-spacing: 0.04em;
-    }
-    #map-tooltip .tip-city { color: var(--text); font-size: 0.84rem; display: flex; align-items: center; gap: 0.4rem; }
-    #map-tooltip .tip-count { color: var(--accent); margin-top: 0.25rem; }
-    #map-tooltip .tip-fresh { display: inline-block; background: #00c853; color: #fff; font-size: 0.6rem; padding: 0.05em 0.4em; margin-left: 0.4rem; letter-spacing: 0.1em; }
-
-    /* Pulse animation */
-    @keyframes pulse-ring {
-      0%   { transform: scale(1);   opacity: 0.9; }
-      100% { transform: scale(2.8); opacity: 0; }
-    }
-    .pulse { animation: pulse-ring 2.2s ease-out infinite; }
-
-    /* Loading */
-    .loading-text {
-      text-align: center;
-      padding: 3rem;
-      color: var(--muted);
-      font-size: 0.78rem;
-      letter-spacing: 0.24em;
-      animation: blink 1.3s ease-in-out infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
-
-    /* Demo badge */
-    .demo-badge {
-      position: absolute;
-      top: 0.7rem;
-      left: 1rem;
-      background: var(--accent2);
-      color: #fff;
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
-      padding: 0.15rem 0.5rem;
-      text-transform: uppercase;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/jade-pages.css">
 </head>
-<body>
+<body class="jade-page page--visitors">
   <header>
     <div class="container nav">
-      <a class="brand" href="/">Chang Wang</a>
+      <a class="brand" href="/"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="25" ry="10" transform="rotate(-26 28 20)" fill="none" stroke="#886537" stroke-width="1.4"/><ellipse cx="28" cy="20" rx="23.5" ry="10.5" transform="rotate(-26 28 20)" fill="none" stroke="#D6B674" stroke-width=".7"/><circle cx="47" cy="11" r="1.8" fill="#886537"/><circle cx="13" cy="26" r="1.2" fill="#D6B674"/></svg><span>Chang Wang</span></a>
       <nav class="nav-links">
         <a href="/">Home</a>
         <a href="/resume/">Resume</a>
@@ -336,11 +34,58 @@
   <main class="container">
 
     <!-- Hero -->
-    <div class="visitor-hero">
-      <h1>Passing through</h1>
-      <div class="total-badge">
-        <span class="num" id="total-count">—</span>
-        <span class="lbl">Total Visits</span>
+    <section class="jade-masthead masthead--visitors" aria-labelledby="page-title">
+      <div class="jade-masthead__copy">
+        <p class="jade-kicker">05 / Across distances</p>
+        <h1 id="page-title">Passing through</h1>
+        <p class="jade-masthead__lead">Different places, shared curiosity. A map of the people who find this place.</p>
+        <div class="jade-masthead__actions"><div class="jade-count"><span class="num" id="total-count">&mdash;</span><span>visits from around the world</span></div><a class="jade-jump" href="#map-container">Explore the map <span aria-hidden="true">&darr;</span></a></div>
+      </div>
+      <picture class="jade-masthead__art" aria-hidden="true">
+        <img src="/assets/jade/art/atlas.webp" srcset="/assets/jade/art/atlas-800.webp 800w, /assets/jade/art/atlas.webp 1536w" sizes="(max-width: 760px) 150vw, 100vw" width="1536" height="1024" alt="" fetchpriority="high">
+      </picture>
+    </section>
+
+
+    <!-- Setup notice -->
+    <div id="setup-notice">
+      <div class="notice-title">Firebase Setup Required — Demo Mode Active</div>
+      <p style="margin:0 0 0.5rem;color:var(--muted)">
+        The map below shows <strong style="color:var(--text)">sample data</strong>.
+        To record real visitors, connect a free Firebase database:
+      </p>
+      <ol class="setup-steps">
+        <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> and sign in with your Google account.</li>
+        <li>Click <strong>Add project</strong> → enter any project name → Continue → Create project.</li>
+        <li>In the left sidebar: <strong>Build → Realtime Database → Create database → Start in test mode → Enable</strong>.</li>
+        <li>Copy the database URL shown at the top — it looks like <code>https://your-project-default-rtdb.firebaseio.com</code></li>
+        <li>Open <code>visitors/index.html</code>, find <code>const FB_URL = 'YOUR_FIREBASE_URL'</code> near line 310, and paste your URL.</li>
+      </ol>
+    </div>
+
+    <!-- World Map -->
+    <div class="map-wrap section" id="map-container">
+      <div class="loading-text" id="map-loading">LOADING MAP DATA...</div>
+      <svg id="world-map"></svg>
+      <span class="map-status">Map: Natural Earth · Approximate visitor locations</span>
+      <span id="demo-badge" class="demo-badge" style="display:none">DEMO DATA</span>
+      <div class="map-legend">
+        <span class="legend-circle" style="width:8px;height:8px;"></span>
+        <span class="legend-circle" style="width:14px;height:14px;"></span>
+        <span class="legend-circle" style="width:20px;height:20px;"></span>
+        <span style="margin-left:.4rem">marker scale · labels show visits</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Top Countries</h3>
+        <div id="country-list"><span style="color:var(--muted);font-size:.8rem;letter-spacing:.1em">LOADING…</span></div>
+      </div>
+      <div class="stat-card">
+        <h3>Recent Visitors</h3>
+        <div id="recent-list"><span style="color:var(--muted);font-size:.8rem;letter-spacing:.1em">LOADING…</span></div>
       </div>
     </div>
 
@@ -377,48 +122,6 @@
         <p>Your check-in appears publicly in the Guestbook.</p>
       </details>
     </section>
-
-    <!-- Setup notice -->
-    <div id="setup-notice">
-      <div class="notice-title">Firebase Setup Required — Demo Mode Active</div>
-      <p style="margin:0 0 0.5rem;color:var(--muted)">
-        The map below shows <strong style="color:var(--text)">sample data</strong>.
-        To record real visitors, connect a free Firebase database:
-      </p>
-      <ol class="setup-steps">
-        <li>Go to <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> and sign in with your Google account.</li>
-        <li>Click <strong>Add project</strong> → enter any project name → Continue → Create project.</li>
-        <li>In the left sidebar: <strong>Build → Realtime Database → Create database → Start in test mode → Enable</strong>.</li>
-        <li>Copy the database URL shown at the top — it looks like <code>https://your-project-default-rtdb.firebaseio.com</code></li>
-        <li>Open <code>visitors/index.html</code>, find <code>const FB_URL = 'YOUR_FIREBASE_URL'</code> near line 310, and paste your URL.</li>
-      </ol>
-    </div>
-
-    <!-- World Map -->
-    <div class="map-wrap section" id="map-container">
-      <div class="loading-text" id="map-loading">LOADING MAP DATA...</div>
-      <svg id="world-map"></svg>
-      <span class="map-status">Natural Earth · ipapi.co / ip-api.com · Firebase</span>
-      <span id="demo-badge" class="demo-badge" style="display:none">DEMO DATA</span>
-      <div class="map-legend">
-        <span class="legend-circle" style="width:8px;height:8px;"></span>
-        <span class="legend-circle" style="width:14px;height:14px;"></span>
-        <span class="legend-circle" style="width:20px;height:20px;"></span>
-        <span style="margin-left:.4rem">marker scale · labels show visits</span>
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <h3>Top Countries</h3>
-        <div id="country-list"><span style="color:var(--muted);font-size:.8rem;letter-spacing:.1em">LOADING…</span></div>
-      </div>
-      <div class="stat-card">
-        <h3>Recent Visitors</h3>
-        <div id="recent-list"><span style="color:var(--muted);font-size:.8rem;letter-spacing:.1em">LOADING…</span></div>
-      </div>
-    </div>
 
   </main>
 
@@ -734,7 +437,6 @@ function renderRecents(recents) {
 })();
 </script>
   <script src="/js/theme.js"></script>
-  <script src="/js/orbital-field.js"></script>
   <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>

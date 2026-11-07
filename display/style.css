@@ -1,9 +1,9 @@
 :root {
   color-scheme: light;
   font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
-  --navy: #111c2c;
-  --cream: #f7f3e9;
-  --amber: #f4c578;
+  --navy: #142c28;
+  --cream: #faf8f2;
+  --amber: #d6b674;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--navy); }
@@ -16,15 +16,15 @@ body { margin: 0; background: var(--navy); }
   align-items: center;
   justify-content: center;
 }
-.clock-panel { position: relative; color: var(--cream); background: var(--navy); }
+.clock-panel { position: relative; color: var(--cream); background: var(--navy); border-top:6px solid #b09156; }
 .top-bar { position: absolute; top: 18px; left: 3vw; right: 3vw; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.home-link, #fullscreen { color: #bcc8d8; font-size: 14px; text-decoration: none; }
+.home-link, #fullscreen { color: #e3e5d7; font-size: 14px; text-decoration: none; }
 #fullscreen { font-family: inherit; background: transparent; border: 1px solid #526076; border-radius: 6px; padding: 8px 12px; cursor: pointer; }
 #fullscreen[hidden] { display: none; }
 .home-link:hover, #fullscreen:hover { color: white; }
 :focus-visible { outline: 3px solid var(--amber); outline-offset: 5px; }
 .clock-content { text-align: center; }
-h1 { font-size: clamp(22px, 3.5vh, 48px); font-weight: 500; margin: 0 0 .5vh; letter-spacing: .08em; }
+h1 { font-family:Georgia,"Times New Roman",serif; font-size: clamp(22px, 3.5vh, 48px); font-weight: 400; margin: 0 0 .5vh; letter-spacing: .02em; }
 .zone { display: inline-block; vertical-align: middle; margin-left: .5em; padding: .2em .5em; border: 1px solid #536177; border-radius: 5px; font-size: .55em; color: var(--amber); letter-spacing: .1em; }
 .clock {
   display: block;
@@ -36,10 +36,10 @@ h1 { font-size: clamp(22px, 3.5vh, 48px); font-weight: 500; margin: 0 0 .5vh; le
   letter-spacing: -.035em;
   white-space: nowrap;
 }
-.date { margin: .8vh 0 0; font-size: clamp(20px, 3.8vh, 54px); letter-spacing: .04em; color: #d4deeb; }
-.clock-note { margin: 2vh 0 0; color: #9bacc1; font-size: clamp(10px, 1.3vh, 18px); letter-spacing: .16em; text-align: center; }
+.date { margin: .8vh 0 0; font-size: clamp(20px, 3.8vh, 54px); letter-spacing: .04em; color: #e4e8d9; }
+.clock-note { margin: 2vh 0 0; color: #c2d1bf; font-size: clamp(10px, 1.3vh, 18px); letter-spacing: .16em; text-align: center; }
 .notice-panel { color: var(--navy); background: var(--cream); border-top: 5px solid var(--amber); text-align: center; gap: 1vh; }
-h2 { display: flex; align-items: center; justify-content: center; gap: .6em; margin: 0; font-size: clamp(26px, 4.6vh, 68px); font-weight: 650; }
+h2 { display: flex; align-items: center; justify-content: center; gap: .6em; margin: 0; font-family:Georgia,"Times New Roman",serif; font-size: clamp(26px, 4.6vh, 68px); font-weight: 400; }
 .question-number { font-family: Georgia, serif; color: #8a5a21; font-size: 1.08em; }
 .notice-label { padding-left: .65em; border-left: 1px solid #b8b09e; font-size: .58em; font-weight: 500; color: #5e625f; }
 .parameter-name { margin: 0; color: #5d655f; font-size: clamp(16px, 2.8vh, 38px); }

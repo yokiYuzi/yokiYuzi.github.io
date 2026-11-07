@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <script src="/js/theme-init.js"></script>
+  <meta name="theme-color" content="#faf8f2">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Personal Column | Chang Wang</title>
   <meta name="description" content="Chang Wang's personal column: essays, reflections, and ideas beyond the research notes.">
   <link rel="canonical" href="https://yokiyuzi.github.io/column/">
-  <link rel="icon" type="image/svg+xml" href="/assets/svg/orbital-mark.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/jade-orbit.svg">
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/column.css">
   <link rel="stylesheet" href="/css/livephotos.css">
+  <link rel="stylesheet" href="/css/jade-pages.css">
 </head>
-<body>
+<body class="jade-page page--column">
   <header>
     <div class="container nav">
-      <a class="brand" href="/">Chang Wang</a>
+      <a class="brand" href="/"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="25" ry="10" transform="rotate(-26 28 20)" fill="none" stroke="#886537" stroke-width="1.4"/><ellipse cx="28" cy="20" rx="23.5" ry="10.5" transform="rotate(-26 28 20)" fill="none" stroke="#D6B674" stroke-width=".7"/><circle cx="47" cy="11" r="1.8" fill="#886537"/><circle cx="13" cy="26" r="1.2" fill="#D6B674"/></svg><span>Chang Wang</span></a>
       <nav class="nav-links">
         <a href="/">Home</a>
         <a href="/resume/">Resume</a>
@@ -29,11 +31,16 @@
   </header>
 
   <main class="container column-main">
-    <section class="column-intro" aria-labelledby="column-title">
-      <p class="column-eyebrow">The personal archive <span aria-hidden="true">/</span> <span lang="zh-CN">个人专栏</span></p>
-      <h1 id="column-title">Personal Column</h1>
-      <p class="column-lead">A space for essays, reflections, and ideas beyond the research notes.</p>
-      <p class="column-byline">By Chang Wang</p>
+    <section class="jade-masthead masthead--column" aria-labelledby="page-title">
+      <div class="jade-masthead__copy">
+        <p class="jade-kicker">04 / Beyond the equations</p>
+        <h1 id="page-title">Personal Column</h1>
+        <p class="jade-masthead__lead">Essays, photographs, and things noticed along the way.</p>
+        <div class="jade-masthead__actions"><span class="jade-byline">By Chang Wang</span><a class="jade-jump" href="#column-list">Read the latest <span aria-hidden="true">&darr;</span></a></div>
+      </div>
+      <picture class="jade-masthead__art" aria-hidden="true">
+        <img src="/assets/jade/art/tide.webp" srcset="/assets/jade/art/tide-800.webp 800w, /assets/jade/art/tide.webp 1536w" sizes="(max-width: 760px) 150vw, 100vw" width="1536" height="1024" alt="" fetchpriority="high">
+      </picture>
     </section>
 
     <section class="column-entries" aria-labelledby="entries-title">
@@ -73,7 +80,6 @@
   <script src="/js/column.js"></script>
   <script src="/js/livephotos.js"></script>
   <script src="/js/theme.js"></script>
-  <script src="/js/orbital-field.js"></script>
   <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>

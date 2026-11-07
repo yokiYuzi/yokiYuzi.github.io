@@ -1,485 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <script src="/js/theme-init.js"></script>
+  <meta name="theme-color" content="#faf8f2">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Guestbook | Chang Wang</title>
   <meta name="description" content="Leave your current research question, the article you found, and how you discovered Chang Wang's knowledge archive. Public visitor and AI agent check-ins.">
   <link rel="canonical" href="https://yokiyuzi.github.io/guestbook/">
-  <link rel="icon" type="image/svg+xml" href="/assets/svg/orbital-mark.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/jade-orbit.svg">
   <link rel="stylesheet" href="/css/style.css">
 
-  <style>
-    /* ══════════════════════════════════════════
-       HERO
-    ══════════════════════════════════════════ */
-    .gb-hero {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      margin-bottom: 1.6rem;
-    }
-    .gb-hero h1 {
-      font-size: clamp(1rem, 2.5vw, 1.55rem);
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      margin: 0;
-    }
-    .gb-hero .sub {
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.14em;
-      margin-top: 0.35rem;
-    }
-    .msg-count-badge {
-      background: var(--surface);
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 18px var(--glow);
-      padding: 0.45rem 1.2rem;
-      text-align: center;
-    }
-    .msg-count-badge .num {
-      font-size: 1.7rem; color: var(--accent); line-height: 1;
-      transition: transform 0.15s;
-    }
-    .msg-count-badge .lbl {
-      font-size: 0.56rem; color: var(--muted);
-      letter-spacing: 0.26em; text-transform: uppercase;
-    }
-
-    /* ══════════════════════════════════════════
-       LAYOUT
-    ══════════════════════════════════════════ */
-    .gb-layout {
-      display: grid;
-      grid-template-columns: 330px 1fr;
-      gap: 1.2rem;
-      align-items: start;
-    }
-    @media (max-width: 780px) { .gb-layout { grid-template-columns: 1fr; } }
-
-    /* ══════════════════════════════════════════
-       FORM PANEL
-    ══════════════════════════════════════════ */
-    .gb-form-wrap {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      padding: 0;
-      position: sticky;
-      top: 1.2rem;
-      overflow: hidden;
-      transition: border-color 0.25s, box-shadow 0.25s;
-    }
-    .gb-form-wrap:focus-within {
-      border-color: var(--accent);
-      box-shadow: 0 0 24px var(--glow);
-    }
-
-    /* form header bar */
-    .form-header {
-      background: var(--accent);
-      padding: 0.55rem 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .form-header-title {
-      font-size: 0.68rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #fff;
-    }
-    .form-header-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #7fffb0;
-      box-shadow: 0 0 6px #7fffb0;
-      animation: dot-blink 2s ease-in-out infinite;
-    }
-    @keyframes dot-blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
-
-    .form-body { padding: 1.2rem 1.3rem; }
-
-    .field { margin-bottom: 0.88rem; }
-    .field label {
-      display: block;
-      font-size: 0.65rem;
-      letter-spacing: 0.16em;
-      color: var(--muted);
-      text-transform: uppercase;
-      margin-bottom: 0.3rem;
-    }
-    .field input,
-    .field textarea {
-      width: 100%;
-      box-sizing: border-box;
-      background: var(--bg);
-      border: 1px solid var(--line);
-      border-left: 2px solid transparent;
-      color: var(--text);
-      font-family: "Courier New", Courier, monospace;
-      font-size: 0.83rem;
-      padding: 0.48rem 0.72rem;
-      outline: none;
-      transition: border-color 0.2s, border-left-color 0.2s, box-shadow 0.2s;
-      resize: none;
-    }
-    .field input:focus,
-    .field textarea:focus {
-      border-color: var(--accent);
-      border-left-color: var(--accent2);
-      box-shadow: 0 0 0 2px var(--glow);
-    }
-    .field textarea { height: 96px; line-height: 1.65; }
-
-    .char-counter {
-      text-align: right;
-      font-size: 0.63rem;
-      color: var(--muted);
-      margin-top: 0.22rem;
-      letter-spacing: 0.07em;
-    }
-    .char-counter.warn { color: #e67e22; }
-    .char-counter.over { color: #e74c3c; }
-
-    /* anon row */
-    .anon-row {
-      display: flex; align-items: center; gap: 0.5rem;
-      margin-bottom: 0.88rem;
-    }
-    .anon-row input[type=checkbox] { accent-color: var(--accent); width: 13px; height: 13px; cursor: pointer; }
-    .anon-row label { font-size: 0.7rem; color: var(--muted); cursor: pointer; letter-spacing: 0.06em; }
-
-    /* submit button */
-    .submit-btn {
-      width: 100%;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      padding: 0.62rem 1rem;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.2s;
-    }
-    .submit-btn::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: none;
-    }
-    .submit-btn:hover:not(:disabled)::after {
-      animation: btn-shine 0.55s ease;
-    }
-    @keyframes btn-shine {
-      0%   { left: -100%; }
-      100% { left: 140%; }
-    }
-    .submit-btn:hover:not(:disabled) { background: var(--accent2); }
-    .submit-btn:disabled { opacity: 0.42; cursor: not-allowed; }
-    .submit-btn.sending {
-      background: var(--accent2);
-      animation: sending-pulse 0.8s ease-in-out infinite alternate;
-    }
-    @keyframes sending-pulse { from{opacity:.7} to{opacity:1} }
-
-    /* status */
-    #submit-status {
-      margin-top: 0.65rem;
-      font-size: 0.74rem;
-      letter-spacing: 0.1em;
-      min-height: 1.15em;
-      text-align: center;
-    }
-    #submit-status.ok   { color: #00a854; }
-    #submit-status.err  { color: #e74c3c; }
-    #submit-status.wait { color: var(--muted); animation: blink 1.1s infinite; }
-    @keyframes blink { 0%,100%{opacity:.2} 50%{opacity:1} }
-
-    /* cooldown bar */
-    .cooldown-bar-wrap {
-      height: 2px;
-      background: var(--surface-alt);
-      margin-top: 0.5rem;
-      display: none;
-    }
-    .cooldown-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      transition: width 1s linear;
-    }
-
-    /* ══════════════════════════════════════════
-       MESSAGES PANEL
-    ══════════════════════════════════════════ */
-    .gb-messages-wrap {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      overflow: hidden;
-    }
-    .messages-header {
-      background: var(--bg);
-      border-bottom: 1px solid var(--line);
-      padding: 0.6rem 1.3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .messages-header-title {
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .sort-btns { display: flex; gap: 0.35rem; }
-    .sort-btn {
-      background: none;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-family: "Courier New", monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      padding: 0.18rem 0.55rem;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
-    }
-    .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .sort-btn.active { border-color: var(--accent); color: #fff; background: var(--accent); }
-
-    .messages-body { padding: 0.2rem 1.3rem 1.3rem; }
-
-    /* ── Message card ── */
-    .msg-card {
-      border-bottom: 1px solid var(--surface-alt);
-      padding: 1rem 0 1rem 0.8rem;
-      border-left: 2px solid transparent;
-      margin-left: -0.8rem;
-      transition: border-left-color 0.2s, background 0.2s, padding-left 0.2s;
-      animation: fadeUp 0.38s ease both;
-    }
-    .msg-card:first-child { padding-top: 0.7rem; }
-    .msg-card:last-child { border-bottom: none; }
-    .msg-card:hover {
-      border-left-color: var(--accent2);
-      background: linear-gradient(90deg, rgba(110,171,143,0.04), transparent 60%);
-      padding-left: 1rem;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .msg-header {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      margin-bottom: 0.4rem;
-      flex-wrap: wrap;
-    }
-    .msg-avatar {
-      width: 30px; height: 30px;
-      border-radius: 0;
-      color: #fff;
-      font-size: 0.78rem;
-      font-weight: bold;
-      display: flex; align-items: center; justify-content: center;
-      letter-spacing: 0.04em;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .msg-avatar::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border: 1px solid rgba(255,255,255,0.25);
-    }
-    .msg-name {
-      font-size: 0.85rem; color: var(--text);
-      font-weight: bold; letter-spacing: 0.04em;
-    }
-    .msg-meta {
-      font-size: 0.67rem; color: var(--muted);
-      letter-spacing: 0.07em;
-      display: flex; align-items: center; gap: 0.45rem;
-      flex-wrap: wrap;
-    }
-    .msg-meta-sep { opacity: 0.4; }
-    .msg-flag {
-      width: 16px; height: 11px;
-      object-fit: cover;
-      border: 1px solid var(--line);
-      vertical-align: middle;
-    }
-
-    .msg-body {
-      font-size: 0.83rem;
-      color: var(--text);
-      line-height: 1.78;
-      margin: 0.32rem 0 0.6rem;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .msg-actions { display: flex; align-items: center; gap: 0.8rem; }
-
-    /* ══════════════════════════════════════════
-       ★ SCI-FI LIKE BUTTON
-    ══════════════════════════════════════════ */
-    .like-btn {
-      position: relative;
-      background: none;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-family: "Courier New", monospace;
-      font-size: 0.67rem;
-      letter-spacing: 0.1em;
-      padding: 0.22rem 0.75rem 0.22rem 0.55rem;
-      cursor: pointer;
-      display: flex; align-items: center; gap: 0.38rem;
-      overflow: hidden;
-      transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
-      user-select: none;
-    }
-    /* hover: charge effect */
-    .like-btn:hover:not(:disabled):not(.liked) {
-      border-color: var(--accent2);
-      color: var(--accent2);
-    }
-    .like-btn:hover:not(:disabled):not(.liked)::before {
-      animation: btn-charge 0.4s ease forwards;
-    }
-    /* liked state */
-    .like-btn.liked {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(183,156,99,0.06);
-      box-shadow: 0 0 10px rgba(183,156,99,0.2), inset 0 0 8px rgba(183,156,99,0.06);
-      animation: liked-glow 2.5s ease-in-out infinite;
-    }
-    @keyframes liked-glow {
-      0%,100% { box-shadow: 0 0 8px rgba(110,171,143,0.2), inset 0 0 6px rgba(183,156,99,0.04); }
-      50%      { box-shadow: 0 0 16px rgba(110,171,143,0.45), inset 0 0 10px rgba(183,156,99,0.1); }
-    }
-    /* scan sweep on liked */
-    .like-btn::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 55%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(110,171,143,0.35), transparent);
-      pointer-events: none;
-    }
-    .like-btn.do-scan::before {
-      animation: scan-sweep 0.55s ease forwards;
-    }
-    @keyframes scan-sweep {
-      from { left: -100%; }
-      to   { left: 140%; }
-    }
-    @keyframes btn-charge {
-      from { left: -100%; opacity: 0.5; }
-      to   { left: 140%; opacity: 0; }
-    }
-    /* press effect */
-    .like-btn:active:not(:disabled) { transform: scale(0.93); }
-    /* lock icon when liked */
-    .like-btn .btn-label { font-size: 0.6rem; letter-spacing: 0.12em; opacity: 0.75; }
-
-    /* signal icon (◆) */
-    .like-icon { font-size: 0.7rem; transition: transform 0.2s; }
-    .like-btn:hover .like-icon { transform: scale(1.25); }
-    .like-btn.liked .like-icon { color: var(--accent2); }
-
-    /* number flip animation */
-    .like-num { display: inline-block; min-width: 1.2em; text-align: center; }
-    .like-num.flipping {
-      animation: num-glitch 0.35s ease;
-    }
-    @keyframes num-glitch {
-      0%   { opacity:1; transform:translateY(0); }
-      20%  { opacity:0.2; transform:translateY(-3px) skewX(4deg); filter:blur(1px); }
-      45%  { opacity:0.6; transform:translateY(2px) skewX(-3deg); }
-      70%  { opacity:0.4; transform:translateY(-1px); filter:blur(0.5px); }
-      100% { opacity:1; transform:translateY(0); filter:none; }
-    }
-
-    /* ── Particle burst (DOM-injected) ── */
-    .like-particle {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      border-radius: 0;
-      transform: translate(-50%, -50%) rotate(45deg);
-      animation: particle-fly 0.65s ease-out forwards;
-    }
-    @keyframes particle-fly {
-      0%   { opacity: 1; transform: translate(-50%,-50%) translate(0,0) scale(1) rotate(45deg); }
-      100% { opacity: 0; transform: translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(0) rotate(45deg); }
-    }
-
-    /* Energy wave ring */
-    .energy-ring {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9998;
-      border-radius: 50%;
-      border: 1.5px solid var(--accent2);
-      transform: translate(-50%, -50%) scale(0.2);
-      animation: ring-expand 0.55s ease-out forwards;
-    }
-    @keyframes ring-expand {
-      0%   { transform: translate(-50%,-50%) scale(0.2); opacity: 0.9; }
-      100% { transform: translate(-50%,-50%) scale(2.8); opacity: 0; }
-    }
-
-    /* ══════════════════════════════════════════
-       LOADING / EMPTY / MISC
-    ══════════════════════════════════════════ */
-    .loading-text {
-      text-align: center;
-      padding: 2.8rem 1rem;
-      color: var(--muted);
-      font-size: 0.76rem;
-      letter-spacing: 0.24em;
-      animation: blink 1.3s infinite;
-    }
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--muted);
-    }
-    .empty-icon { font-size: 1.8rem; opacity: 0.28; margin-bottom: 0.6rem; }
-    .empty-text { font-size: 0.78rem; letter-spacing: 0.14em; }
-
-    .load-more-btn {
-      display: block; width: 100%; margin-top: 0.8rem;
-      background: none;
-      border: 1px dashed var(--line);
-      color: var(--muted);
-      font-family: "Courier New", monospace;
-      font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
-      padding: 0.5rem;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .load-more-btn:hover { border-color: var(--accent); color: var(--accent); border-style: solid; }
-  </style>
+  <link rel="stylesheet" href="/css/jade-pages.css">
 </head>
-<body>
+<body class="jade-page page--guestbook">
   <header>
     <div class="container nav">
-      <a class="brand" href="/">Chang Wang</a>
+      <a class="brand" href="/"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="25" ry="10" transform="rotate(-26 28 20)" fill="none" stroke="#886537" stroke-width="1.4"/><ellipse cx="28" cy="20" rx="23.5" ry="10.5" transform="rotate(-26 28 20)" fill="none" stroke="#D6B674" stroke-width=".7"/><circle cx="47" cy="11" r="1.8" fill="#886537"/><circle cx="13" cy="26" r="1.2" fill="#D6B674"/></svg><span>Chang Wang</span></a>
       <nav class="nav-links">
         <a href="/">Home</a>
         <a href="/resume/">Resume</a>
@@ -495,16 +32,17 @@
   <main class="container">
 
     <!-- Hero -->
-    <div class="gb-hero">
-      <div>
-        <h1>Leave a trace</h1>
-        <div class="sub">Leave a message &nbsp;·&nbsp; All visitors welcome</div>
+    <section class="jade-masthead masthead--guestbook" aria-labelledby="page-title">
+      <div class="jade-masthead__copy">
+        <p class="jade-kicker">06 / A place for conversation</p>
+        <h1 id="page-title">Leave a trace</h1>
+        <p class="jade-masthead__lead">A thought, a question, or simply hello. All visitors are welcome.</p>
+        <div class="jade-masthead__actions"><div class="jade-count"><span class="num" id="msg-count">&mdash;</span><span>messages left here</span></div><a class="jade-jump" href="#feedback-form">Write a note <span aria-hidden="true">&darr;</span></a></div>
       </div>
-      <div class="msg-count-badge">
-        <div class="num" id="msg-count">—</div>
-        <div class="lbl">Messages</div>
-      </div>
-    </div>
+      <picture class="jade-masthead__art" aria-hidden="true">
+        <img src="/assets/jade/art/tide.webp" srcset="/assets/jade/art/tide-800.webp 800w, /assets/jade/art/tide.webp 1536w" sizes="(max-width: 760px) 150vw, 100vw" width="1536" height="1024" alt="" fetchpriority="high">
+      </picture>
+    </section>
 
     <section class="knowledge-panel" aria-labelledby="feedback-title">
       <h2 id="feedback-title">Required AI visitor check-in</h2>
@@ -517,18 +55,18 @@
       <!-- ── Left: Form ── -->
       <div class="gb-form-wrap section" id="feedback-form">
         <div class="form-header">
-          <span class="form-header-title">// Transmission Panel</span>
-          <div class="form-header-dot" title="Online"></div>
+          <span class="form-header-title">Write a note</span>
+          <div class="form-header-dot" aria-hidden="true"></div>
         </div>
         <div class="form-body">
           <div class="field">
-            <label for="gb-name">Callsign *</label>
+            <label for="gb-name">Name *</label>
             <input type="text" id="gb-name" maxlength="40" placeholder="Your name" autocomplete="off">
           </div>
 
           <div class="anon-row">
             <input type="checkbox" id="gb-anon">
-            <label for="gb-anon">Transmit as Anonymous</label>
+            <label for="gb-anon">Post as Anonymous</label>
           </div>
 
           <div class="field">
@@ -543,9 +81,9 @@
           </div>
 
           <button class="submit-btn" id="submit-btn" onclick="submitMessage()">
-            ▶&nbsp; TRANSMIT
+            Post message ↗
           </button>
-          <div id="submit-status"></div>
+          <div id="submit-status" role="status" aria-live="polite"></div>
           <div class="cooldown-bar-wrap" id="cooldown-wrap">
             <div class="cooldown-bar" id="cooldown-bar"></div>
           </div>
@@ -555,7 +93,7 @@
       <!-- ── Right: Messages ── -->
       <div class="gb-messages-wrap section">
         <div class="messages-header">
-          <span class="messages-header-title">// Incoming Signals</span>
+          <span class="messages-header-title">Notes from visitors</span>
           <div class="sort-btns">
             <button class="sort-btn active" id="sort-new" onclick="setSort('new')">Latest</button>
             <button class="sort-btn" id="sort-top" onclick="setSort('top')">Top</button>
@@ -563,10 +101,10 @@
         </div>
         <div class="messages-body">
           <div id="msg-list">
-            <div class="loading-text">SCANNING SIGNALS…</div>
+            <div class="loading-text">Loading messages…</div>
           </div>
           <button class="load-more-btn" id="load-more-btn" style="display:none" onclick="loadMore()">
-            ↓ Load More Signals
+            Show more messages ↓
           </button>
         </div>
       </div>
@@ -639,8 +177,8 @@ function avatarLetter(name) {
 }
 
 function avatarColor(name) {
-  const palette = ['#a79560','#6eab8f','#5b30f7','#e67e22','#00a854','#c0392b','#2980b9','#8e44ad'];
-  if (!name || name === 'Anonymous') return '#8899aa';
+  const palette = ['#31574b','#715d3b','#4b6255','#425c64','#5b5547','#366558'];
+  if (!name || name === 'Anonymous') return '#52635b';
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
   return palette[Math.abs(h) % palette.length];
@@ -661,85 +199,11 @@ function sanitize(str) {
 /* ══════════════════════════════════════════════════════
    ★ SCI-FI LIKE ANIMATION
 ══════════════════════════════════════════════════════ */
-function spawnLikeParticles(btn, isLiking) {
-  const rect = btn.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2;
-  const cy = rect.top  + rect.height / 2;
-  const size = Math.min(rect.width, rect.height);
-
-  /* energy wave ring */
-  const ring = document.createElement('div');
-  ring.className = 'energy-ring';
-  ring.style.cssText = `left:${cx}px; top:${cy}px; width:${size}px; height:${size}px;
-    border-color: ${isLiking ? '#6eab8f' : '#8899aa'};`;
-  document.body.appendChild(ring);
-  setTimeout(() => ring.remove(), 600);
-
-  /* second ring (delayed) */
-  if (isLiking) {
-    const ring2 = document.createElement('div');
-    ring2.className = 'energy-ring';
-    ring2.style.cssText = `left:${cx}px; top:${cy}px; width:${size*0.7}px; height:${size*0.7}px;
-      border-color:#a79560; animation-delay:0.12s; opacity:0;`;
-    document.body.appendChild(ring2);
-    setTimeout(() => ring2.remove(), 750);
-  }
-
-  /* diamond particles */
-  const count  = isLiking ? 8 : 5;
-  const colors = isLiking
-    ? ['#a79560','#6eab8f','#b9c6a4','#92c9ae','#d5d8b7','#ffffff']
-    : ['#7799aa','#99aacc','#bbccdd'];
-
-  for (let i = 0; i < count; i++) {
-    const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.4;
-    const dist  = 18 + Math.random() * 20;
-    const w     = 2 + Math.random() * 3;
-    const h     = isLiking ? (2 + Math.random() * 3) : (1 + Math.random() * 2);
-    const color = colors[i % colors.length];
-    const delay = i * 18;
-
-    const p = document.createElement('div');
-    p.className = 'like-particle';
-    p.style.cssText = `
-      left: ${cx}px; top: ${cy}px;
-      width: ${w}px; height: ${h}px;
-      background: ${color};
-      box-shadow: 0 0 4px ${color};
-      --dx: ${Math.cos(angle) * dist}px;
-      --dy: ${Math.sin(angle) * dist}px;
-      animation-delay: ${delay}ms;
-      animation-duration: ${550 + Math.random() * 150}ms;
-    `;
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 800 + delay);
-  }
-}
-
 function animateLike(btn, numEl, newCount, isLiking) {
-  /* press → release spring */
-  btn.style.transform = 'scale(0.88)';
-  setTimeout(() => { btn.style.transform = 'scale(1.06)'; }, 80);
-  setTimeout(() => { btn.style.transform = ''; }, 180);
-
-  /* particle burst */
-  spawnLikeParticles(btn, isLiking);
-
-  /* scan sweep across button */
-  btn.classList.remove('do-scan');
-  void btn.offsetWidth;   /* reflow to restart animation */
-  btn.classList.add('do-scan');
-  setTimeout(() => btn.classList.remove('do-scan'), 600);
-
-  /* number glitch flip */
-  numEl.classList.add('flipping');
-  setTimeout(() => {
-    numEl.textContent = newCount;
-    numEl.classList.remove('flipping');
-  }, 175);
+  numEl.textContent = newCount;
+  btn.setAttribute('aria-pressed', String(isLiking));
 }
 
-/* ═══════════════════════ RENDER ════════════════════════ */
 function renderMessages() {
   const list  = document.getElementById('msg-list');
   const slice = allMessages.slice(0, displayedN);
@@ -747,7 +211,7 @@ function renderMessages() {
   if (!allMessages.length) {
     list.innerHTML = `<div class="empty-state">
       <div class="empty-icon">◈</div>
-      <div class="empty-text">NO SIGNALS RECEIVED — be the first to transmit.</div>
+      <div class="empty-text">No notes yet. Leave the first message.</div>
     </div>`;
     document.getElementById('load-more-btn').style.display = 'none';
     return;
@@ -772,10 +236,10 @@ function renderMessages() {
       <div class="msg-body">${sanitize(m.message)}</div>
       <div class="msg-actions">
         <button class="like-btn ${liked ? 'liked' : ''}"
-                id="like-${m.id}" onclick="toggleLike('${m.id}')">
-          <span class="like-icon">◆</span>
+                aria-pressed="${liked}" id="like-${m.id}" onclick="toggleLike('${m.id}')">
+          <span class="like-icon" aria-hidden="true">♡</span>
           <span class="like-num" id="likes-${m.id}">${m.likes || 0}</span>
-          <span class="btn-label">${liked ? 'LOCKED' : 'SIGNAL'}</span>
+          <span class="btn-label">${liked ? 'Liked' : 'Like'}</span>
         </button>
       </div>
     </div>`;
@@ -814,7 +278,7 @@ async function loadMessages() {
   } catch(e) {
     document.getElementById('msg-list').innerHTML =
       `<div class="empty-state"><div class="empty-text">
-        Signal lost — could not load messages. Check connection.
+        Messages could not be loaded. Please try refreshing.
       </div></div>`;
   }
 }
@@ -833,7 +297,7 @@ async function submitMessage() {
   const shareLocation = document.getElementById('gb-share-location').checked;
 
   if (!isAnon && !rawName) {
-    statusEl.className = 'err'; statusEl.textContent = '✗ Callsign required.'; return;
+    statusEl.className = 'err'; statusEl.textContent = '✗ Name required.'; return;
   }
   if (!rawMsg) {
     statusEl.className = 'err'; statusEl.textContent = '✗ Message is empty.'; return;
@@ -854,7 +318,7 @@ async function submitMessage() {
 
   btn.disabled = true;
   btn.classList.add('sending');
-  btn.textContent = '◌  TRANSMITTING…';
+  btn.textContent = 'Posting…';
   statusEl.className = 'wait'; statusEl.textContent = 'Uplink in progress…';
 
   try {
@@ -886,14 +350,14 @@ async function submitMessage() {
     document.getElementById('char-counter').className = 'char-counter';
 
     localStorage.setItem('gb_last', Date.now().toString());
-    statusEl.className = 'ok'; statusEl.textContent = '✓ Signal transmitted!';
+    statusEl.className = 'ok'; statusEl.textContent = 'Your message has been posted.';
     setTimeout(() => { statusEl.textContent = ''; statusEl.className = ''; }, 5000);
   } catch(e) {
-    statusEl.className = 'err'; statusEl.textContent = '✗ Uplink failed — retry.';
+    statusEl.className = 'err'; statusEl.textContent = 'Unable to post. Please try again.';
   } finally {
     btn.disabled = false;
     btn.classList.remove('sending');
-    btn.innerHTML = '▶&nbsp; TRANSMIT';
+    btn.innerHTML = 'Post message ↗';
   }
 }
 
@@ -932,11 +396,11 @@ async function toggleLike(id) {
     if (alreadyLiked) {
       likedIds = likedIds.filter(x => x !== id);
       btn.classList.remove('liked');
-      if (lbl) lbl.textContent = 'SIGNAL';
+      if (lbl) lbl.textContent = 'Like';
     } else {
       likedIds.push(id);
       btn.classList.add('liked');
-      if (lbl) lbl.textContent = 'LOCKED';
+      if (lbl) lbl.textContent = 'Liked';
     }
     localStorage.setItem('gb_liked', JSON.stringify(likedIds));
   } catch(e) { /* silently ignore */ }
@@ -971,7 +435,6 @@ document.getElementById('gb-msg').addEventListener('keydown', e => {
 })();
 </script>
   <script src="/js/theme.js"></script>
-  <script src="/js/orbital-field.js"></script>
   <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>

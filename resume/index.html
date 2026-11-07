@@ -1,66 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <script src="/js/theme-init.js"></script>
+  <meta name="theme-color" content="#faf8f2">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Resume | Chang Wang</title>
   <meta name="description" content="Academic CV and resume of Chang Wang, PhD student in Electrical and Computer Engineering at UNLV.">
-  <link rel="icon" type="image/svg+xml" href="/assets/svg/orbital-mark.svg">
+  <link rel="icon" type="image/svg+xml" href="/assets/svg/jade-orbit.svg">
   <link rel="stylesheet" href="/css/style.css">
-  <style>
-    .resume-hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 1.6rem;
-    }
-    .resume-hero h1 {
-      font-size: clamp(1rem, 2.4vw, 1.5rem);
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      margin: 0;
-    }
-    .resume-hero .sub {
-      font-size: 0.68rem;
-      color: var(--muted);
-      letter-spacing: 0.13em;
-      margin-top: 0.3rem;
-    }
-    .btn-print {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1.5px solid var(--accent);
-      background: var(--surface);
-      color: var(--accent);
-      font-family: "Courier New", monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      padding: 0.5rem 1.1rem;
-      cursor: pointer;
-      transition: box-shadow 0.22s, background 0.22s, color 0.22s;
-      text-decoration: none;
-    }
-    .btn-print:hover {
-      background: var(--accent);
-      color: var(--surface);
-      box-shadow: 0 0 22px var(--glow-strong);
-    }
-    @media print {
-      header, footer, .btn-print, #theme-toggle { display: none !important; }
-      body { background: #fff; color: #000; }
-      .section { border: none; box-shadow: none; padding: 0.8rem 0; }
-    }
-  </style>
+  <link rel="stylesheet" href="/css/jade-pages.css">
 </head>
-<body>
+<body class="jade-page page--resume">
   <header>
     <div class="container nav">
-      <a class="brand" href="/">Chang Wang</a>
+      <a class="brand" href="/"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 40"><ellipse cx="28" cy="20" rx="25" ry="10" transform="rotate(-26 28 20)" fill="none" stroke="#886537" stroke-width="1.4"/><ellipse cx="28" cy="20" rx="23.5" ry="10.5" transform="rotate(-26 28 20)" fill="none" stroke="#D6B674" stroke-width=".7"/><circle cx="47" cy="11" r="1.8" fill="#886537"/><circle cx="13" cy="26" r="1.2" fill="#D6B674"/></svg><span>Chang Wang</span></a>
       <nav class="nav-links">
         <a href="/">Home</a>
         <a href="/resume/">Resume</a>
@@ -74,40 +28,51 @@
   </header>
 
   <main class="container">
-    <div class="resume-hero">
-      <div>
-        <h1>About &amp; CV</h1>
-        <p class="sub">Chang Wang · PhD · UNLV ECE</p>
+    <section class="jade-masthead masthead--resume" aria-labelledby="page-title">
+      <div class="jade-masthead__copy">
+        <p class="jade-kicker">01 / About &amp; research</p>
+        <h1 id="page-title">About &amp; CV</h1>
+        <p class="jade-masthead__lead">Chang Wang &middot; PhD student &middot; UNLV ECE</p>
+        <div class="jade-masthead__actions"><button class="btn-print" type="button" onclick="window.print()">Print / Save PDF <span aria-hidden="true">&nearr;</span></button></div>
       </div>
-      <button class="btn-print" onclick="window.print()">⎙ Print / Save PDF</button>
-    </div>
-
-    <section class="section">
-      <h2>Chang Wang</h2>
-      <p>Phone: +1(725) 318 7360 | Email: changw11@unlv.nevada.edu</p>
+      <picture class="jade-masthead__art" aria-hidden="true">
+        <img src="/assets/jade/art/atlas.webp" srcset="/assets/jade/art/atlas-800.webp 800w, /assets/jade/art/atlas.webp 1536w" sizes="(max-width: 760px) 150vw, 100vw" width="1536" height="1024" alt="" fetchpriority="high">
+      </picture>
     </section>
 
-    <section class="section">
-      <h2>PERSONAL STATEMENT</h2>
+    <section class="section resume-section">
+<h2>Chang Wang</h2>
+<div class="resume-details">
+      <p>Phone: +1(725) 318 7360 | Email: changw11@unlv.nevada.edu</p>
+    </div>
+</section>
+
+    <section class="section resume-section">
+<h2>PERSONAL STATEMENT</h2>
+<div class="resume-details">
       <p>
         I am a proactive problem solver focused on identifying root causes and delivering efficient, sustainable
         solutions. I combine analytical rigor with decisive action to anticipate issues, resolve them promptly, and
         prevent recurrence. This approach accelerates my professional growth while consistently improving team
         performance and project outcomes.
       </p>
-    </section>
+    </div>
+</section>
 
-    <section class="section">
-      <h2>EDUCATION</h2>
+    <section class="section resume-section">
+<h2>EDUCATION</h2>
+<div class="resume-details">
       <h3>University of Nevada, Las Vegas <span class="meta">08/2024-Current</span></h3>
       <p>PhD Student of Electrical and Computer Engineering</p>
 
       <h3>Nanjing Post and Communications University <span class="meta">09/2020-06/2024</span></h3>
       <p>Bachelor of Applied Statistics</p>
-    </section>
+    </div>
+</section>
 
-    <section class="section">
-      <h2>PROJECT EXPERIENCE</h2>
+    <section class="section resume-section">
+<h2>PROJECT EXPERIENCE</h2>
+<div class="resume-details">
 
       <h3>Self-Supervised Neural Signal Representation Learning <span class="meta">10/2025-Current</span></h3>
       <ul>
@@ -129,20 +94,24 @@
         <li>Utilizes advanced mathematical derivations to analyze the convergence properties of optimization algorithms, including both strongly concave and non-convex functions, effectively approximating their upper convergence bounds.</li>
         <li>Tackles critical challenges in federated learning, specifically addressing the inversion of gradient information to enhance privacy protection measures within distributed learning environments.</li>
       </ul>
-    </section>
+    </div>
+</section>
 
-    <section class="section">
-      <h2>HONORS &amp; AWARDS</h2>
+    <section class="section resume-section">
+<h2>HONORS &amp; AWARDS</h2>
+<div class="resume-details">
       <ul>
         <li>Meritorious Winner Award of Mathematical Model Competition for American College Students (2024)</li>
         <li>ECE Differential Fees Travel Award (2025)</li>
         <li>Summer Research Scholarship (2025)</li>
         <li>Graduate Differential Fees Scholarship, Howard R. Hughes College of Engineering (2026)</li>
       </ul>
-    </section>
+    </div>
+</section>
 
-    <section class="section">
-      <h2>PUBLICATIONS</h2>
+    <section class="section resume-section">
+<h2>PUBLICATIONS</h2>
+<div class="resume-details">
       <ul>
         <li>[1] C. Wang, M. Zhu, and S. Zhai, “Graph-based spatiotemporal attention for clinically interpretable, high-fidelity fetal ECG reconstruction and arrhythmia detection,” <em>IEEE J. Biomed. Health Inform.</em>, submitted for publication.</li>
         <li>[2] C. Wang, W. Zhang, B. Xu, A. Luo, J. Xu, S. Zhai, J. Wang, T. Peng, Z. Yu, R. Zhang, and Y. Zhang, “COGENT: Multiagent Large Language Models Communicate with Self-Coined Terms,” EMNLP 2026 May Submission, submitted for review.</li>
@@ -154,23 +123,25 @@
         <li>[8] Y. Chang, C. Wang, Y. Wang, Z. Long, Z. Zeng, and Y. Tian, “Collimation and monochromaticity of γ-rays generated by high-energy electron colliding with tightly focused circularly polarized laser with varied intensities,” <em>Laser Phys. Lett.</em>, vol. 19, no. 6, Art. no. 065301, 2022, doi: 10.1088/1612-202X/ac6614.</li>
         <li>[9] Y. Chang, Y. Huang, C. Wang, and Y. Tian, “Comment on 'Even-order harmonic generation from nonlinear Thomson backscatter in a tightly focused Gaussian laser pulse' [Phys. Plasmas 29, 043102 (2022)],” <em>Phys. Plasmas</em>, vol. 29, no. 11, Art. no. 114703, 2022, doi: 10.1063/5.0118993.</li>
       </ul>
-    </section>
+    </div>
+</section>
 
-    <section class="section">
-      <h2>ACADEMIC ACTIVITIES</h2>
+    <section class="section resume-section">
+<h2>ACADEMIC ACTIVITIES</h2>
+<div class="resume-details">
       <ul>
         <li>Invited Talk, 12th Annual Meeting of the International Academy of Cardiovascular Sciences - North American Section (IACS-NAS), 2025</li>
         <li>Peer Reviewer, IEEE JBHI, IEEE TBME, and Frontiers in Biomedical Engineering, 2025</li>
         <li>Membership, ACM and IEEE</li>
       </ul>
-    </section>
+    </div>
+</section>
   </main>
 
   <footer>
     <div class="container">© 2026 Chang Wang</div>
   </footer>
   <script src="/js/theme.js"></script>
-  <script src="/js/orbital-field.js"></script>
   <script src="/js/visitor-tracker.js"></script>
 </body>
 </html>
