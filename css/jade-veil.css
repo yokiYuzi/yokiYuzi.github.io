@@ -3,8 +3,13 @@
    Without WebGL (or with this file removed) the page is exactly the static jade page it was. */
 
 #veil{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;pointer-events:none}
-.veil-wash{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:linear-gradient(90deg,rgba(250,248,242,.96) 0%,rgba(250,248,242,.9) 36%,rgba(250,248,242,.55) 49%,rgba(250,248,242,0) 63%)}
+.veil-wash{position:fixed;inset:0;z-index:0;pointer-events:none}
+/* the reading wash: paper by day, ink by night — two layers that cross-fade */
+.veil-wash::before,.veil-wash::after{content:"";position:absolute;inset:0;transition:opacity 1.4s ease}
+.veil-wash::before{background:linear-gradient(90deg,rgba(250,248,242,.96) 0%,rgba(250,248,242,.9) 36%,rgba(250,248,242,.55) 49%,rgba(250,248,242,0) 63%)}
+.veil-wash::after{opacity:0;background:linear-gradient(90deg,rgba(7,30,26,.95) 0%,rgba(7,30,26,.88) 36%,rgba(7,30,26,.5) 49%,rgba(7,30,26,0) 63%)}
+.veil-night .veil-wash::before{opacity:0}
+.veil-night .veil-wash::after{opacity:1}
 
 /* the page floats over the stage */
 .veil-on body.home-jade > header{position:sticky;top:0;z-index:20;border-bottom:0;
@@ -29,7 +34,9 @@
 }
 /* small screens: the stage stays behind, each chapter sits on a sheet of paper */
 @media (max-width:999.98px){
-  .veil-wash{background:linear-gradient(180deg,rgba(250,248,242,.25) 0%,rgba(250,248,242,.78) 55%,rgba(250,248,242,.88) 100%)}
+  .veil-wash::before{background:linear-gradient(180deg,rgba(250,248,242,.25) 0%,rgba(250,248,242,.78) 55%,rgba(250,248,242,.88) 100%)}
+  .veil-wash::after{background:linear-gradient(180deg,rgba(7,30,26,.2) 0%,rgba(7,30,26,.75) 55%,rgba(7,30,26,.88) 100%)}
+  .veil-night.veil-on .home-jade .home-section{background:rgba(7,30,26,.8);border-color:rgba(54,80,70,.8)}
   .veil-on .home-jade .home-section{background:rgba(250,248,242,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
     border:1px solid rgba(212,201,180,.6);margin-block:28vh;padding:28px 24px}
   .veil-on .cw-jade{min-height:88vh;justify-content:flex-end}
@@ -56,4 +63,62 @@
   #veil,.veil-wash,.veil-rail{display:none}
   .veil-on .veil-rv{opacity:1;transform:none;transition:none}
   .veil-on body.home-jade .cw-jade,.veil-on body.home-jade .home-section{min-height:0;margin-block:0;padding-block:1.25rem}
+}
+
+/* ===================== night: the site's own dark palette, on the home page only ===================== */
+.veil-on body.home-jade,.veil-on body.home-jade > header,.veil-on .home-jade .home-section{transition:background-color 1.4s ease,color 1.4s ease,border-color 1.4s ease}
+html.veil-night:has(.home-jade){background:#071e1a;color-scheme:dark}
+.veil-night .home-jade{--bg:#071e1a;--surface:#0b2822;--surface-alt:#12352d;--text:#e8eadb;--muted:#a4b9ab;--accent:#d2ba82;--accent2:#8dc6ae;
+  --line:#365046;--soft-line:#2a443b;--wash:rgba(141,198,174,.08);color-scheme:dark}
+.veil-night .cw-jade{--cw-ink:#eef0e2;--cw-gold:#d2ba82}
+.veil-night .cw-jade__links a{border-bottom-color:#8c7444}
+.veil-night.veil-on body.home-jade > header{background:linear-gradient(rgba(7,30,26,.96),rgba(7,30,26,.9))}
+.veil-night .veil-rail a{background:#071e1a}
+.veil-night .veil-rail a.on{background:#b58a42}
+.veil-night .veil-rail::before{background:rgba(210,186,130,.25)}
+.veil-night.veil-on body.home-jade > footer{background:rgba(7,30,26,.92)}
+
+/* the day / night switch: 昼 · 夜 */
+.veil-mode{display:inline-flex;align-items:center;gap:7px;min-height:40px;margin-left:clamp(14px,2vw,28px);padding:4px 12px;border:1px solid rgba(181,138,66,.45);
+  border-radius:999px;background:transparent;color:var(--muted);font:600 14px/1 "Jade Veil Note","Songti SC","Noto Serif SC",serif;cursor:pointer;
+  transition:border-color .4s,color .4s}
+.veil-mode i{width:1px;height:12px;background:rgba(181,138,66,.5)}
+.veil-mode span{opacity:.45;transition:opacity .5s,color .5s}
+.veil-mode[aria-pressed="false"] span:first-child,.veil-mode[aria-pressed="true"] span:last-child{opacity:1;color:var(--accent)}
+.veil-mode:hover{border-color:var(--accent)}
+.veil-mode:focus-visible{outline:2px solid var(--accent2);outline-offset:3px}
+@media (max-width:1099px){                                 /* collapsed menu: brand · 昼夜 · Menu, links below */
+  .veil-on .home-jade .veil-mode{order:1;margin-left:auto;margin-right:4px}
+  .veil-on .home-jade .menu-toggle{order:2}
+  .veil-on .home-jade .nav-links{order:3}
+}
+@media (max-width:359px){
+  .veil-on .home-jade .brand{font-size:20px;gap:8px}
+  .veil-on .home-jade .brand svg{width:32px;height:26px}
+  .veil-on .home-jade .veil-mode{padding-inline:9px;font-size:13px}
+  .veil-on .home-jade .menu-toggle{font-size:14px;gap:7px;padding-left:10px}
+}
+
+/* ===================== 落款: the cinnabar seal ===================== */
+.veil-seal{position:relative;z-index:3;display:flex;justify-content:flex-end;align-items:flex-end;gap:12px;margin-top:clamp(28px,5vh,56px);pointer-events:none;
+  opacity:0;transform:translate3d(0,-14px,0) scale(1.24) rotate(-7deg);filter:blur(2px);transform-origin:70% 80%;
+  transition:opacity .25s ease,transform .25s ease,filter .25s ease}
+.veil-seal.is-stamped{opacity:1;transform:rotate(-2deg);filter:none;
+  transition:opacity .16s ease,transform .52s cubic-bezier(.25,1.8,.45,1),filter .2s ease}
+.veil-seal__stone{display:block;mix-blend-mode:multiply}
+.veil-seal__note{writing-mode:vertical-rl;font:600 15px/1 "Jade Veil Note","Songti SC","Noto Serif SC",serif;letter-spacing:.38em;color:#2b2a24;
+  opacity:0;transform:translateY(-8px);transition:opacity .9s ease .38s,transform 1.2s cubic-bezier(.16,.84,.24,1) .38s}
+.veil-seal.is-stamped .veil-seal__note{opacity:.82;transform:none}
+.veil-night .veil-seal__stone{mix-blend-mode:normal;filter:brightness(1.12) saturate(1.05)}
+.veil-night .veil-seal__note{color:#d9d3c0}
+.veil-rail a{transition:background .6s,border-color .6s}
+.veil-rail.veil-sealed a:last-of-type{background:#b3302a;border-color:#b3302a}
+@media (max-width:999.98px){.veil-seal__stone{width:72px!important;height:72px!important}.veil-seal__note{font-size:13px}}
+@media (prefers-reduced-motion:reduce){.veil-seal,.veil-seal.is-stamped,.veil-seal__note{transition:opacity .3s ease;transform:none;filter:none}}
+@media print{.veil-seal,.veil-mode{display:none}}
+@media print{
+  html.veil-night:has(.home-jade){background:#fff;color-scheme:light}
+  .veil-night.veil-on body.home-jade{--bg:#fff;--surface:#fff;--text:#111;--muted:#444;--accent:#333;--accent2:#333;--line:#bbb;color:#111;transition:none;color-scheme:light}
+  .veil-night.veil-on .cw-jade{--cw-ink:#111;--cw-gold:#333}
+  .veil-night.veil-on .home-jade .home-section{background:transparent;backdrop-filter:none;transition:none}
 }
