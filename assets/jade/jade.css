@@ -48,6 +48,7 @@
   letter-spacing: -0.045em;
 }
 .cw-jade__line { display: block; }
+.cw-jade #tractatus-de { display:block; overflow-wrap:anywhere; text-wrap:balance; }
 .cw-jade__translation {
   margin: clamp(1.1rem, 2.15vw, 2.2rem) 0 0;
   font-family: 'Songti SC', 'Noto Serif CJK SC', 'SimSun', serif;
@@ -55,9 +56,14 @@
   letter-spacing: 0.09em;
 }
 .cw-jade__source {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
   margin: 0.65rem 0 0;
   font-size: clamp(0.9rem, 1.1vw, 1.1rem);
 }
+.cw-jade .quote-refresh { min-height:2.75rem; color:var(--cw-gold); font:inherit; }
 .cw-jade__intro {
   max-inline-size: 44ch;
   margin: clamp(1.6rem, 2.9vw, 3.1rem) 0 0;

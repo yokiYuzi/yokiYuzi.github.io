@@ -32,9 +32,11 @@
   <main id="main-content">
     <section class="cw-jade" aria-labelledby="cw-jade-title">
       <div class="cw-jade__copy">
-        <h1 class="cw-jade__title" id="cw-jade-title" lang="de"><span class="cw-jade__line">Die Welt zerfällt</span> <span class="cw-jade__line">in Tatsachen.</span></h1>
-        <p class="cw-jade__translation" lang="zh-Hans">世界分解为诸事实。</p>
-        <p class="cw-jade__source">Wittgenstein · § 1.2</p>
+        <div aria-live="polite" aria-atomic="true">
+          <h1 class="cw-jade__title" id="cw-jade-title" lang="de"><span id="tractatus-de"><span class="cw-jade__line">Die Welt zerfällt</span> <span class="cw-jade__line">in Tatsachen.</span></span></h1>
+          <p class="cw-jade__translation" id="tractatus-zh" lang="zh-Hans">世界分解为诸事实。</p>
+        </div>
+        <p class="cw-jade__source"><span>Wittgenstein · <span id="tractatus-num">§ 1.2</span></span><button class="quote-refresh" type="button" data-quote-refresh aria-controls="tractatus-de tractatus-zh tractatus-num" hidden>Another thought <span aria-hidden="true">↻</span></button></p>
         <p class="cw-jade__intro">I’m Chang Wang, a PhD student at UNLV working on signal processing and machine learning.</p>
         <div class="cw-jade__links">
           <a href="/archives/">Explore the archive <span aria-hidden="true">↗</span></a>
@@ -101,6 +103,7 @@
     </section>
   </main>
   <footer><div class="container">© 2026 Chang Wang</div></footer>
+  <script src="/js/tractatus.js"></script>
   <script src="/js/home.js"></script>
   <script src="/js/theme.js"></script>
   <script src="/js/visitor-tracker.js"></script>

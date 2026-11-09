@@ -1,6 +1,6 @@
 /**
  * tractatus.js — Wittgenstein Tractatus Logico-Philosophicus quote engine
- * Displays a random proposition on page load; rotates on canvas click.
+ * Displays a random proposition on page load and on request.
  */
 (function () {
   'use strict';
@@ -218,14 +218,14 @@
     }
   ];
 
-  var lastIdx = -1;
+  var lastNum = '';
 
   function getQuotePool() {
     /*
       On the home hero, very long German propositions create tall, broken columns.
       Keep the archive pages complete, but keep the first impression compact.
     */
-    var isHomeHero = !!document.querySelector('.orbital-hero');
+    var isHomeHero = !!document.querySelector('.orbital-hero, .cw-jade');
     if (!isHomeHero) return QUOTES;
 
     var narrow = window.innerWidth < 640;
@@ -242,10 +242,11 @@
 
   function pickQuote() {
     var pool = getQuotePool();
-    var idx;
-    do { idx = Math.floor(Math.random() * pool.length); } while (idx === lastIdx && pool.length > 1);
-    lastIdx = idx;
-    return pool[idx];
+    if (pool.length > 1) pool = pool.filter(function (q) { return q.num !== lastNum; });
+    var quote = pool[Math.floor(Math.random() * pool.length)];
+    lastNum = quote.num;
+    try { sessionStorage.setItem('tractatus-last', lastNum); } catch (_) { /* In-memory rotation still works. */ }
+    return quote;
   }
 
   function renderQuote(q) {
@@ -267,10 +268,15 @@
   }
 
   function init() {
+    var current = document.getElementById('tractatus-num');
+    if (!current) return;
+    lastNum = current.textContent.trim();
+    try { lastNum = sessionStorage.getItem('tractatus-last') || lastNum; } catch (_) {}
     renderQuote(pickQuote());
 
     var quoteTarget = document.querySelector('[data-quote-refresh]');
     if (quoteTarget) {
+      quoteTarget.hidden = false;
       quoteTarget.addEventListener('click', function (event) {
         if (quoteTarget.tagName !== 'BUTTON' && event.target.closest && event.target.closest('a, button')) return;
         renderQuote(pickQuote());
