@@ -1,0 +1,46 @@
+.gongben-page .essay-heading { padding-top: 28px; }
+.gongben-page .essay-heading::after { display: none; }
+.gongben-page .essay-heading h1 { letter-spacing: .12em; }
+.gongben-page .essay-kicker { margin-top: 2rem; }
+.essay-subtitle { color: var(--muted); font: 18px/1.8 var(--serif); margin-top: .8rem; }
+.gongben-page .essay-cover { margin: 32px 0 48px; }
+.gongben-page .essay-cover img { display: block; width: 100%; height: auto; }
+.gongben-page .gongben-section { scroll-margin-top: 32px; }
+.gongben-page .essay-prose { max-width: 800px; padding-top: 0; }
+.gongben-page .gongben-section h2 { font: normal clamp(26px, 3vw, 34px)/1.5 var(--serif); margin-bottom: 24px; }
+.gongben-page .essay-prose > p:not(.section-intro) { text-indent: 2em; }
+.gongben-page .essay-prose sup { line-height: 0; text-indent: 0; }
+.note-ref { padding: .2em; font-family: var(--sans); font-size: .85em; }
+.note-ref:target, .source-note:target { outline: 1px solid var(--accent); outline-offset: 8px; }
+.gongben-page #translation, .gongben-page #notes, .gongben-page #downloads { border-top: 1px solid var(--line); padding-top: 40px; }
+.gongben-page .section-intro { color: var(--muted); font: 15px/1.9 var(--sans); margin-bottom: 32px; }
+.translation-pair { margin-top: 36px; }
+.translation-pair h3 { color: var(--accent); font: 600 19px/1.8 var(--serif); margin-bottom: 16px; }
+.translation-pair blockquote { margin: 0 0 20px; padding: 6px 0 6px 20px; border-left: 2px solid var(--line); color: var(--muted); font-size: 16px; line-height: 2; }
+.translation-pair > p { text-indent: 2em; }
+.gongben-notes { max-width: 900px; margin: 0 auto 64px; font: 17px/2 var(--serif); }
+.source-note { margin: 40px 0; scroll-margin-top: 32px; }
+.source-note h3 { font: 600 21px/1.7 var(--serif); margin-bottom: 16px; }
+.source-note p + p { margin-top: 18px; }
+.source-note .note-sources { font: 14px/2 var(--sans); color: var(--muted); margin-top: 20px; }
+.note-sources a { text-decoration: underline; text-decoration-thickness: 1px; }
+.note-back { display: inline-block; min-height: 44px; padding-top: 12px; font: 13px/2 var(--sans); }
+.essay-table-wrap { width: 100%; overflow-x: auto; margin: 24px 0; border: 1px solid var(--line); }
+.essay-table-wrap table { width: 100%; min-width: 560px; border-collapse: collapse; font: 15px/1.8 var(--sans); }
+.essay-table-wrap th, .essay-table-wrap td { padding: 12px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--soft-line); }
+.essay-table-wrap th { background: var(--surface-alt); font-weight: 600; }
+.essay-table-wrap tr:last-child td { border-bottom: 0; }
+.essay-table-wrap th:first-child, .essay-table-wrap td:first-child { min-width: 100px; }
+.essay-downloads { max-width: 800px; margin: 0 auto 48px; }
+.essay-downloads > p { color: var(--muted); font-size: 15px; }
+.download-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+.download-links a { display: inline-flex; gap: 24px; align-items: center; min-height: 44px; padding: 10px 18px; border: 1px solid var(--line); font-size: 14px; }
+.download-links a:hover { background: var(--surface); border-color: var(--accent); }
+@media (max-width: 650px) {
+  .gongben-page .essay-prose { font-size: 18px; line-height: 2.1; }
+  .gongben-page .essay-cover { margin: 24px 0 36px; }
+  .gongben-page .essay-photo figcaption { font-size: 12px; }
+  .gongben-notes { font-size: 16px; }
+  .source-note h3 { font-size: 19px; }
+  .translation-pair blockquote { font-size: 15px; padding-left: 16px; }
+}
